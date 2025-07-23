@@ -16,10 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Se for um menu mobile aberto, fecha-o após o clique
                 const navList = document.querySelector('#main-header nav ul');
-                const menuToggle = document.getElementById('menu-toggle'); // Assumindo que você terá este ID para o botão do menu
+                const menuToggle = document.getElementById('menu-toggle');
                 if (navList && navList.classList.contains('active')) {
                     navList.classList.remove('active');
-                    // Se tiver um botão de toggle, pode ajustar seu estado visual aqui
                     if (menuToggle) {
                         menuToggle.classList.remove('active');
                     }
@@ -39,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (menuToggle && navList) {
         menuToggle.addEventListener('click', function() {
             navList.classList.toggle('active');
-            menuToggle.classList.toggle('active'); // Para mudar o ícone ou estilo do botão
+            menuToggle.classList.toggle('active');
         });
     }
 
@@ -51,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let currentSectionId = '';
 
         sections.forEach(section => {
-            const sectionTop = section.offsetTop - navList.clientHeight; // Ajusta pela altura do cabeçalho
+            const sectionTop = section.offsetTop - navList.clientHeight;
             const sectionHeight = section.clientHeight;
 
             if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
@@ -63,6 +62,68 @@ document.addEventListener('DOMContentLoaded', function() {
             link.classList.remove('active');
             if (link.getAttribute('href').includes(currentSectionId)) {
                 link.classList.add('active');
+            }
+        });
+    }
+
+    const contactForm = document.querySelector('#contato form');
+    const formSubmitButton = contactForm ? contactForm.querySelector('button[type="submit"]') : null;
+    
+    const formFeedback = document.getElementById('form-feedback');
+
+    if (contactForm && formSubmitButton) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            formSubmitButton.disabled = true;
+            formSubmitButton.textContent = 'Enviando...';
+
+            if (formFeedback) {
+                formFeedback.textContent = '';
+                formFeedback.style.color = '';
+            }
+
+            const formData = new FormData(contactForm);
+            const formAction = contactForm.action;
+
+            try {
+                const response = await fetch(formAction, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    if (formFeedback) {
+                        formFeedback.textContent = 'Sua mensagem foi enviada com sucesso! Entrarei em contato em breve.';
+                        formFeedback.style.color = 'green';
+                    }
+                    contactForm.reset();
+                } else {
+                    const errorData = await response.json();
+                    let errorMessage = 'Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente.';
+                    if (errorData && errorData.errors) {
+                        errorMessage += ' Detalhes: ' + errorData.errors.map(err => err.message).join(', ');
+                    } else if (errorData && errorData.error) {
+                        errorMessage += ' Detalhes: ' + errorData.error;
+                    }
+                    
+                    if (formFeedback) {
+                        formFeedback.textContent = errorMessage;
+                        formFeedback.style.color = 'red';
+                    }
+                }
+            } catch (error) {
+                console.error('Erro de submissão:', error);
+                if (formFeedback) {
+                    formFeedback.textContent = 'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.';
+                    formFeedback.style.color = 'red';
+                }
+            } finally {
+                formSubmitButton.disabled = false;
+                formSubmitButton.textContent = 'Enviar Mensagem';
             }
         });
     }

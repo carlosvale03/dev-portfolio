@@ -12,10 +12,11 @@
     <header id="main-header">
         <div class="container">
             <a href="#home" class="logo">
-                <img src="img/logo-carlos-henrique-2.2.png" alt="Logo Carlos Henrique" class="logo-img">
+                <img src="img/logo-carlos-henrique.png" alt="Logo Carlos Henrique" class="logo-img">
             </a>
             <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menu de navegação">
-                <i class="material-icons">menu</i> </button>
+                <i class="material-icons">menu</i> 
+            </button>
             <nav>
                 <ul>
                     <li><a href="#home">Início</a></li>
@@ -32,14 +33,14 @@
         <div class="container">
             <img src="img/foto.jpg" alt="Carlos Henrique do Vale e Silva" class="profile-pic">
             <h1>Carlos Henrique do Vale e Silva</h1>
-            <h2>Desenvolvedor Full-stack (foco Front-end) & Pesquisador em Machine Learning</h2>
+            <h2>Desenvolvedor Full-stack & Pesquisador em Machine Learning</h2>
             <p class="intro-summary">
                 Estudante de Sistemas de Informação (previsão de formação: Dez/2025) com forte atuação em desenvolvimento web e pesquisa em Aprendizagem de Máquina. Possuo experiência prática com tecnologias como Python, JavaScript, React, Node.js, Next.js, SQL e bibliotecas de ML. Busco aplicar meus conhecimentos para desenvolver soluções inovadoras e desafiadoras.
             </p>
             <div class="cta-buttons">
                 <a href="#projetos" class="btn btn-primary">Ver Projetos</a>
                 <a href="#pesquisa" class="btn btn-secondary">Ver Pesquisa</a>
-                <a href="seu-curriculo.pdf" target="_blank" class="btn btn-outline">Download Currículo</a> </div>
+                <a href="curriculo/curriculo_carlos.pdf" target="_blank" class="btn btn-outline">Download Currículo</a> </div>
             <div class="social-links">
                 <a href="https://www.linkedin.com/in/carlos-henrique-do-vale-365092248" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>
                 <a href="https://github.com/carlosvale03" target="_blank" aria-label="GitHub"><i class="fab fa-github fa-2x"></i></a>
@@ -52,18 +53,22 @@
             <h2>Meus Projetos</h2>
             <div class="projects-grid">
                 <div class="project-card">
-                    <h3>Ingresso Express</h3>
-                    <img src="img/projeto-ingresso-express.jpg" alt="Imagem do Projeto Ingresso Express"> <p class="technologies">Tecnologias: React, TypeScript, Tailwind CSS, Node.js, PostgreSQL</p>
-                    <p>Desenvolvimento Front-end de uma aplicação web para compra de cupons de desconto, atuando em ambiente real e aplicando metodologias ágeis (Gitflow, commits semânticos).</p>
+                    <h3>Ingresso Express (Projeto Descontinuado)</h3>
+                    <div class="project-placeholder no-image">
+                        <i class="material-icons">code</i> <p>Experiência de Desenvolvimento Web</p>
+                    </div>
+                    <p class="technologies">Tecnologias: React, TypeScript, Tailwind CSS, Node.js, PostgreSQL</p>
+                    <p>Atuação como Desenvolvedor Front-end em um ambiente de desenvolvimento real, contribuindo para a construção de interfaces e APIs com foco na experiência do usuário para uma aplicação de compra de cupons de desconto. Este projeto me proporcionou experiência valiosa na aplicação de metodologias ágeis (Gitflow, commits semânticos) e boas práticas de código em um contexto profissional.</p>
                     <div class="project-links">
-                        <a href="https://github.com/Ingresso-Express/ingresso-express-frontend" target="_blank" class="btn-project">Ver Código (GitHub)</a>
-                        </div>
+                        <span class="btn-project-disabled">Código Indisponível</span>
+                        <span class="btn-project-disabled">Demo Indisponível</span>
+                    </div>
                 </div>
 
                 <div class="project-card">
                     <h3>ImoGOAT (Em Desenvolvimento)</h3>
                     <img src="img/projeto-imogoat.png" alt="Imagem do Projeto ImoGOAT"> <p class="technologies">Tecnologias: Next.js, TypeScript, Tailwind CSS, Docker</p>
-                    <p>Plataforma focada em divulgação de vagas de emprego e aluguel de imóveis na região de Picos, oferecendo um serviço otimizado para conectar locatários e proprietários. Visando excelência e agilidade no mercado imobiliário.</p>
+                    <p>Plataforma focada em divulgação de vagas e aluguel de imóveis na região de Picos, oferecendo um serviço otimizado para conectar locatários e proprietários. Visando excelência e agilidade no mercado imobiliário.</p>
                     <div class="project-links">
                         <a href="https://github.com/imogoat/projeto-front-end.git" target="_blank" class="btn-project">Ver Código (GitHub)</a>
                         </div>
@@ -72,7 +77,7 @@
                 <div class="project-card">
                     <h3>Sistema de Gestão de Conteúdo (Em Desenvolvimento)</h3>
                     <img src="img/projeto-gestao-noticias.png" alt="Imagem Ilustrativa de Gestão de Conteúdo"> <p class="technologies">
-                        Tecnologias: Next.js, TypeScript, Tailwind CSS, Docker, Python (FastAPI, SQLAlchemy), PostgreSQL.
+                        Tecnologias: Next.js, TypeScript, Tailwind CSS, Docker, Python (FastAPI, SQLAlchemy), PostgreSQL
                     </p>
                     <p>Desenvolvimento de um sistema web completo para gestão de conteúdo, utilizando arquitetura moderna com foco em performance e segurança. Projeto em andamento, sob acordo de confidencialidade.</p>
                     <div class="project-links">
@@ -90,26 +95,36 @@
             <h2>Pesquisa & Publicações</h2>
             <div class="research-items">
                 <div class="research-item">
-                    <h3>Monitorando a opinião pública sobre operações policiais no Brasil via comentários de vídeos no YouTube</h3>
-                    <p class="details">Autores: ROCHA, S. S. da et al. (co-autor Carlos Henrique do Vale e Silva)</p>
-                    <p class="details">Publicado em: Brazilian Workshop on Social Network Analysis and Mining (BraSNAM), Sociedade Brasileira de Computação (SBC), 2024.</p>
-                    <p>Pesquisa focada em monitoramento de opinião pública e identificação de eventos de violência urbana, utilizando coleta e pré-processamento de dados de YouTube e modelos de Machine Learning.</p>
-                    <a href="LINK_PARA_O_ARTIGO_NO_BRASNAM_OU_SBC" target="_blank" class="btn-research">Ver Artigo</a> </div>
+                    <h3>Monitorando a Opinião Pública sobre Operações Policiais no Brasil via Comentários de Vídeos no YouTube</h3>
+                    <p class="details">Autores: Saul Sousa da Rocha, <strong>Carlos Henrique do Vale e Silva</strong>, Carlos H. G. Ferreira, Glauber Dias Gonçalves, Jussara Marques de Almeida </p>
+                    <p class="details">Publicado em: Brazilian Workshop on Social Network Analysis and Mining (BraSNAM), Sociedade Brasileira de Computação (SBC), 2024. </p>
+                    <p>
+                        Neste trabalho, propomos um sistema para monitorar a percepção pública sobre operações policiais no Brasil utilizando comentários de usuários do YouTube. Exploramos atributos desses comentários e modelos de Processamento de Linguagem Natural (PLN) para inferir posicionamentos de aprovação, desaprovação e neutralidade. Nossos melhores modelos alcançaram acurácia e F1-macro superiores a 87% e demonstram boa capacidade de generalização para outras plataformas como Twitter/X. Os resultados revelam períodos com posicionamentos dominantes e a identificação de desaprovações em granularidade regional.
+                    </p>
+                    <p class="details">Tecnologias: Python, LLMs (GPT), BERT (Multilingual, BERTimbau), NLTK, Random Forest, SVM.</p>
+                    <a href="https://doi.org/10.5753/brasnam.2024.3101" target="_blank" class="btn-research">Ver Artigo (DOI)</a>
+                </div>
 
                 <div class="research-item">
                     <h3>Exploring Named-Entity Recognition to Identify Urban Violence Events Using Youtube Videos</h3>
-                    <p class="details">Foco: Desenvolvimento de modelos NER para identificação de eventos de violência urbana em vídeos. Em desenvolvimento/sob revisão.</p>
-                    </div>
+                    <p class="details">Status: Em desenvolvimento e não submetido. Autores: Anonymous Author(s) </p> <p>
+                        Este trabalho propõe heurísticas para agrupar vídeos do YouTube sobre violência urbana, identificando eventos por meio de <strong>Reconhecimento de Entidades Nomeadas (NER)</strong> e séries temporais aplicadas a títulos, descrições e transcrições. A abordagem visa uma solução eficiente para extrair informações valiosas de dados textuais ruidosos, com foco na identificação precisa de eventos específicos.
+                    </p>
+                    <p class="details">Tecnologias: Python, SpaCy, Hugging Face (modelos BERT, Sentence-BERT), Vosk, Pandas, NumPy.</p>
+                </div>
 
                 <div class="research-item">
                     <h3>A paridade do debate sobre operações policiais entre plataformas de mídias sociais: um estudo de caso com YouTube e Twitter</h3>
-                    <p class="details">Foco: Análise comparativa do debate sobre operações policiais em YouTube e Twitter. Em desenvolvimento/sob revisão.</p>
-                    </div>
+                    <p class="details">Status: Artigo submetido ao WebMedia 2024 (não aceito). Autores: Anonymous Author(s)</p> <p>
+                        Este estudo propôs uma metodologia para analisar a percepção pública sobre operações policiais através de comentários no <strong>Twitter (atual X) e YouTube</strong>. Desenvolvemos e ajustamos modelos de classificação baseados em <strong>BERT</strong> para categorizar comentários em aprovação, desaprovação e neutralidade. Os experimentos incluíram otimização de hiperparâmetros para modelos como Random Forest (RF) e Support Vector Machine (SVM), além de testes multiplataforma com bootstrapping para garantir robustez. Os resultados demonstraram a eficácia do uso de Large Language Models (LLMs) na melhoria de modelos de detecção de posicionamento e a transferibilidade desses modelos entre plataformas.
+                    </p>
+                    <p class="details">Tecnologias: Python, BERT (Legal-BERTimbau-large), LLMs (GPT), NLTK, Random Forest, SVM, Google Colaboratory.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="sobre" class="about-section">
+    <!-- <section id="sobre" class="about-section">
         <div class="container">
             <h2>Sobre Mim</h2>
             <p>Sou Carlos Henrique do Vale e Silva, estudante de Bacharelado em Sistemas de Informação na UFPI, com previsão de conclusão em dezembro de 2025. Minha jornada na TI é impulsionada pela paixão em criar soluções inovadoras, seja no desenvolvimento de sistemas web ou na exploração do potencial da Inteligência Artificial.</p>
@@ -117,7 +132,28 @@
             <p>Minha experiência como Desenvolvedor Front-end na Weber Technologies me proporcionou vivenciar um ambiente de desenvolvimento real, aplicando metodologias ágeis e colaborando na construção de aplicações robustas com React, TypeScript e outras tecnologias modernas.</p>
             <p>Além disso, minha monitoria na disciplina de Banco de Dados II demonstra meu domínio técnico e minha paixão por compartilhar conhecimento, auxiliando colegas na compreensão de conceitos complexos. Busco constantemente novos aprendizados e desafios que me permitam crescer e contribuir para o avanço tecnológico.</p>
             
-            </div>
+        </div>
+    </section> -->
+
+    <section id="sobre" class="about-section">
+        <div class="container">
+            <h2>Sobre Mim</h2>
+            <p>
+                Olá! Sou Carlos Henrique do Vale e Silva, estudante de <strong>Bacharelado em Sistemas de Informação</strong> na Universidade Federal do Piauí (UFPI), com previsão de formatura para dezembro de 2025. Minha paixão pela tecnologia me impulsiona a criar soluções inovadoras, com forte interesse nas interseções do <strong>desenvolvimento web</strong> e da <strong>Inteligência Artificial</strong>, especialmente em <strong>Machine Learning</strong>.
+            </p>
+            <p>
+                Minha experiência prática em desenvolvimento web se consolidou através de projetos desafiadores. Como <strong>Desenvolvedor Front-end na Weber Technologies</strong>, atuei no projeto "Ingresso Express", vivenciando um ambiente de desenvolvimento real e aplicando metodologias ágeis com React, TypeScript e Tailwind CSS. Atualmente, estou desenvolvendo o <strong>ImoGOAT</strong>, uma plataforma de aluguel de imóveis, utilizando Next.js, TypeScript e Docker, e contribuo para um <strong>Sistema de Gestão de Conteúdo</strong> (sob confidencialidade), que integra Next.js, Python (FastAPI) e PostgreSQL para uma arquitetura robusta. Essas experiências me proporcionaram um entendimento aprofundado do ciclo de vida do desenvolvimento de software e a aplicação de tecnologias modernas.
+            </p>
+            <p>
+                Paralelamente, dediquei mais de dois anos à <strong>Iniciação Científica (bolsista PIBIC/CNPq/UFPI e FAPEPI)</strong>, aprofundando-me em <strong>Aprendizagem de Máquina e Processamento de Linguagem Natural (PLN)</strong>. Minha pesquisa envolveu a criação de modelos de Machine Learning (TensorFlow, PyTorch, Scikit-learn) para análise de dados e aprimoramento de técnicas de Reconhecimento de Entidades Nomeadas (NER) para monitoramento de eventos de violência urbana e opinião pública em plataformas como YouTube e Twitter. Fui <strong>co-autor de um artigo publicado no BraSNAM (2024)</strong>, e desenvolvi estudos sobre a paridade do debate em mídias sociais e identificação de eventos de violência via NER. Essa trajetória me equipou com forte capacidade de pesquisa, análise crítica e resolução de problemas complexos.
+            </p>
+            <p>
+                Minha paixão por compartilhar conhecimento é evidente em minha atuação como <strong>Monitor da disciplina de Banco de Dados II</strong> na UFPI, onde pude auxiliar colegas na compreensão de conceitos complexos e reforçar meu domínio técnico em Bancos de Dados.
+            </p>
+            <p>
+                Sou proativo, adaptável e sempre busco novos desafios que me permitam crescer, inovar e contribuir significativamente para projetos que combinem minha expertise em desenvolvimento web com o potencial transformador da Inteligência Artificial.
+            </p>
+        </div>
     </section>
 
     <section id="contato" class="contact-section">
@@ -125,7 +161,7 @@
             <h2>Entre em Contato</h2>
             <p>Interessado em colaborar ou apenas trocar uma ideia? Sinta-se à vontade para me contatar!</p>
             
-            <form action="https://formspree.io/f/SEU_ID_FORM_HERE" method="POST"> <div class="form-group">
+            <form action="https://formspree.io/f/xpwlpbra" method="POST"> <div class="form-group">
                     <label for="name">Nome:</label>
                     <input type="text" id="name" name="name" required>
                 </div>
@@ -135,14 +171,16 @@
                 </div>
                 <div class="form-group">
                     <label for="subject">Assunto:</label>
-                    <input type="text" id="subject" name="subject" required>
+                    <input type="text" id="subject" name="_subject" required>
                 </div>
                 <div class="form-group">
                     <label for="message">Mensagem:</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
+                    <textarea id="message" name="message" rows="5" required></textarea> <input type="hidden" name="_format" value="plain" />
                 </div>
                 <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
             </form>
+
+            <div id="form-feedback" style="margin-top: 20px; text-align: center; font-size: 1.1rem;"></div>
 
             <div class="contact-info">
                 <p><i class="fas fa-envelope"></i> E-mail: carlosvale@ufpi.edu.br</p>
