@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carlos Henrique do Vale e Silva | Portfólio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="container">
+            <a href="#home" class="logo">
+                <img src="img/logo-carlos-henrique-2.2.png" alt="Logo Carlos Henrique" class="logo-img">
+            </a>
+            <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menu de navegação">
+                <i class="material-icons">menu</i> </button>
+            <nav>
+                <ul>
+                    <li><a href="#home">Início</a></li>
+                    <li><a href="#projetos">Projetos</a></li>
+                    <li><a href="#pesquisa">Pesquisa</a></li>
+                    <li><a href="#sobre">Sobre Mim</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <img src="img/foto.jpg" alt="Carlos Henrique do Vale e Silva" class="profile-pic">
+            <h1>Carlos Henrique do Vale e Silva</h1>
+            <h2>Desenvolvedor Full-stack (foco Front-end) & Pesquisador em Machine Learning</h2>
+            <p class="intro-summary">
+                Estudante de Sistemas de Informação (previsão de formação: Dez/2025) com forte atuação em desenvolvimento web e pesquisa em Aprendizagem de Máquina. Possuo experiência prática com tecnologias como Python, JavaScript, React, Node.js, Next.js, SQL e bibliotecas de ML. Busco aplicar meus conhecimentos para desenvolver soluções inovadoras e desafiadoras.
+            </p>
+            <div class="cta-buttons">
+                <a href="#projetos" class="btn btn-primary">Ver Projetos</a>
+                <a href="#pesquisa" class="btn btn-secondary">Ver Pesquisa</a>
+                <a href="seu-curriculo.pdf" target="_blank" class="btn btn-outline">Download Currículo</a> </div>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/carlos-henrique-do-vale-365092248" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>
+                <a href="https://github.com/carlosvale03" target="_blank" aria-label="GitHub"><i class="fab fa-github fa-2x"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="projetos" class="projects-section">
+        <div class="container">
+            <h2>Meus Projetos</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3>Ingresso Express</h3>
+                    <img src="img/projeto-ingresso-express.jpg" alt="Imagem do Projeto Ingresso Express"> <p class="technologies">Tecnologias: React, TypeScript, Tailwind CSS, Node.js, PostgreSQL</p>
+                    <p>Desenvolvimento Front-end de uma aplicação web para compra de cupons de desconto, atuando em ambiente real e aplicando metodologias ágeis (Gitflow, commits semânticos).</p>
+                    <div class="project-links">
+                        <a href="https://github.com/Ingresso-Express/ingresso-express-frontend" target="_blank" class="btn-project">Ver Código (GitHub)</a>
+                        </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>ImoGOAT (Em Desenvolvimento)</h3>
+                    <img src="img/projeto-imogoat.png" alt="Imagem do Projeto ImoGOAT"> <p class="technologies">Tecnologias: Next.js, TypeScript, Tailwind CSS, Docker</p>
+                    <p>Plataforma focada em divulgação de vagas de emprego e aluguel de imóveis na região de Picos, oferecendo um serviço otimizado para conectar locatários e proprietários. Visando excelência e agilidade no mercado imobiliário.</p>
+                    <div class="project-links">
+                        <a href="https://github.com/imogoat/projeto-front-end.git" target="_blank" class="btn-project">Ver Código (GitHub)</a>
+                        </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>Sistema de Gestão de Conteúdo (Em Desenvolvimento)</h3>
+                    <img src="img/projeto-gestao-noticias.png" alt="Imagem Ilustrativa de Gestão de Conteúdo"> <p class="technologies">
+                        Tecnologias: Next.js, TypeScript, Tailwind CSS, Docker, Python (FastAPI, SQLAlchemy), PostgreSQL.
+                    </p>
+                    <p>Desenvolvimento de um sistema web completo para gestão de conteúdo, utilizando arquitetura moderna com foco em performance e segurança. Projeto em andamento, sob acordo de confidencialidade.</p>
+                    <div class="project-links">
+                        <span class="btn-project-disabled">Código Privado</span>
+                        <span class="btn-project-disabled">Demo Privada</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="pesquisa" class="research-section">
+        <div class="container">
+            <h2>Pesquisa & Publicações</h2>
+            <div class="research-items">
+                <div class="research-item">
+                    <h3>Monitorando a opinião pública sobre operações policiais no Brasil via comentários de vídeos no YouTube</h3>
+                    <p class="details">Autores: ROCHA, S. S. da et al. (co-autor Carlos Henrique do Vale e Silva)</p>
+                    <p class="details">Publicado em: Brazilian Workshop on Social Network Analysis and Mining (BraSNAM), Sociedade Brasileira de Computação (SBC), 2024.</p>
+                    <p>Pesquisa focada em monitoramento de opinião pública e identificação de eventos de violência urbana, utilizando coleta e pré-processamento de dados de YouTube e modelos de Machine Learning.</p>
+                    <a href="LINK_PARA_O_ARTIGO_NO_BRASNAM_OU_SBC" target="_blank" class="btn-research">Ver Artigo</a> </div>
+
+                <div class="research-item">
+                    <h3>Exploring Named-Entity Recognition to Identify Urban Violence Events Using Youtube Videos</h3>
+                    <p class="details">Foco: Desenvolvimento de modelos NER para identificação de eventos de violência urbana em vídeos. Em desenvolvimento/sob revisão.</p>
+                    </div>
+
+                <div class="research-item">
+                    <h3>A paridade do debate sobre operações policiais entre plataformas de mídias sociais: um estudo de caso com YouTube e Twitter</h3>
+                    <p class="details">Foco: Análise comparativa do debate sobre operações policiais em YouTube e Twitter. Em desenvolvimento/sob revisão.</p>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="about-section">
+        <div class="container">
+            <h2>Sobre Mim</h2>
+            <p>Sou Carlos Henrique do Vale e Silva, estudante de Bacharelado em Sistemas de Informação na UFPI, com previsão de conclusão em dezembro de 2025. Minha jornada na TI é impulsionada pela paixão em criar soluções inovadoras, seja no desenvolvimento de sistemas web ou na exploração do potencial da Inteligência Artificial.</p>
+            <p>Durante minha Iniciação Científica, atuei por mais de dois anos como bolsista (PIBIC/CNPq/UFPI e FAPEPI), desenvolvendo modelos de Machine Learning para análise de dados e contribuindo com publicações em eventos renomados da área. Essa experiência aprofundou minha capacidade de pesquisa, análise crítica e resolução de problemas.</p>
+            <p>Minha experiência como Desenvolvedor Front-end na Weber Technologies me proporcionou vivenciar um ambiente de desenvolvimento real, aplicando metodologias ágeis e colaborando na construção de aplicações robustas com React, TypeScript e outras tecnologias modernas.</p>
+            <p>Além disso, minha monitoria na disciplina de Banco de Dados II demonstra meu domínio técnico e minha paixão por compartilhar conhecimento, auxiliando colegas na compreensão de conceitos complexos. Busco constantemente novos aprendizados e desafios que me permitam crescer e contribuir para o avanço tecnológico.</p>
+            
+            </div>
+    </section>
+
+    <section id="contato" class="contact-section">
+        <div class="container">
+            <h2>Entre em Contato</h2>
+            <p>Interessado em colaborar ou apenas trocar uma ideia? Sinta-se à vontade para me contatar!</p>
+            
+            <form action="https://formspree.io/f/SEU_ID_FORM_HERE" method="POST"> <div class="form-group">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="_replyto" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Assunto:</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Mensagem:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
+            </form>
+
+            <div class="contact-info">
+                <p><i class="fas fa-envelope"></i> E-mail: carlosvale@ufpi.edu.br</p>
+                <p><i class="fas fa-phone"></i> Telefone: (89) 99473-1880</p>
+                <p><i class="fab fa-linkedin"></i> LinkedIn: <a href="https://www.linkedin.com/in/carlos-henrique-do-vale-365092248" target="_blank">Carlos Henrique do Vale</a></p>
+                <p><i class="fab fa-github"></i> GitHub: <a href="https://github.com/carlosvale03" target="_blank">carlosvale03</a></p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="main-footer">
+        <div class="container">
+            </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

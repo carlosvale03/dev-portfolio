@@ -1,0 +1,696 @@
+/* --- Variáveis CSS --- */
+/* opção 01 */
+/* :root {
+    --primary-color: #4e576a; 
+    --secondary-color: #6c727e;
+    --accent-color: #8a8d92;   
+    --text-color-dark: #4e576a; 
+    --text-color-light: #ffffff; 
+    --background-light: #faf2dc; 
+    --background-dark: #4e576a; 
+    --card-background: #ffffff;
+    --border-color: #a8a8a6;   
+    --font-family-primary: 'Arial', sans-serif; 
+    --font-family-secondary: 'Helvetica', sans-serif;
+} */
+
+/* opção 02 */
+/* --- 1. Variáveis CSS (Paleta Minimalista) --- */
+:root {
+    --primary-color: #070707;   /* Preto quase puro, para elementos de destaque e botões principais */
+    --secondary-color: #252525; /* Cinza escuro, para textos secundários ou fundos de cards */
+    --accent-color: #444444;    /* Cinza médio, para detalhes ou bordas de cards */
+    --text-color-dark: #070707; /* Texto principal (preto) */
+    --text-color-light: #f0f0f0; /* Branco suave para textos em fundos escuros */
+    --background-light: #f0f0f0; /* Branco suave para fundos claros de seções */
+    --background-dark: #070707; /* Preto quase puro para cabeçalhos e rodapés */
+    --card-background: #ffffff; /* Branco puro para fundos de cards */
+    --border-color: #636363;    /* Cinza mais claro para bordas e linhas sutis */
+    --font-family-primary: 'Arial', sans-serif; /* Mantenha suas fontes preferidas */
+    --font-family-secondary: 'Helvetica', sans-serif;
+}
+
+/* --- 2. Reset Básico e Estilos Globais --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-primary);
+    line-height: 1.6;
+    color: var(--text-color-dark);
+    background-color: var(--background-light);
+    scroll-behavior: smooth; /* Rolagem suave para links âncora */
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style: none;
+}
+
+h1, h2, h3, h4 {
+    color: var(--text-color-dark);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+
+p {
+    margin-bottom: 1rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+section {
+    padding: 4rem 0; /* Espaçamento padrão para todas as seções */
+}
+
+/* --- 3. Cabeçalho Principal (Header) --- */
+#main-header {
+    background-color: var(--background-dark); /* Cor mais escura para o cabeçalho */
+    color: var(--text-color-light);
+    padding: 1rem 0;
+    position: fixed; /* MUDANÇA: 'fixed' para o efeito de esconder/mostrar */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: top 0.3s ease-in-out; /* Adiciona transição para o efeito de slide */
+}
+
+/* CLASSE PARA ESCONDER O HEADER */
+#main-header.header-hidden {
+    top: -80px; /* Ajuste este valor para a altura exata do seu header */
+}
+
+
+#main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Estilo para a imagem da logo */
+#main-header .logo-img {
+    height: 25px; /* Tamanho da logo reduzido */
+    width: auto;
+    display: block;
+}
+
+#main-header .logo {
+    display: flex;
+    align-items: center;
+}
+
+#main-header nav ul {
+    display: flex;
+}
+
+#main-header nav ul li {
+    margin-left: 1.5rem;
+}
+
+#main-header nav ul li a {
+    color: var(--text-color-light);
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+#main-header nav ul li a:hover {
+    color: var(--background-light); /* Cor de destaque ao passar o mouse */
+    text-decoration: none;
+}
+
+/* --- 4. Seção de Início (Hero) --- */
+#home {
+    background-color: var(--background-light);
+    text-align: center;
+    padding: 6rem 0; /* Mais padding para a seção inicial */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ajustado para 100vh, pois o header é fixo */
+    padding-top: 100px; /* Adiciona padding para que o conteúdo não fique sob o header */
+}
+
+#home .profile-pic {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    border: 5px solid var(--primary-color); /* Borda com a cor principal (preto) */
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+#home h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color); /* Título principal com a cor principal (preto) */
+}
+
+#home h2 {
+    font-size: 1.8rem;
+    color: var(--secondary-color); /* Subtítulo com a cor cinza escuro */
+    margin-bottom: 2rem;
+}
+
+#home .intro-summary {
+    max-width: 800px;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+    justify-content: center;
+    gap: 1.25rem; /* Espaçamento entre os botões */
+}
+
+/* Estilo para botões */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.8rem;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    white-space: nowrap; /* Evita que o texto do botão quebre */
+}
+
+.btn-primary {
+    background-color: var(--primary-color); /* Cor principal para botões primários */
+    color: var(--text-color-light);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color); /* Tom mais escuro para hover */
+    color: var(--text-color-light);
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color); /* Cor secundária para botões secundários */
+    color: var(--text-color-light);
+    border: 2px solid var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--accent-color); /* Tom mais escuro para hover */
+    color: var(--text-color-light);
+    text-decoration: none;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    text-decoration: none;
+}
+
+/* Links Sociais (Ícones) */
+.social-links {
+    margin-top: 2.5rem;
+}
+
+.social-links a {
+    color: var(--text-color-dark);
+    margin: 0 0.8rem;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* --- 5. Seções de Conteúdo (Projetos, Pesquisa, Sobre Mim, Contato) --- */
+.projects-section, .research-section, .about-section, .contact-section {
+    background-color: var(--card-background); /* Fundo branco para seções */
+    padding: 5rem 0;
+    text-align: center;
+}
+
+/* Alterna cor de fundo para melhor visualização entre seções */
+.projects-section:nth-of-type(odd),
+.about-section:nth-of-type(odd) {
+    background-color: var(--background-light); /* Fundo branco suave para seções alternadas */
+}
+
+.projects-section h2, .research-section h2, .about-section h2, .contact-section h2 {
+    margin-bottom: 3rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.projects-section h2::after, .research-section h2::after, .about-section h2::after, .contact-section h2::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--primary-color); /* Linha de destaque com a cor principal */
+    border-radius: 5px;
+}
+
+
+/* --- 6. Projetos (Grid e Cards) --- */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Colunas flexíveis */
+    gap: 2.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.project-card {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.project-card h3 {
+    color: var(--primary-color); /* Título do card com a cor principal */
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.project-card img {
+    max-width: 100%;
+    height: 180px; /* Altura fixa para uniformidade */
+    object-fit: cover; /* Garante que a imagem cubra o espaço */
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.project-card .technologies {
+    font-size: 0.9rem;
+    color: var(--secondary-color); /* Texto de tecnologias com cinza escuro */
+    margin-bottom: 0.8rem;
+    font-weight: bold;
+}
+
+.project-card p {
+    font-size: 1rem;
+    flex-grow: 1; /* Faz o parágrafo ocupar o espaço restante */
+    margin-bottom: 1.5rem;
+}
+
+.project-links {
+    margin-top: auto; /* Empurra os links para baixo do card */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: flex-start;
+}
+
+.btn-project {
+    background-color: var(--primary-color); /* Cor principal para botões de projeto */
+    color: var(--text-color-light);
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-project:hover {
+    background-color: var(--secondary-color); /* Tom mais escuro para hover */
+    text-decoration: none;
+}
+
+.btn-project-disabled {
+    background-color: var(--accent-color); /* Cor de destaque (cinza médio) para desabilitados */
+    color: var(--text-color-light);
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    opacity: 0.6;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+
+/* --- 7. Pesquisa (Research Section) --- */
+.research-items {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.research-item {
+    background-color: var(--card-background);
+    border-left: 5px solid var(--primary-color); /* Borda lateral com a cor principal */
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border-radius: 8px;
+}
+
+.research-item h3 {
+    color: var(--primary-color); /* Título do item de pesquisa com a cor principal */
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.research-item .details {
+    font-size: 0.9rem;
+    color: var(--secondary-color); /* Detalhes com cinza escuro */
+    margin-bottom: 0.8rem;
+}
+
+.research-item p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.btn-research {
+    background-color: var(--secondary-color); /* Cor secundária para botões de pesquisa */
+    color: var(--text-color-light);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-research:hover {
+    background-color: var(--primary-color); /* Cor principal para hover */
+    text-decoration: none;
+}
+
+
+/* --- 8. Sobre Mim (About Section) --- */
+.about-section .container {
+    max-width: 900px;
+    text-align: left;
+}
+
+.about-section p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+}
+
+/* --- 9. Contato (Contact Section) --- */
+.contact-section .container {
+    max-width: 700px;
+}
+
+.contact-section p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.contact-section form {
+    background-color: var(--card-background); /* Continua branco puro */
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    margin-bottom: 3rem;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--text-color-dark);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    /* MELHORIA 2: Borda dos campos de input em uma cor mais visível e sutil */
+    border: 1px solid var(--accent-color); /* Usando o cinza médio para a borda */
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: var(--font-family-primary);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição para foco */
+}
+
+/* MELHORIA 3: Efeito de foco nos campos de input */
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color); /* Borda fica preta ao focar */
+    outline: none; /* Remove o outline padrão do navegador */
+    box-shadow: 0 0 0 3px rgba(7, 7, 7, 0.2); /* Sombra suave para o foco (com opacidade da primary-color) */
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.contact-section .btn-primary {
+    width: auto;
+    cursor: pointer;
+    /* MELHORIA 4: Botão de enviar mais robusto */
+    padding: 0.9rem 2.5rem; /* Aumenta o padding para um botão mais imponente */
+    font-size: 1.1rem;
+    border: none; /* Remover a borda para um look mais sólido */
+}
+
+
+.contact-info {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.contact-info p {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-color-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.contact-info p i {
+    color: var(--primary-color);
+    font-size: 1.2em;
+}
+
+.contact-info a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.contact-info a:hover {
+    text-decoration: underline;
+}
+
+/* --- 10. Rodapé (Footer) --- */
+#main-footer {
+    background-color: var(--background-dark); /* Fundo do rodapé com a cor mais escura */
+    color: var(--text-color-light);
+    text-align: center;
+    padding: 2rem 0;
+    font-size: 0.9rem;
+}
+
+#main-footer .social-links { /* Reutiliza o estilo de social-links */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+#main-footer .social-links a {
+    color: var(--text-color-light); /* Ícones brancos no rodapé */
+}
+
+#main-footer .social-links a:hover {
+    color: var(--background-light); /* Cor de destaque ao passar o mouse */
+}
+
+
+/* --- 11. Responsividade (Media Queries) --- */
+
+/* Estilos para o botão de menu (hambúrguer) */
+.menu-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color-light); /* Cor do ícone Material Icons */
+    font-size: 1.8rem; /* Tamanho do ícone */
+    cursor: pointer;
+    display: none; /* ESCONDE por padrão em telas grandes */
+    z-index: 1001; /* Garante que fique acima da nav ao abrir */
+}
+
+/* Estilo para links ativos (Scroll Spy) */
+#main-header nav ul li a.active {
+    color: var(--text-color-light); /* Cor do texto para links ativos no header */
+    border-bottom: 2px solid var(--text-color-light); /* Borda com a cor branca suave */
+    padding-bottom: 5px; /* Adiciona um pequeno espaçamento */
+}
+
+/* Telas menores que 768px (tablets e celulares) */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block; /* MOSTRA o botão em telas menores */
+    }
+
+    #main-header nav ul {
+        display: none; /* ESCONDE a nav por padrão */
+        flex-direction: column;
+        width: 100%;
+        background-color: var(--background-dark); /* Fundo do menu aberto */
+        position: absolute;
+        top: 100%; /* Abaixo do cabeçalho */
+        left: 0;
+        padding: 1rem 0;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    #main-header nav ul.active {
+        display: flex; /* MOSTRA a nav quando a classe 'active' está presente (ativada pelo JS) */
+    }
+
+    #main-header nav ul li {
+        margin: 0;
+        padding: 0.8rem 1.5rem;
+        text-align: center;
+    }
+
+    #main-header nav ul li a {
+        display: block;
+        width: 100%;
+        color: var(--text-color-light); /* Garante que os links sejam brancos no menu mobile */
+    }
+
+    /* Ajuste para o link ativo no menu mobile */
+    #main-header nav ul li a.active {
+        color: var(--background-light); /* Destaque com o branco suave */
+        border-bottom: none; /* Remove a borda para links em lista vertical */
+        background-color: var(--secondary-color); /* Um leve destaque no item ativo */
+        border-radius: 5px;
+    }
+
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 1.75rem; }
+
+    #home {
+        padding: 4rem 1rem;
+    }
+    #home h1 {
+        font-size: 2.8rem;
+    }
+    #home h2 {
+        font-size: 1.5rem;
+    }
+    .intro-summary {
+        font-size: 1rem;
+    }
+    .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .btn {
+        width: 100%; /* Botões ocupam a largura total em mobile */
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+    }
+
+    .project-card {
+        padding: 1.2rem;
+    }
+
+    .research-item {
+        padding: 1.2rem 1.5rem;
+    }
+
+    .about-section p, .contact-section p {
+        font-size: 1rem;
+    }
+
+    .contact-section form {
+        padding: 1.5rem;
+    }
+    .contact-info p {
+        flex-direction: column; /* Ícones e texto em coluna */
+        gap: 0.2rem;
+    }
+
+    /* Tamanho da logo em telas menores */
+    #main-header .logo-img {
+        height: 25px; /* Reduzido para telas menores */
+    }
+}
+
+/* Telas menores que 480px (celulares muito pequenos) */
+@media (max-width: 480px) {
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.4rem; }
+    #home .profile-pic {
+        width: 140px;
+        height: 140px;
+    }
+    #main-header .logo-img {
+        height: 18px; /* Ainda menor para telas muito pequenas */
+    }
+    .social-links a {
+        margin: 0 0.5rem;
+    }
+}
+
+/* --- ATENÇÃO: Borda de depuração - REMOVER NO PRODUTO FINAL --- */
+/*
+div {
+    border: 1px solid red !important;
+    padding: 5px !important;
+}
+div:empty {
+    background-color: rgba(255, 0, 0, 0.1) !important;
+}
+*/
