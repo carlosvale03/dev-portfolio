@@ -132,4 +132,50 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', highlightNavLink);
     window.addEventListener('resize', highlightNavLink); // Para reajustar em redimensionamento
     highlightNavLink(); // Chama uma vez para definir o estado inicial
+
+    // --- 4. Modal de Visualização de Imagem ---
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+    const captionText = document.getElementById('caption');
+    const closeModal = document.querySelector('.close-modal');
+
+    // Seleciona os wrappers das imagens para evitar que o overlay (::before) bloqueie o clique
+    const projectWrappers = document.querySelectorAll('.project-image-wrapper');
+
+    projectWrappers.forEach(wrapper => {
+        wrapper.style.cursor = 'pointer';
+        
+        wrapper.addEventListener('click', function() {
+            const img = this.querySelector('img');
+            if (img) {
+                modal.style.display = 'block';
+                modalImg.src = img.src;
+                captionText.innerHTML = img.alt;
+                document.body.style.overflow = 'hidden'; // Impede scroll ao abrir modal
+            }
+        });
+    });
+
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restaura scroll
+        });
+    }
+
+    // Fecha ao clicar fora da imagem
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Fecha com a tecla ESC
+    window.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.style.display === 'block') {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
 });
