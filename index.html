@@ -6,6 +6,13 @@
     <title>Carlos Henrique do Vale e Silva | Portfólio</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
@@ -38,10 +45,11 @@
     </header>
 
     <section id="home" class="hero">
+        <div id="particles-js"></div>
         <div class="container">
             <img src="img/foto.jpg" alt="Carlos Henrique do Vale e Silva" class="profile-pic">
             <h1>Carlos Henrique do Vale e Silva</h1>
-            <h2>Desenvolvedor Full-stack & Pesquisador em Machine Learning</h2>
+            <h2 id="typewriter-text"></h2>
             <p class="intro-summary">
                 Desenvolvedor Full-stack e Pesquisador focado na intersecção entre sistemas web escaláveis e Inteligência Artificial. Com sólida experiência prática em tecnologias como Python, Next.js e ecossistemas de Machine Learning, transformo código e análise de dados em soluções robustas para desafios complexos. Movido pela inovação, meu objetivo é construir ferramentas que unam excelência técnica a um impacto real nos negócios e na sociedade.
             </p>
@@ -50,7 +58,7 @@
                 <a href="#pesquisa" class="btn btn-secondary">Ver Pesquisa</a>
                 <a href="curriculo/curriculo_carlos.pdf" target="_blank" class="btn btn-outline">Download Currículo</a> </div>
             <div class="social-links">
-                <a href="https://www.linkedin.com/in/carlos-henrique-do-vale-365092248" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>
+                <a href="https://www.linkedin.com/in/carlosvale03" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>
                 <a href="https://github.com/carlosvale03" target="_blank" aria-label="GitHub"><i class="fab fa-github fa-2x"></i></a>
             </div>
         </div>
@@ -59,127 +67,141 @@
     <section id="projetos" class="projects-section">
         <div class="container">
             <h2>Meus Projetos</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <h3>Valida SST</h3>
-                    <div class="project-image-wrapper"> <img src="img/projeto-valida-sst.png" alt="Imagem do Projeto Valida SST">
+            
+            <div class="projects-slider swiper">
+                <div class="swiper-wrapper">
+                    <!-- Projeto 1 -->
+                    <div class="project-card swiper-slide">
+                        <h3>Valida SST</h3>
+                        <div class="project-image-wrapper">
+                            <img src="img/projeto-valida-sst.png" alt="Imagem do Projeto Valida SST">
+                        </div>
+                        <p class="technologies">Next.js 15, TypeScript, React 19, Tailwind CSS v4, Radix UI, Clerk, PostgreSQL, Drizzle ORM, AWS S3, Upstash Redis</p>
+                        <p>Plataforma moderna para gestão e validação de documentos de Saúde e Segurança do Trabalho (SST), desenvolvida no âmbito da <a href="https://overzone.dev/" target="_blank">Overzone</a>. Oferece funcionalidades de upload, dashboard, relatórios e assinatura digital segura com certificados A1.</p>
+                        <div class="project-links">
+                            <span class="btn-project-disabled">Código Privado</span>
+                            <span class="btn-project-disabled">Demo Privada</span>
+                        </div>
                     </div>
-                    <p class="technologies">Tecnologias: Next.js 15, TypeScript, React 19, Tailwind CSS v4, Radix UI, Clerk, PostgreSQL, Drizzle ORM, AWS S3, Upstash Redis</p>
-                    <p>Plataforma moderna para gestão e validação de documentos de Saúde e Segurança do Trabalho (SST), desenvolvida no âmbito da <a href="https://overzone.dev/" target="_blank">Overzone</a>. Oferece funcionalidades de upload, dashboard, relatórios e assinatura digital segura com certificados A1.</p>
-                    <div class="project-links">
-                        <span class="btn-project-disabled">Código Privado</span>
-                        <span class="btn-project-disabled">Demo Privada</span>
+
+                    <!-- Projeto 2 -->
+                    <div class="project-card swiper-slide">
+                        <h3>Fluxar</h3>
+                        <div class="project-image-wrapper">
+                            <img src="img/projeto-fluxar.png" alt="Imagem do Projeto Fluxar">
+                        </div>
+                        <p class="technologies">Next.js 15, Python (Django DRF), PostgreSQL, Docker, TypeScript, Tailwind CSS 4, Radix UI</p>
+                        <p>Ecossistema SaaS de gerenciamento de finanças pessoais. Oferece controle total sobre patrimônio, fluxo de caixa e metas financeiras, com suporte a múltiplos bancos, cartões de crédito e relatórios avançados.</p>
+                        <div class="project-links">
+                            <span class="btn-project-disabled">Código Privado</span>
+                            <span class="btn-project-disabled">Demo Privada</span>
+                        </div>
+                    </div>
+
+                    <!-- Projeto 3 -->
+                    <div class="project-card swiper-slide">
+                        <h3>ImoGOAT (Em Desenvolvimento)</h3>
+                        <div class="project-image-wrapper">
+                            <img src="img/projeto-imogoat.png" alt="Imagem do Projeto ImoGOAT">
+                        </div>
+                        <p class="technologies">Next.js, TypeScript, Tailwind CSS, Docker</p>
+                        <p>Plataforma focada em divulgação de vagas e aluguel de imóveis na região de Picos, oferecendo um serviço otimizado para conectar locatários e proprietários. Visando excelência e agilidade no mercado imobiliário.</p>
+                        <div class="project-links">
+                            <a href="https://github.com/imogoat/projeto-front-end.git" target="_blank" class="btn-project">Ver Código (GitHub)</a>
+                        </div>
+                    </div>
+
+                    <!-- Projeto 4 -->
+                    <div class="project-card swiper-slide">
+                        <h3>Sistema de Gestão de Conteúdo (Em Desenvolvimento)</h3>
+                        <div class="project-image-wrapper">
+                            <img src="img/projeto-gestao-noticias.png" alt="Imagem Ilustrativa de Gestão de Conteúdo">
+                        </div>
+                        <p class="technologies">Next.js, TypeScript, Tailwind CSS, Docker, Python (FastAPI, SQLAlchemy), PostgreSQL</p>
+                        <p>Desenvolvimento de um sistema web completo para gestão de conteúdo, utilizando arquitetura moderna com foco em performance e segurança. Projeto em andamento, sob acordo de confidencialidade.</p>
+                        <div class="project-links">
+                            <span class="btn-project-disabled">Código Privado</span>
+                            <span class="btn-project-disabled">Demo Privada</span>
+                        </div>
+                    </div>
+
+                    <!-- Projeto 5 -->
+                    <div class="project-card swiper-slide">
+                        <h3>Ingresso Express (Projeto Descontinuado)</h3>
+                        <div class="project-placeholder no-image">
+                            <i class="material-icons huge-placeholder-icon">laptop_mac</i>
+                            <h4>Estudo de Caso de Desenvolvimento Web</h4>
+                        </div>
+                        <p class="technologies">React, TypeScript, Tailwind CSS, Node.js, PostgreSQL</p>
+                        <p>Atuação como Desenvolvedor Front-end, contribuindo para a construção de interfaces e APIs com foco na experiência do usuário para uma aplicação de compra de cupons de desconto. Este projeto me proporcionou vivência em metodologias ágeis e boas práticas de código.</p>
+                        <div class="project-links">
+                            <span class="btn-project-disabled">Código Indisponível</span>
+                            <span class="btn-project-disabled">Demo Indisponível</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="project-card">
-                    <h3>Fluxar</h3>
-                    <div class="project-image-wrapper"> <img src="img/projeto-fluxar.png" alt="Imagem do Projeto Fluxar">
-                    </div>
-                    <p class="technologies">Tecnologias: Next.js 15, Python (Django DRF), PostgreSQL, Docker, TypeScript, Tailwind CSS 4, Radix UI</p>
-                    <p>Ecossistema SaaS de gerenciamento de finanças pessoais. Oferece controle total sobre patrimônio, fluxo de caixa e metas financeiras, com suporte a múltiplos bancos, cartões de crédito e relatórios avançados.</p>
-                    <div class="project-links">
-                        <span class="btn-project-disabled">Código Privado</span>
-                        <span class="btn-project-disabled">Demo Privada</span>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3>ImoGOAT (Em Desenvolvimento)</h3>
-                    <div class="project-image-wrapper"> <img src="img/projeto-imogoat.png" alt="Imagem do Projeto ImoGOAT">
-                    </div>
-                    <p class="technologies">Tecnologias: Next.js, TypeScript, Tailwind CSS, Docker</p>
-                    <p>Plataforma focada em divulgação de vagas e aluguel de imóveis na região de Picos, oferecendo um serviço otimizado para conectar locatários e proprietários. Visando excelência e agilidade no mercado imobiliário.</p>
-                    <div class="project-links">
-                        <a href="https://github.com/imogoat/projeto-front-end.git" target="_blank" class="btn-project">Ver Código (GitHub)</a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3>Sistema de Gestão de Conteúdo (Em Desenvolvimento)</h3>
-                    <div class="project-image-wrapper"> <img src="img/projeto-gestao-noticias.png" alt="Imagem Ilustrativa de Gestão de Conteúdo">
-                    </div>
-                    <p class="technologies">
-                        Tecnologias: Next.js, TypeScript, Tailwind CSS, Docker, Python (FastAPI, SQLAlchemy), PostgreSQL
-                    </p>
-                    <p>Desenvolvimento de um sistema web completo para gestão de conteúdo, utilizando arquitetura moderna com foco em performance e segurança. Projeto em andamento, sob acordo de confidencialidade.</p>
-                    <div class="project-links">
-                        <span class="btn-project-disabled">Código Privado</span>
-                        <span class="btn-project-disabled">Demo Privada</span>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3>Ingresso Express (Projeto Descontinuado)</h3>
-                    <div class="project-placeholder no-image">
-                        <i class="material-icons huge-placeholder-icon">laptop_mac</i> <h4>Estudo de Caso de Desenvolvimento Web</h4> </div>
-                    <p class="technologies">Tecnologias: React, TypeScript, Tailwind CSS, Node.js, PostgreSQL</p>
-                    <p>Atuação como Desenvolvedor Front-end, contribuindo para a construção de interfaces e APIs com foco na experiência do usuário para uma aplicação de compra de cupons de desconto. Este projeto me proporcionou vivência em metodologias ágeis e boas práticas de código.</p>
-                    <div class="project-links">
-                        <span class="btn-project-disabled">Código Indisponível</span>
-                        <span class="btn-project-disabled">Demo Indisponível</span>
-                    </div>
-                </div>
-
+                <!-- Swiper Controles -->
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
             </div>
         </div>
     </section>
 
     <section id="pesquisa" class="research-section">
-        <div class="container">
-            <h2>Pesquisa & Publicações</h2>
-            <div class="research-items">
-                <div class="research-item">
-                    <h3>Uso de Características Temporais e Semânticas para Detectar Eventos em Vídeos de Violência Urbana</h3>
-                    <p class="details">Autores: Saul Sousa da Rocha, <strong>Carlos Henrique do Vale e Silva</strong>, Mateus José da Silva, Jose Rodrigues Torres Neto, Carlos Henrique G. Ferreira, Glauber Dias Gonçalves</p>
-                    <p class="details">Publicado em: Proceedings of the 31st Brazilian Symposium on Multimedia and the Web (WebMedia), 2025.</p>
-                    <p>
-                        Este trabalho propõe heurísticas não supervisionadas para agrupar vídeos do YouTube sobre violência urbana, identificando eventos por meio de características temporais e Reconhecimento de Entidades Nomeadas (NER). A abordagem utiliza grafos de similaridade e atributos semânticos para superar modelos genéricos como o GPT-4 em cenários de agrupamento em larga escala, alcançando acurácia de até 0,90. É uma solução eficiente para aplicações de investigação, verificação de fatos e construção de arquivos históricos.
-                    </p>
-                    <p class="details">Tecnologias: Python, NLP (NER), Grafos de Similaridade, LLMs (GPT-4), Metadados Temporais.</p>
-                    <a href="https://doi.org/10.5753/webmedia.2025.16150" target="_blank" class="btn-research">Ver Artigo (DOI)</a>
+                   <div class="research-timeline">
+                <!-- item 2026 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2026</div>
+                    <div class="research-item">
+                        <h3>Socio-Technical Constraints and Cross-Platform Model Generalization: Text Classification in Brazilian Public Security</h3>
+                        <p class="details">Autores: Saul Sousa da Rocha, <strong>Carlos Henrique do Vale e Silva</strong>, Mateus José da Silva, Jose Rodrigues Torres Neto, Carlos H. G. Ferreira, Glauber Dias Gonçalves</p>
+                        <p class="details">Publicado em: Proceedings of the 18th ACM Web Science Conference (WebSci '26), 2026.</p>
+                        <p>
+                            Aceito na prestigiada <strong>ACM WebSci '26 (Alemanha)</strong> — conferência de altíssimo nível com taxa de aceitação de <strong>32,1%</strong> — este trabalho aborda um pilar central da computação moderna: como a arquitetura socio-técnica das plataformas influencia a eficácia da IA em contextos reais. Focando na segurança pública brasileira, revelamos como o design das interfaces molda a generalização de modelos entre X (Twitter) e YouTube, utilizando uma estratégia pioneira de anotação híbrida.
+                        </p>
+                        <p class="details">Tecnologias: Python, NLP (Stance Detection), BERTimbau, LLMs, Cross-Platform Analysis.</p>
+                        <a href="https://doi.org/10.1145/3795766.3799777" target="_blank" class="btn-research">Ver Artigo (DOI)</a>
+                    </div>
                 </div>
 
-                <div class="research-item">
-                    <h3>Monitorando a Opinião Pública sobre Operações Policiais no Brasil via Comentários de Vídeos no YouTube</h3>
-                    <p class="details">Autores: Saul Sousa da Rocha, <strong>Carlos Henrique do Vale e Silva</strong>, Carlos H. G. Ferreira, Glauber Dias Gonçalves, Jussara Marques de Almeida </p>
-                    <p class="details">Publicado em: Brazilian Workshop on Social Network Analysis and Mining (BraSNAM), Sociedade Brasileira de Computação (SBC), 2024. </p>
-                    <p>
-                        Neste trabalho, propomos um sistema para monitorar a percepção pública sobre operações policiais no Brasil utilizando comentários de usuários do YouTube. Exploramos atributos desses comentários e modelos de Processamento de Linguagem Natural (PLN) para inferir posicionamentos de aprovação, desaprovação e neutralidade. Nossos melhores modelos alcançaram acurácia e F1-macro superiores a 87% e demonstram boa capacidade de generalização para outras plataformas como Twitter/X. Os resultados revelam períodos com posicionamentos dominantes e a identificação de desaprovações em granularidade regional.
-                    </p>
-                    <p class="details">Tecnologias: Python, LLMs (GPT), BERT (Multilingual, BERTimbau), NLTK, Random Forest, SVM.</p>
-                    <a href="https://doi.org/10.5753/brasnam.2024.3101" target="_blank" class="btn-research">Ver Artigo (DOI)</a>
+                <!-- item 2025 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2025</div>
+                    <div class="research-item">
+                        <h3>Uso de Características Temporais e Semânticas para Detectar Eventos em Vídeos de Violência Urbana</h3>
+                        <p class="details">Autores: Saul Sousa da Rocha, <strong>Carlos Henrique do Vale e Silva</strong>, Mateus José da Silva, Jose Rodrigues Torres Neto, Carlos Henrique G. Ferreira, Glauber Dias Gonçalves</p>
+                        <p class="details">Publicado em: Proceedings of the 31st Brazilian Symposium on Multimedia and the Web (WebMedia), 2025.</p>
+                        <p>
+                            Este trabalho propõe heurísticas não supervisionadas para agrupar vídeos do YouTube sobre violência urbana, identificando eventos por meio de características temporais e Reconhecimento de Entidades Nomeadas (NER). A abordagem utiliza grafos de similaridade e atributos semânticos para superar modelos genéricos como o GPT-4 em cenários de agrupamento em larga escala, alcançando acurácia de até 0,90. É uma solução eficiente para aplicações de investigação, verificação de fatos e construção de arquivos históricos.
+                        </p>
+                        <p class="details">Tecnologias: Python, NLP (NER), Grafos de Similaridade, LLMs (GPT-4), Metadados Temporais.</p>
+                        <a href="https://doi.org/10.5753/webmedia.2025.16150" target="_blank" class="btn-research">Ver Artigo (DOI)</a>
+                    </div>
                 </div>
 
-                <div class="research-item">
-                    <h3>Exploring Named-Entity Recognition to Identify Urban Violence Events Using Youtube Videos</h3>
-                    <p class="details">Status: Em desenvolvimento e não submetido. Autores: Anonymous Author(s) </p> <p>
-                        Este trabalho propõe heurísticas para agrupar vídeos do YouTube sobre violência urbana, identificando eventos por meio de <strong>Reconhecimento de Entidades Nomeadas (NER)</strong> e séries temporais aplicadas a títulos, descrições e transcrições. A abordagem visa uma solução eficiente para extrair informações valiosas de dados textuais ruidosos, com foco na identificação precisa de eventos específicos.
-                    </p>
-                    <p class="details">Tecnologias: Python, SpaCy, Hugging Face (modelos BERT, Sentence-BERT), Vosk, Pandas, NumPy.</p>
-                </div>
-
-                <div class="research-item">
-                    <h3>A paridade do debate sobre operações policiais entre plataformas de mídias sociais: um estudo de caso com YouTube e Twitter</h3>
-                    <p class="details">Status: Artigo submetido ao WebMedia 2024 (não aceito). Autores: Anonymous Author(s)</p> <p>
-                        Este estudo propôs uma metodologia para analisar a percepção pública sobre operações policiais através de comentários no <strong>Twitter (atual X) e YouTube</strong>. Desenvolvemos e ajustamos modelos de classificação baseados em <strong>BERT</strong> para categorizar comentários em aprovação, desaprovação e neutralidade. Os experimentos incluíram otimização de hiperparâmetros para modelos como Random Forest (RF) e Support Vector Machine (SVM), além de testes multiplataforma com bootstrapping para garantir robustez. Os resultados demonstraram a eficácia do uso de Large Language Models (LLMs) na melhoria de modelos de detecção de posicionamento e a transferibilidade desses modelos entre plataformas.
-                    </p>
-                    <p class="details">Tecnologias: Python, BERT (Legal-BERTimbau-large), LLMs (GPT), NLTK, Random Forest, SVM, Google Colaboratory.</p>
+                <!-- item 2024 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2024</div>
+                    <div class="research-item">
+                        <h3>Monitorando a Opinião Pública sobre Operações Policiais no Brasil via Comentários de Vídeos no YouTube</h3>
+                        <p class="details">Autores: Saul Sousa da Rocha, <strong>Carlos Henrique do Vale e Silva</strong>, Carlos H. G. Ferreira, Glauber Dias Gonçalves, Jussara Marques de Almeida </p>
+                        <p class="details">Publicado em: Brazilian Workshop on Social Network Analysis and Mining (BraSNAM), Sociedade Brasileira de Computação (SBC), 2024. </p>
+                        <p>
+                            Neste trabalho, propomos um sistema para monitorar a percepção pública sobre operações policiais no Brasil utilizando comentários de usuários do YouTube. Exploramos atributos desses comentários e modelos de Processamento de Linguagem Natural (PLN) para inferir posicionamentos de aprovação, desaprovação e neutralidade. Nossos melhores modelos alcançaram acurácia e F1-macro superiores a 87% e demonstram boa capacidade de generalização para outras plataformas como Twitter/X. Os resultados revelam períodos com posicionamentos dominantes e a identificação de desaprovações em granularidade regional.
+                        </p>
+                        <p class="details">Tecnologias: Python, LLMs (GPT), BERT (Multilingual, BERTimbau), NLTK, Random Forest, SVM.</p>
+                        <a href="https://doi.org/10.5753/brasnam.2024.3101" target="_blank" class="btn-research">Ver Artigo (DOI)</a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- <section id="sobre" class="about-section">
-        <div class="container">
-            <h2>Sobre Mim</h2>
-            <p>Sou Carlos Henrique do Vale e Silva, estudante de Bacharelado em Sistemas de Informação na UFPI, com previsão de conclusão em dezembro de 2025. Minha jornada na TI é impulsionada pela paixão em criar soluções inovadoras, seja no desenvolvimento de sistemas web ou na exploração do potencial da Inteligência Artificial.</p>
-            <p>Durante minha Iniciação Científica, atuei por mais de dois anos como bolsista (PIBIC/CNPq/UFPI e FAPEPI), desenvolvendo modelos de Machine Learning para análise de dados e contribuindo com publicações em eventos renomados da área. Essa experiência aprofundou minha capacidade de pesquisa, análise crítica e resolução de problemas.</p>
-            <p>Minha experiência como Desenvolvedor Front-end na Weber Technologies me proporcionou vivenciar um ambiente de desenvolvimento real, aplicando metodologias ágeis e colaborando na construção de aplicações robustas com React, TypeScript e outras tecnologias modernas.</p>
-            <p>Além disso, minha monitoria na disciplina de Banco de Dados II demonstra meu domínio técnico e minha paixão por compartilhar conhecimento, auxiliando colegas na compreensão de conceitos complexos. Busco constantemente novos aprendizados e desafios que me permitam crescer e contribuir para o avanço tecnológico.</p>
-            
-        </div>
-    </section> -->
 
     <section id="sobre" class="about-section">
         <div class="container">
@@ -190,7 +212,7 @@
                 Tenho perfil proativo, adaptável e orientado a resultados, sempre em busca de desafios que gerem impacto e inovação.
             </p>
             <p>
-                Minha experiência prática envolve o desenvolvimento de aplicações escaláveis e soluções SaaS, como o <strong>Valida SST</strong> (Next.js 15, Drizzle ORM) e o <strong>Fluxar</strong> (Python/Django, Next.js, Docker). Essas vivências consolidaram meu domínio em arquiteturas modernas, segurança e metodologias ágeis. Paralelamente, dedico-me à <strong>Iniciação Científica</strong> em <strong>Aprendizagem de Máquina e PLN</strong>, com pesquisas em reconhecimento de entidades e análise de dados ruidosos, resultando em publicações em congressos como <strong>BraSNAM (2024)</strong> e <strong>WebMedia (2025)</strong>.
+                Minha experiência prática envolve o desenvolvimento de aplicações escaláveis e soluções SaaS, como o <strong>Valida SST</strong> (Next.js 15, Drizzle ORM) e o <strong>Fluxar</strong> (Python/Django, Next.js, Docker). Essas vivências consolidaram meu domínio em arquiteturas modernas, segurança e metodologias ágeis. Paralelamente, dedico-me à <strong>Iniciação Científica</strong> em <strong>Aprendizagem de Máquina e PLN</strong>, com pesquisas em reconhecimento de entidades e análise de dados ruidosos, resultando em publicações em congressos como <strong>BraSNAM (2024)</strong>, <strong>WebMedia (2025)</strong> e <strong>WebSci (2026)</strong>.
             </p>
             <p>
                 Essa trajetória me equipou com forte capacidade de pesquisa, análise crítica e resolução de problemas 
@@ -199,8 +221,65 @@
                 Busco contribuir significativamente para projetos que aliem minha expertise em desenvolvimento com o 
                 potencial transformador da IA.
             </p>
+            <div class="terminal-window" data-tilt data-tilt-max="2">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="terminal-title"><span class="prompt-user">carlosvale@portfolio:</span> ~/dev-skills</div>
+                </div>
+                <div class="terminal-body" id="terminal-body">
+                    <div class="terminal-line">
+                        <span class="prompt"><span class="prompt-user">carlosvale@portfolio:</span>~$</span>
+                        <span class="command" id="type-skills-cmd">./list_skills.py --category ALL</span>
+                    </div>
+                    <div class="terminal-output" id="skills-output"></div>
+                    <div class="terminal-line hidden" id="terminal-prompt-line">
+                        <span class="prompt"><span class="prompt-user">carlosvale@portfolio:</span>~$</span>
+                        <span class="cursor-blink">_</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
+
+    <!-- Easter Egg: Mini-game de Snake (Cobrinha) -->
+    <div id="snake-overlay" class="snake-overlay">
+        <div class="snake-game-modal">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <span class="dot red" id="close-snake" title="Fechar (ESC)"></span>
+                </div>
+                <div class="terminal-title">SNAKE_GAME.EXE</div>
+            </div>
+            <div class="game-content">
+                <div class="game-stats">
+                    <span>Score: <span id="snake-score">0</span></span>
+                    <span>High Score: <span id="snake-high">0</span></span>
+                </div>
+                <canvas id="snakeCanvas" width="400" height="400"></canvas>
+                <div class="game-controls">
+                    <p>Use as <strong>Setas</strong> para mover | <strong>ESC</strong> para sair</p>
+                </div>
+                <!-- Controles para Mobile -->
+                <div class="game-controls-mobile">
+                    <div class="ctrl-row">
+                        <button class="ctrl-btn up" id="snake-up" aria-label="Cima"><i class="fas fa-chevron-up"></i></button>
+                    </div>
+                    <div class="ctrl-row">
+                        <button class="ctrl-btn left" id="snake-left" aria-label="Esquerda"><i class="fas fa-chevron-left"></i></button>
+                        <button class="ctrl-btn down" id="snake-down" aria-label="Baixo"><i class="fas fa-chevron-down"></i></button>
+                        <button class="ctrl-btn right" id="snake-right" aria-label="Direita"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="ctrl-row">
+                        <button class="ctrl-btn exit-game" id="snake-exit">SAIR DO JOGO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <section id="contato" class="contact-section">
         <div class="container">
@@ -227,19 +306,26 @@
             </form>
 
             <div id="form-feedback" style="margin-top: 20px; text-align: center; font-size: 1.1rem;"></div>
-
-            <div class="contact-info">
-                <p><i class="fas fa-envelope"></i> E-mail: carlosvale@ufpi.edu.br</p>
-                <p><i class="fas fa-phone"></i> Telefone: (89) 99473-1880</p>
-                <p><i class="fab fa-linkedin"></i> LinkedIn: <a href="https://www.linkedin.com/in/carlos-henrique-do-vale-365092248" target="_blank">Carlos Henrique do Vale</a></p>
-                <p><i class="fab fa-github"></i> GitHub: <a href="https://github.com/carlosvale03" target="_blank">carlosvale03</a></p>
-            </div>
         </div>
     </section>
 
     <footer id="main-footer">
-        <div class="container">
+        <div class="container footer-content">
+            <div class="footer-social-links">
+                <a href="mailto:carlosvale@ufpi.edu.br" title="Enviar E-mail" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://wa.me/5589994731880?text=Olá%20Carlos,%20vi%20seu%20portfólio%20e%20gostaria%20de%20entrar%20em%20contato." target="_blank" title="Chamar no WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.linkedin.com/in/carlosvale03" target="_blank" title="Visitar LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://github.com/carlosvale03" target="_blank" title="Ver GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
             </div>
+            <p>&copy; 2024 Carlos Henrique do Vale e Silva. Todos os direitos reservados.</p>
+            <div class="cursor-control">
+                <button id="toggle-cursor" class="btn-toggle-cursor" title="Alternar Cursor do Sistema">
+                    <span class="toggle-icon"><i class="fas fa-mouse-pointer"></i></span>
+                    <span class="toggle-text">Custom Cursor</span>
+                    <span class="toggle-switch"></span>
+                </button>
+            </div>
+        </div>
     </footer>
 
     <!-- Modal para Visualização de Imagem -->
@@ -249,6 +335,14 @@
         <div id="caption"></div>
     </div>
 
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- CDNs para Animações e Efeitos -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
