@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carlos Henrique do Vale e Silva | Portfólio</title>
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Preloads -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" as="style">
+    <link rel="preload" href="css/style.css?v=1.1" as="style">
+    <link rel="preload" href="js/script.js?v=1.1" as="script">
+
+    <link rel="stylesheet" href="css/style.css?v=1.1">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,20 +19,24 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
+    <link rel="icon" type="image/x-icon" href="img/favicon/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
     <link rel="manifest" href="img/favicon/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#00f2fe">
+    <meta name="theme-color" content="#050505">
 </head>
 <body>
 
     <header id="main-header">
         <div class="container">
             <a href="#home" class="logo">
-                <img src="img/logo-carlos-henrique.png" alt="Logo Carlos Henrique" class="logo-img">
+                <img src="img/logo-carlos-vale-ofc.png" alt="Logo Carlos Vale" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-name">CARLOS VALE</span>
+                    <span class="logo-tagline">CODE & INTELLIGENCE</span>
+                </div>
             </a>
             <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menu de navegação">
                 <i class="material-icons">menu</i> 
@@ -47,7 +56,9 @@
     <section id="home" class="hero">
         <div id="particles-js"></div>
         <div class="container">
-            <img src="img/foto.jpg" alt="Carlos Henrique do Vale e Silva" class="profile-pic">
+            <div class="profile-pic-container">
+                <img src="img/foto.jpg?v=1.1" alt="Carlos Henrique do Vale e Silva" class="profile-pic">
+            </div>
             <h1>Carlos Henrique do Vale e Silva</h1>
             <h2 id="typewriter-text"></h2>
             <p class="intro-summary">
@@ -70,42 +81,166 @@
             
             <div class="projects-slider swiper">
                 <div class="swiper-wrapper">
-                    <!-- Projeto 1 -->
+                    <!-- Projeto: Site PAAD -->
+                    <div class="project-card swiper-slide" id="project-paad">
+                        <h3>Site PAAD (Portal Oficial Laboratório PAAD)</h3>
+                        <div class="project-image-wrapper">
+                            <img src="img/projeto-site-paad-dark.png" alt="Imagem do Projeto Site PAAD" id="paad-img" loading="lazy">
+                            <div class="theme-switcher-project" title="Alternar Tema da Captura">
+                                <button class="theme-btn active" data-theme="dark"><i class="fas fa-moon"></i></button>
+                                <button class="theme-btn" data-theme="light"><i class="fas fa-sun"></i></button>
+                            </div>
+                        </div>
+                        <p class="technologies">Next.js 16, React 19.2, Tailwind CSS v4, Prisma, PostgreSQL, Node.js 20, Express 5.1, Docker, JWT, MFA/2FA</p>
+                        <p>MVP robusto do Laboratório PAAD. Atuação completa desde o <strong>Product Discovery</strong> (reuniões e requisitos) e <strong>UI/UX Design</strong> até o desenvolvimento Full-stack escalável com painel administrativo e segurança MFA.</p>
+                        
+                        <!-- Detalhes Longos (Ocultos inicialmente, usados pelo modal) -->
+                        <div class="project-description-full hidden">
+                            <h4>Visão Geral</h4>
+                            <p>O portal oficial do Laboratório PAAD atua como o núcleo de inteligência e disseminação científica, integrando três pilares essenciais: Divulgação Institucional, Gestão de Conteúdo e Painel Administrativo de alta segurança.</p>
+                            
+                            <h4>Product Discovery & UX Design</h4>
+                            <p>Liderei a fase de concepção do produto antes da implementação, conduzindo reuniões de alinhamento e elaborando o documento de requisitos oficial. Desenvolvi todo o <strong>Protótipo de Alta Fidelidade no Figma</strong>, garantindo uma experiência de usuário intuitiva e moderna antes de iniciar o desenvolvimento do MVP.</p>
+                            
+                            <h4>Destaques Técnicos</h4>
+                            <ul class="tech-list-full">
+                                <li><strong>Front-end:</strong> Next.js 16.0.3, React 19.2.0 e Tailwind CSS v4 para uma interface de ultra-alta performance.</li>
+                                <li><strong>Back-end:</strong> Node.js 20 com Express v5.1.0 em arquitetura escalável.</li>
+                                <li><strong>Persistência:</strong> PostgreSQL com Prisma ORM para gestão robusta de dados georreferenciados e científicos.</li>
+                                <li><strong>Segurança:</strong> Autenticação JWT e Segundo Fator (MFA/2FA) via otplib e qrcode integrado a apps de autenticação.</li>
+                                <li><strong>Infraestrutura:</strong> Ambiente totalmente containerizado com Docker e Docker Compose para deploy ágil.</li>
+                            </ul>
+                            
+                            <div class="project-links-data hidden">
+                                <a href="https://www.figma.com/design/w0QxVuTvprO13JugtS0nrm/PAAD---site?node-id=26-915" target="_blank" class="btn btn-outline"><i class="fab fa-figma"></i> Ver Protótipo no Figma</a>
+                                <a href="https://github.com/carlosvale03/site-paad-production" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> Ver Código</a>
+                            </div>
+                        </div>
+
+                        <div class="project-links">
+                            <a href="https://github.com/LABPAAD/site_paad_frontend" target="_blank" class="btn-project"><i class="fab fa-github"></i> Front-end</a>
+                            <a href="https://github.com/LABPAAD/site_paad_backend" target="_blank" class="btn-project"><i class="fab fa-github"></i> Back-end</a>
+                        </div>
+                    </div>
+
+                    <!-- Projeto: Crimes Monitor -->
+                    <div class="project-card swiper-slide">
+                        <h3>Crimes Monitor (Crimes Stance)</h3>
+                        <div class="project-image-wrapper">
+                            <img src="img/projeto-crimes-monitor.png" alt="Imagem do Projeto Crimes Monitor" loading="lazy">
+                        </div>
+                        <p class="technologies">Angular 20+, BERT (NLP), Chart.js, PrimeNG, Tailwind CSS, GitHub Actions</p>
+                        <p>Plataforma avançada de inteligência em segurança pública que utiliza <strong>IA (BERT)</strong> para analisar o sentimento social e detectar operações policiais via comentários do YouTube. Baseado em pesquisas científicas publicadas na <strong>BraSNAM (2024)</strong>, <strong>WebMedia (2025)</strong> e <strong>ACM WebSci (2026)</strong>.</p>
+                        
+                        <!-- Detalhes Longos (Ocultos) -->
+                        <div class="project-description-full hidden">
+                            <h4>Extensão da Pesquisa Científica</h4>
+                            <p>O Crimes Monitor é a materialização de anos de pesquisa acadêmica, consolidando estudos sobre monitoramento de opinião pública e generalização de modelos de linguagem em cenários de segurança.</p>
+                            
+                            <h4>Módulos Principais</h4>
+                            <ul class="tech-list-full">
+                                <li><strong>Análise por Evento:</strong> Algoritmos de agrupamento detectam operações policiais ocultas em fluxos de dados massivos.</li>
+                                <li><strong>Termômetro de Sentimento:</strong> Modelos BERT ajustados para o português brasileiro classificam a aprovação social de operações específicas.</li>
+                                <li><strong>Visualização Temporal:</strong> Dashboards interativos mostram picos de atividade e tendências de opinião ao longo de semanas.</li>
+                                <li><strong>IA & Big Data:</strong> Implementação de heurísticas semânticas para detecção de violência urbana em tempo real.</li>
+                            </ul>
+                            
+                            <h4>Destaques de Engenharia</h4>
+                            <ul class="tech-list-full">
+                                <li><strong>Arquitetura:</strong> Angular 20+ com design system Premium baseado em PrimeNG e Tailwind.</li>
+                                <li><strong>Visualização:</strong> Gráficos complexos com Chart.js e suporte a zoom dinâmico e filtragem 2D.</li>
+                            </ul>
+                        </div>
+
+                        <div class="project-links">
+                            <a href="https://github.com/C-MonAnalys/crimes_monitor" target="_blank" class="btn-project"><i class="fab fa-github"></i> Código (GitHub)</a>
+                            <a href="https://c-monanalys.github.io/crimes_monitor/" target="_blank" class="btn-project"><i class="fas fa-external-link-alt"></i> Ver Demo (Live)</a>
+                        </div>
+                    </div>
+
+                    <!-- Projeto: Valida SST -->
                     <div class="project-card swiper-slide">
                         <h3>Valida SST</h3>
                         <div class="project-image-wrapper">
-                            <img src="img/projeto-valida-sst.png" alt="Imagem do Projeto Valida SST">
+                            <img src="img/projeto-valida-sst.png" alt="Imagem do Projeto Valida SST" loading="lazy">
                         </div>
                         <p class="technologies">Next.js 15, TypeScript, React 19, Tailwind CSS v4, Radix UI, Clerk, PostgreSQL, Drizzle ORM, AWS S3, Upstash Redis</p>
                         <p>Plataforma moderna para gestão e validação de documentos de Saúde e Segurança do Trabalho (SST), desenvolvida no âmbito da <a href="https://overzone.dev/" target="_blank">Overzone</a>. Oferece funcionalidades de upload, dashboard, relatórios e assinatura digital segura com certificados A1.</p>
+                        
+                        <!-- Detalhes Longos (Ocultos) -->
+                        <div class="project-description-full hidden">
+                            <h4>Gestão de Documentos SST</h4>
+                            <p>O Valida SST é uma solução robusta para empresas que precisam centralizar a conformidade legal de segurança do trabalho. O foco principal é a automação da validação de documentos técnicos obrigatórios.</p>
+                            
+                            <h4>Recursos Estratégicos</h4>
+                            <ul class="tech-list-full">
+                                <li><strong>Assinatura Digital:</strong> Integração segura para assinatura de documentos usando certificados A1.</li>
+                                <li><strong>Armazenamento:</strong> Gestão de arquivos em larga escala utilizando AWS S3 com políticas de acesso restrito.</li>
+                                <li><strong>Dashboard em Tempo Real:</strong> Visualização de métricas de conformidade e alertas de vencimento de documentos.</li>
+                                <li><strong>Performance:</strong> Cache inteligente com Upstash Redis para carregamento ultra-rápido de dados frequentes.</li>
+                            </ul>
+                            
+                            <h4>Segurança & Infra</h4>
+                            <p>Autenticação via Clerk, garantindo conformidade com LGPD e facilidade de login social, operando sob uma arquitetura de banco de dados robusta com Drizzle e PostgreSQL.</p>
+                        </div>
+
                         <div class="project-links">
                             <span class="btn-project-disabled">Código Privado</span>
                             <span class="btn-project-disabled">Demo Privada</span>
                         </div>
                     </div>
 
-                    <!-- Projeto 2 -->
+                    <!-- Projeto: Fluxar -->
                     <div class="project-card swiper-slide">
                         <h3>Fluxar</h3>
                         <div class="project-image-wrapper">
-                            <img src="img/projeto-fluxar.png" alt="Imagem do Projeto Fluxar">
+                            <img src="img/projeto-fluxar.png" alt="Imagem do Projeto Fluxar" loading="lazy">
                         </div>
                         <p class="technologies">Next.js 15, Python (Django DRF), PostgreSQL, Docker, TypeScript, Tailwind CSS 4, Radix UI</p>
                         <p>Ecossistema SaaS de gerenciamento de finanças pessoais. Oferece controle total sobre patrimônio, fluxo de caixa e metas financeiras, com suporte a múltiplos bancos, cartões de crédito e relatórios avançados.</p>
+                        
+                        <!-- Detalhes Longos (Ocultos) -->
+                        <div class="project-description-full hidden">
+                            <h4>Ecossistema Financeiro SaaS</h4>
+                            <p>O Fluxar foi projetado para ser o centro financeiro definitivo do usuário, permitindo o acompanhamento de patrimônio líquido em tempo real e a projeção de metas de longo prazo.</p>
+                            
+                            <h4>Destaques de Funcionalidade</h4>
+                            <ul class="tech-list-full">
+                                <li><strong>Multi-Contas:</strong> Gestão centralizada de múltiplos bancos e cartões de crédito.</li>
+                                <li><strong>Relatórios Avançados:</strong> Gráficos dinâmicos de faturamento, gastos por categoria e balanço mensal.</li>
+                                <li><strong>Metas & Sonhos:</strong> Módulo de planejamento para acompanhamento de progresso de aportes e objetivos financeiros.</li>
+                                <li><strong>Arquitetura Híbrida:</strong> Front-end em Next.js e Back-end robusto em Django Rest Framework para alta consistência de dados.</li>
+                            </ul>
+                        </div>
+
                         <div class="project-links">
                             <span class="btn-project-disabled">Código Privado</span>
                             <span class="btn-project-disabled">Demo Privada</span>
                         </div>
                     </div>
 
-                    <!-- Projeto 3 -->
+                    <!-- Projeto: ImoGOAT -->
                     <div class="project-card swiper-slide">
                         <h3>ImoGOAT (Em Desenvolvimento)</h3>
                         <div class="project-image-wrapper">
-                            <img src="img/projeto-imogoat.png" alt="Imagem do Projeto ImoGOAT">
+                            <img src="img/projeto-imogoat.png" alt="Imagem do Projeto ImoGOAT" loading="lazy">
                         </div>
                         <p class="technologies">Next.js, TypeScript, Tailwind CSS, Docker</p>
                         <p>Plataforma focada em divulgação de vagas e aluguel de imóveis na região de Picos, oferecendo um serviço otimizado para conectar locatários e proprietários. Visando excelência e agilidade no mercado imobiliário.</p>
+                        
+                        <!-- Detalhes Longos (Ocultos) -->
+                        <div class="project-description-full hidden">
+                            <h4>Proptech Regional</h4>
+                            <p>ImoGOAT é uma plataforma de tecnologia imobiliária (Proptech) voltada especificamente para o mercado de Picos e região, resolvendo lacunas de divulgação e transparência.</p>
+                            
+                            <h4>Inovações em Andamento</h4>
+                            <ul class="tech-list-full">
+                                <li><strong>Busca Geo-otimizada:</strong> Filtros avançados por localização, faixas de preço e características específicas de imóveis.</li>
+                                <li><strong>Gestão para Proprietários:</strong> Painel intuitivo para anúncio e controle de leads diretamente pela plataforma.</li>
+                                <li><strong>UX Premium:</strong> Interface focada em conversão e facilidade de navegação mobile-first.</li>
+                            </ul>
+                        </div>
+
                         <div class="project-links">
                             <a href="https://github.com/imogoat/projeto-front-end.git" target="_blank" class="btn-project">Ver Código (GitHub)</a>
                         </div>
@@ -207,19 +342,14 @@
         <div class="container">
             <h2>Sobre Mim</h2>
             <p>
-                Olá! Sou Carlos Henrique do Vale e Silva, com atuação em <strong>desenvolvimento web</strong> e 
-                <strong>Inteligência Artificial</strong>, especialmente em <strong>Machine Learning</strong>. 
-                Tenho perfil proativo, adaptável e orientado a resultados, sempre em busca de desafios que gerem impacto e inovação.
+                Olá! Sou Carlos Henrique do Vale e Silva, um desenvolvedor movido pela interseção entre <strong>Engenharia de Software de elite</strong> e 
+                <strong>Inteligência Artificial aplicada</strong>. Com um perfil analítico e orientado a resultados, busco transformar desafios complexos em soluções escaláveis e inteligentes.
             </p>
             <p>
-                Minha experiência prática envolve o desenvolvimento de aplicações escaláveis e soluções SaaS, como o <strong>Valida SST</strong> (Next.js 15, Drizzle ORM) e o <strong>Fluxar</strong> (Python/Django, Next.js, Docker). Essas vivências consolidaram meu domínio em arquiteturas modernas, segurança e metodologias ágeis. Paralelamente, dedico-me à <strong>Iniciação Científica</strong> em <strong>Aprendizagem de Máquina e PLN</strong>, com pesquisas em reconhecimento de entidades e análise de dados ruidosos, resultando em publicações em congressos como <strong>BraSNAM (2024)</strong>, <strong>WebMedia (2025)</strong> e <strong>WebSci (2026)</strong>.
+                Minha experiência prática é consolidada no desenvolvimento de ecossistemas SaaS como o <strong>Valida SST</strong> e o <strong>Fluxar</strong>, utilizando stacks modernas como Next.js, Python/Django e Docker. Paralelamente, atuo como <strong>Pesquisador em Aprendizagem de Máquina e PLN</strong>, com foco em extração de conhecimento e análise de dados ruidosos. Minha produção acadêmica conta com publicações em congressos renomados como <strong>BraSNAM (2024)</strong>, <strong>WebMedia (2025)</strong> e <strong>ACM WebSci (2026)</strong>.
             </p>
             <p>
-                Essa trajetória me equipou com forte capacidade de pesquisa, análise crítica e resolução de problemas 
-                complexos. Minha atuação como <strong>Monitor da disciplina de Banco de Dados II</strong> na UFPI 
-                também reflete meu domínio técnico em SQL e PostgreSQL, e minha paixão por compartilhar conhecimento. 
-                Busco contribuir significativamente para projetos que aliem minha expertise em desenvolvimento com o 
-                potencial transformador da IA.
+                Essa combinação entre rigor acadêmico e agilidade de mercado me equipou com uma capacidade única de resolução de problemas e visão crítica de arquitetura. Atuei também como <strong>Monitor de Banco de Dados II</strong> na UFPI, aprofundando meu domínio em PostgreSQL e otimização de dados. Meu objetivo é contribuir para projetos que exijam alta performance técnica e o uso estratégico de modelos de IA para gerar valor real.
             </p>
             <div class="terminal-window" data-tilt data-tilt-max="2">
                 <div class="terminal-header">
@@ -317,32 +447,45 @@
                 <a href="https://www.linkedin.com/in/carlosvale03" target="_blank" title="Visitar LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 <a href="https://github.com/carlosvale03" target="_blank" title="Ver GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
             </div>
-            <p>&copy; 2024 Carlos Henrique do Vale e Silva. Todos os direitos reservados.</p>
-            <div class="cursor-control">
-                <button id="toggle-cursor" class="btn-toggle-cursor" title="Alternar Cursor do Sistema">
-                    <span class="toggle-icon"><i class="fas fa-mouse-pointer"></i></span>
-                    <span class="toggle-text">Custom Cursor</span>
-                    <span class="toggle-switch"></span>
-                </button>
-            </div>
+            <p>&copy; 2026 Carlos Henrique do Vale e Silva. Todos os direitos reservados.</p>
         </div>
     </footer>
 
-    <!-- Modal para Visualização de Imagem -->
-    <div id="image-modal" class="modal">
-        <span class="close-modal">&times;</span>
-        <img class="modal-content" id="modal-img">
-        <div id="caption"></div>
+    <!-- Modal de Detalhes do Projeto (Premium) -->
+    <div id="project-modal" class="modal-premium">
+        <div class="modal-container scrollbar-hidden">
+            <span class="close-modal-btn"><i class="fas fa-times"></i></span>
+            <div class="modal-grid">
+                <!-- Lado Esquerdo: Imagem -->
+                <div class="modal-visual">
+                    <img src="" alt="" id="modal-project-img">
+                    <div class="modal-overlay-info">
+                        <span id="modal-project-badge">Live Project</span>
+                    </div>
+                </div>
+                <!-- Lado Direito: Texto -->
+                <div class="modal-info">
+                    <div class="modal-header">
+                        <h2 id="modal-project-title">Nome do Projeto</h2>
+                        <div class="modal-tech-badges" id="modal-project-tech"></div>
+                    </div>
+                    <div class="modal-body-content" id="modal-project-description">
+                        <!-- Conteúdo preenchido via JS -->
+                    </div>
+                    <div class="modal-footer" id="modal-project-links">
+                        <!-- Botões preenchidos via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
 
     <!-- CDNs para Animações e Efeitos -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/script.js?v=1.1"></script>
 </body>
 </html>
