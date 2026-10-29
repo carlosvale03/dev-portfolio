@@ -1,4 +1,4 @@
-import type { Content, Lang, Localized, Project, Publication, StackGroup, Ui } from "./types";
+import type { Content, ExperienceItem, Lang, Localized, Project, Publication, StackGroup, Ui } from "./types";
 
 // Bilingual source of truth. Every string that changes between languages is a
 // { pt, en } pair; `resolve` walks the tree and picks the active language.
@@ -28,8 +28,8 @@ const profile: Bi<Content["profile"]> = {
   name: "Carlos Vale",
   fullName: "Carlos Henrique do Vale e Silva",
   role: {
-    pt: "Engenheiro de software full-stack e pesquisador em IA",
-    en: "Full-stack software engineer and AI researcher",
+    pt: "Desenvolvedor Full-Stack e Pesquisador",
+    en: "Full-Stack Developer and Researcher",
   },
   location: "Picos, PI",
   status: { pt: "Disponível para vagas", en: "Open to work" },
@@ -42,7 +42,7 @@ const profile: Bi<Content["profile"]> = {
     en: "Portrait of Carlos Vale in a black shirt and blue tie",
   },
   stats: [
-    { value: "07", label: { pt: "projetos", en: "projects" } },
+    { value: "08", label: { pt: "projetos", en: "projects" } },
     { value: "03", label: { pt: "artigos publicados", en: "published papers" } },
     { value: "MSc", label: { pt: "em andamento, UFPI", en: "in progress, UFPI" } },
   ],
@@ -52,8 +52,8 @@ const profile: Bi<Content["profile"]> = {
       en: "I'm Carlos Henrique do Vale e Silva, a developer driven by the intersection of software engineering and applied artificial intelligence. I like taking complex problems and turning them into products that are simple to use.",
     },
     {
-      pt: "Na prática, construí ecossistemas SaaS como o Valida SST e o Fluxar com Next.js, Python/Django e Docker. Em paralelo, pesquiso aprendizado de máquina e PLN, com foco em extrair conhecimento de dados ruidosos de redes sociais.",
-      en: "In practice, I've built SaaS ecosystems like Valida SST and Fluxar with Next.js, Python/Django and Docker. In parallel, I research machine learning and NLP, focused on extracting knowledge from noisy social media data.",
+      pt: "Hoje desenvolvo o Gerencia SST na ISESMT, um SaaS multi-tenant de Saúde e Segurança do Trabalho em produção. Antes, construí o Valida SST e o Fluxar com Next.js, Python/Django e Docker. Em paralelo, pesquiso aprendizado de máquina e PLN, com foco em extrair conhecimento de dados ruidosos de redes sociais.",
+      en: "Today I build Gerencia SST at ISESMT, a multi-tenant Occupational Health and Safety SaaS in production. Before that, I built Valida SST and Fluxar with Next.js, Python/Django and Docker. In parallel, I research machine learning and NLP, focused on extracting knowledge from noisy social media data.",
     },
     {
       pt: "Essa combinação de rigor acadêmico com ritmo de mercado me deu uma visão crítica de arquitetura e muita vontade de resolver problemas que importam.",
@@ -68,8 +68,8 @@ const profile: Bi<Content["profile"]> = {
     },
     {
       when: { pt: "Atual", en: "Now" },
-      title: { pt: "Desenvolvedor full-stack", en: "Full-stack developer" },
-      place: "Overzone · Valida SST",
+      title: { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
+      place: "ISESMT · Gerencia SST",
     },
     {
       when: "2024 — 2026",
@@ -79,11 +79,6 @@ const profile: Bi<Content["profile"]> = {
     {
       when: { pt: "Graduação", en: "Undergrad" },
       title: { pt: "Bacharel em Sistemas de Informação", en: "BSc in Information Systems" },
-      place: "UFPI",
-    },
-    {
-      when: { pt: "Graduação", en: "Undergrad" },
-      title: { pt: "Monitor de Banco de Dados II", en: "Database Systems II teaching assistant" },
       place: "UFPI",
     },
   ],
@@ -101,7 +96,158 @@ const profile: Bi<Content["profile"]> = {
   cv: "/curriculo/curriculo_carlos.pdf",
 };
 
+const experience: Bi<ExperienceItem>[] = [
+  {
+    id: "isesmt",
+    role: { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
+    company: "ISESMT",
+    period: { pt: "ago/2026 – atual", en: "Aug 2026 – present" },
+    current: true,
+    product: "Gerencia SST",
+    projectId: "gerencia-sst",
+    bullets: [
+      {
+        pt: "Desenvolvimento e manutenção do Gerencia SST, um SaaS multi-tenant de Saúde e Segurança do Trabalho em produção.",
+        en: "Development and maintenance of Gerencia SST, a multi-tenant Occupational Health and Safety SaaS in production.",
+      },
+      {
+        pt: "Ciclo completo das entregas: levantamento com o cliente, especificação, design técnico, implementação, testes, documentação (Confluence) e deploy.",
+        en: "End-to-end delivery: gathering requirements with the client, specification, technical design, implementation, testing, documentation (Confluence) and deploy.",
+      },
+      {
+        pt: "Infraestrutura e entrega: VPS Linux, Kubernetes (k3s), AWS e otimização da esteira de deploy.",
+        en: "Infrastructure and delivery: Linux VPS, Kubernetes (k3s), AWS and deploy pipeline optimization.",
+      },
+      {
+        pt: "Segurança: auditorias de segurança, isolamento de dados entre tenants e controle de acesso por permissão.",
+        en: "Security: security audits, data isolation between tenants and permission-based access control.",
+      },
+      {
+        pt: "Gestão das demandas no Jira, com estimativas e relatório semanal de entregas.",
+        en: "Managing work in Jira, with estimates and a weekly delivery report.",
+      },
+    ],
+  },
+  {
+    id: "overzone",
+    role: { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
+    company: "Overzone",
+    period: { pt: "ago/2025 – mar/2026", en: "Aug 2025 – Mar 2026" },
+    product: "Valida SST",
+    projectId: "valida-sst",
+    bullets: [
+      {
+        pt: "Desenvolvimento do Valida SST, plataforma SaaS para centralizar e validar documentos de Saúde e Segurança do Trabalho.",
+        en: "Development of Valida SST, a SaaS platform to centralize and validate occupational health and safety documents.",
+      },
+      {
+        pt: "Assinatura digital com certificado A1, armazenamento de arquivos na AWS S3 e cache com Upstash Redis.",
+        en: "Digital signatures with A1 certificates, file storage on AWS S3 and caching with Upstash Redis.",
+      },
+      {
+        pt: "Autenticação com Clerk e dados em PostgreSQL com Drizzle ORM.",
+        en: "Authentication with Clerk and data in PostgreSQL with Drizzle ORM.",
+      },
+    ],
+  },
+  {
+    id: "ingresso-express",
+    role: { pt: "Desenvolvedor Front-end", en: "Front-end Developer" },
+    company: "Ingresso Express",
+    period: { pt: "ago/2023 – dez/2023", en: "Aug 2023 – Dec 2023" },
+    projectId: "ingresso-express",
+    bullets: [
+      {
+        pt: "Construção de interfaces e APIs para uma aplicação de compra de cupons de desconto.",
+        en: "Built interfaces and APIs for a discount coupon app.",
+      },
+      {
+        pt: "Primeira vivência com métodos ágeis em equipe, com foco em experiência do usuário e boas práticas de código.",
+        en: "First hands-on experience with agile teamwork, focused on user experience and good coding practices.",
+      },
+    ],
+  },
+  {
+    id: "monitoria-bd2",
+    role: { pt: "Monitor de Banco de Dados II", en: "Database Systems II Teaching Assistant" },
+    company: "UFPI",
+    period: { pt: "2023 · 4 meses", en: "2023 · 4 months" },
+    bullets: [
+      {
+        pt: "Apoio aos alunos da disciplina, aprofundando PostgreSQL e otimização de dados.",
+        en: "Supported students in the course, deepening PostgreSQL and data optimization.",
+      },
+    ],
+  },
+];
+
 const projects: Bi<Project>[] = [
+  {
+    id: "gerencia-sst",
+    title: "Gerencia SST",
+    kicker: { pt: "SaaS multi-tenant de Saúde e Segurança do Trabalho", en: "Multi-tenant Occupational Health and Safety SaaS" },
+    year: "2026",
+    status: "live",
+    featured: true,
+    image: {
+      src: "/img/projetos/gerencia-sst.webp",
+      alt: {
+        pt: "Tela de Atendimentos da Medicina Ocupacional do Gerencia SST, com um tenant de demonstração",
+        en: "Gerencia SST occupational medicine appointments screen, with a demo tenant",
+      },
+      width: 1600,
+      height: 1396,
+    },
+    summary: {
+      pt: "Plataforma SaaS multi-tenant de gestão de Saúde e Segurança do Trabalho para consultorias, empresas e clínicas.",
+      en: "A multi-tenant SaaS platform for occupational health and safety management, built for consultancies, companies and clinics.",
+    },
+    overview: {
+      pt: "Plataforma SaaS multi-tenant de gestão de Saúde e Segurança do Trabalho para consultorias, empresas e clínicas. Reúne Medicina Ocupacional, CIPA, gestão de EPI, rede credenciada, financeiro, eSocial, PGR, LTCAT, assinatura digital com certificado A1 (ICP-Brasil), auditoria e geração de documentos e relatórios em PDF.",
+      en: "A multi-tenant SaaS platform for occupational health and safety management, built for consultancies, companies and clinics. It brings together occupational medicine, CIPA, PPE management, an accredited network, finance, eSocial, PGR, LTCAT, digital signatures with A1 certificates (ICP-Brasil), auditing and PDF document and report generation.",
+    },
+    highlights: [
+      {
+        label: { pt: "Medicina", en: "Medicine" },
+        text: { pt: "Atendimentos, sala de espera, agenda, ASO, PCMSO e exames.", en: "Appointments, waiting room, scheduling, ASO, PCMSO and exams." },
+      },
+      { label: "CIPA e EPI", text: { pt: "Eleição e gestão da CIPA e gestão de EPI.", en: "CIPA elections and management, plus PPE management." } },
+      { label: { pt: "Credenciadas", en: "Network" }, text: { pt: "Rede credenciada com portal da credenciada.", en: "Accredited network with a portal for partners." } },
+      { label: { pt: "Financeiro", en: "Finance" }, text: { pt: "Financeiro e faturamento.", en: "Finance and billing." } },
+      { label: { pt: "Conformidade", en: "Compliance" }, text: { pt: "eSocial, PGR e LTCAT.", en: "eSocial, PGR and LTCAT." } },
+      {
+        label: { pt: "Documentos", en: "Documents" },
+        text: {
+          pt: "Assinatura digital com certificado A1 (ICP-Brasil), auditoria e relatórios em PDF.",
+          en: "Digital signatures with A1 certificates (ICP-Brasil), auditing and PDF reports.",
+        },
+      },
+    ],
+    metrics: [
+      { value: { pt: "~3 mil", en: "~3k" }, label: { pt: "commits meus", en: "of my commits" } },
+      { value: "160+", label: { pt: "cards entregues", en: "cards delivered" } },
+      { value: "~250", label: { pt: "tabelas", en: "tables" } },
+      { value: "~50", label: { pt: "módulos", en: "modules" } },
+    ],
+    stack: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind v4",
+      "Radix UI",
+      "Prisma",
+      "PostgreSQL",
+      { pt: "pg-boss (filas)", en: "pg-boss (queues)" },
+      "Zod",
+      "Puppeteer",
+      "ExcelJS",
+      "node-forge",
+      "AWS S3",
+      "Docker",
+      "Kubernetes (k3s)",
+    ],
+    links: [],
+  },
   {
     id: "paad",
     title: "Site PAAD",
@@ -363,16 +509,62 @@ const publications: Bi<Publication>[] = [
 ];
 
 const stack: Bi<StackGroup>[] = [
-  { id: "web", label: "Web full-stack", items: ["Next.js", "React", "TypeScript", "Angular", "Tailwind", "Radix UI"] },
-  { id: "backend", label: { pt: "Back-end e infra", en: "Back-end and infra" }, items: ["Node.js", "Python", "Django", "FastAPI", "PostgreSQL", "Redis", "Prisma", "Drizzle", "Docker", "GitHub Actions"] },
+  { id: "web", label: "Web full-stack", items: ["Next.js", "React", "TypeScript", "Angular", "Tailwind", "Radix UI", "Zod"] },
+  {
+    id: "backend",
+    label: { pt: "Back-end e dados", en: "Back-end and data" },
+    items: [
+      "Node.js",
+      "Python",
+      "Django",
+      "FastAPI",
+      "PostgreSQL",
+      "Prisma",
+      "Drizzle",
+      "Redis",
+      { pt: "pg-boss (filas)", en: "pg-boss (queues)" },
+      "Puppeteer",
+      "ExcelJS",
+    ],
+  },
+  {
+    id: "infra",
+    label: { pt: "Infra e segurança", en: "Infra and security" },
+    items: [
+      "Docker",
+      "Kubernetes (k3s)",
+      "AWS",
+      "Linux / VPS",
+      "GitHub Actions",
+      "Multi-tenancy",
+      "MFA",
+      { pt: "Assinatura digital ICP-Brasil (A1)", en: "ICP-Brasil digital signature (A1)" },
+      { pt: "Integração com o eSocial", en: "eSocial integration" },
+    ],
+  },
   { id: "ai", label: { pt: "IA e pesquisa", en: "AI and research" }, items: ["NLP", "BERT", "Transformers", "LLMs", "scikit-learn", "Chart.js"] },
-  { id: "product", label: { pt: "Design e produto", en: "Design and product" }, items: ["Figma", "UI/UX", "Product discovery", { pt: "Requisitos", en: "Requirements" }, "MVP", "MFA"] },
+  {
+    id: "product",
+    label: { pt: "Produto e processo", en: "Product and process" },
+    items: [
+      "Figma",
+      "UI/UX",
+      "Product discovery",
+      { pt: "Requisitos", en: "Requirements" },
+      "MVP",
+      { pt: "Desenvolvimento orientado a especificação", en: "Spec-driven development" },
+      { pt: "Testes ponta a ponta", en: "End-to-end testing" },
+      "Jira",
+      "Confluence",
+    ],
+  },
 ];
 
 const ui: Bi<Ui> = {
   skip: { pt: "Pular para o conteúdo", en: "Skip to content" },
   nav: {
     about: { pt: "Sobre", en: "About" },
+    experience: { pt: "Experiência", en: "Experience" },
     projects: { pt: "Projetos", en: "Projects" },
     research: { pt: "Pesquisa", en: "Research" },
     stack: "Stack",
@@ -438,12 +630,24 @@ const ui: Bi<Ui> = {
     highlights: { pt: "Destaques", en: "Highlights" },
     featured: { pt: "Casos em destaque", en: "Featured cases" },
     others: { pt: "Outros projetos", en: "More projects" },
+    metrics: { pt: "Em números", en: "By the numbers" },
+    zoom: { pt: "Ampliar imagem", en: "Expand image" },
+    panHint: { pt: "Passe o mouse para rolar a tela", en: "Hover to scroll the screen" },
     columns: {
       project: { pt: "Projeto", en: "Project" },
       stack: "Stack",
       year: { pt: "Ano", en: "Year" },
       status: "Status",
     },
+  },
+  experience: {
+    title: { pt: "Experiência", en: "Experience" },
+    lead: {
+      pt: "Onde transformo especificação em produto: do SaaS em produção à sala de aula.",
+      en: "Where I turn specs into product: from a SaaS in production to the classroom.",
+    },
+    current: { pt: "Atual", en: "Current" },
+    viewProject: { pt: "Ver projeto", en: "See project" },
   },
   research: {
     title: { pt: "Pesquisa", en: "Research" },
@@ -645,6 +849,7 @@ export function getContent(lang: Lang): Content {
   return {
     lang,
     profile: resolve<Content["profile"]>(profile, lang),
+    experience: resolve<ExperienceItem[]>(experience, lang),
     projects: resolve<Project[]>(projects, lang),
     publications: resolve<Publication[]>(publications, lang),
     stack: resolve<StackGroup[]>(stack, lang),
