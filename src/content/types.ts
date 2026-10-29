@@ -29,6 +29,18 @@ export interface Project {
   highlights: { label: string; text: string }[];
   stack: string[];
   links: { kind: LinkKind; href: string }[];
+  metrics?: { value: string; label: string }[];
+}
+
+export interface ExperienceItem {
+  id: string;
+  role: string;
+  company: string;
+  period: string;
+  current?: boolean;
+  product?: string;
+  projectId?: string;
+  bullets: string[];
 }
 
 export interface Publication {
@@ -79,6 +91,7 @@ export interface Content {
     contacts: ContactLink[];
     cv: string;
   };
+  experience: ExperienceItem[];
   projects: Project[];
   publications: Publication[];
   stack: StackGroup[];
@@ -87,7 +100,7 @@ export interface Content {
 
 export interface Ui {
   skip: string;
-  nav: { about: string; projects: string; research: string; stack: string; contact: string };
+  nav: { about: string; experience: string; projects: string; research: string; stack: string; contact: string };
   menu: string;
   close: string;
   langSwitch: string;
@@ -116,8 +129,12 @@ export interface Ui {
     highlights: string;
     featured: string;
     others: string;
+    metrics: string;
+    zoom: string;
+    panHint: string;
     columns: { project: string; stack: string; year: string; status: string };
   };
+  experience: { title: string; lead: string; current: string; viewProject: string };
   research: { title: string; lead: string; authors: string; venue: string; tech: string; read: string; more: string; less: string };
   about: { title: string; timeline: string };
   stack: { title: string; lead: string };

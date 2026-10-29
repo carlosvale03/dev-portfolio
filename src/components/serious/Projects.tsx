@@ -65,6 +65,17 @@ function FeaturedCase({ project, index, content }: { project: Project; index: nu
         <p className="mt-2 text-muted">{project.kicker}</p>
         <p className="mt-5 text-lg leading-relaxed">{project.summary}</p>
 
+        {project.metrics && project.metrics.length > 0 && (
+          <dl className="mt-6 grid grid-cols-2 border-t-2 border-fg sm:grid-cols-4">
+            {project.metrics.map((m) => (
+              <div key={m.label} className="flex flex-col border-b border-line py-3 pr-3 sm:border-b-0 sm:border-r sm:pl-3 sm:first:pl-0 sm:last:border-r-0">
+                <dt className="order-2 mt-0.5 font-mono text-[11px] leading-tight text-muted">{m.label}</dt>
+                <dd className="font-tabular text-2xl font-extrabold tracking-[-0.04em]">{m.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+
         {project.highlights.length > 0 && (
           <dl className="mt-6 divide-y divide-line border-y border-line">
             {project.highlights.slice(0, 3).map((h) => (

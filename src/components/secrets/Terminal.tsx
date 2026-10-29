@@ -19,6 +19,7 @@ const COMMANDS = [
   "whoami",
   "sobre",
   "projetos",
+  "experiencia",
   "open",
   "pesquisa",
   "stack",
@@ -43,6 +44,7 @@ const COMMANDS = [
 const ALIASES: Record<string, string> = {
   about: "sobre",
   projects: "projetos",
+  experience: "experiencia",
   research: "pesquisa",
   contact: "contato",
   mode: "modo",
@@ -56,7 +58,7 @@ const ALIASES: Record<string, string> = {
 export default function Terminal() {
   const exp = useExperience();
   const { content, setTerminalOpen } = exp;
-  const { ui, profile, projects, publications, stack, lang } = content;
+  const { ui, profile, projects, publications, stack, experience, lang } = content;
   const pt = lang === "pt";
   const router = useRouter();
   const [lines, setLines] = useState<Line[]>(() => [
@@ -96,6 +98,7 @@ export default function Terminal() {
             `  whoami            ${t("quem é o Carlos", "who Carlos is")}`,
             `  sobre             ${t("um resumo sobre mim", "a short bio")}`,
             `  projetos | ls     ${t("lista os projetos", "list projects")}`,
+            `  experiencia       ${t("onde já trabalhei", "where I've worked")}`,
             `  open <id>         ${t("abre um projeto, ex.: open paad", "open a project, e.g. open paad")}`,
             `  pesquisa          ${t("artigos publicados", "published papers")}`,
             `  stack             ${t("ferramentas que uso", "tools I use")}`,
@@ -118,6 +121,11 @@ export default function Terminal() {
           })),
           { kind: "dim", text: t("use open <id> para ver detalhes", "use open <id> to see details") },
         ];
+      case "experiencia":
+        return experience.flatMap((job) => [
+          { kind: "accent" as const, text: `${job.period} · ${job.company}` },
+          { kind: "out" as const, text: `    ${job.role}${job.product ? ` · ${job.product}` : ""}` },
+        ]);
       case "open": {
         const p = projects.find((x) => x.id === arg || x.title.toLowerCase() === arg);
         if (!p) return [{ kind: "err", text: t(`projeto não encontrado: ${arg || "?"}`, `project not found: ${arg || "?"}`) }];
