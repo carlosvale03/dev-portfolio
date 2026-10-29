@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+/* Cut-in identity: paper, ink and a single red accent. The creative mode
+   flips the same semantic tokens to an ink background. */
+:root {
+  --paper: #f4f2ec;
+  --ink: #121212;
+  --red: #e23b2e;
+  --royal: #2b4bff;
+  --amber: #f3b14e;
+
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --surface: #eae7de;
+  --muted: #5f5b53;
+  --line: rgb(18 18 18 / 0.14);
+  --line-strong: rgb(18 18 18 / 0.32);
+  --accent: var(--red);
+  --accent-text: #b8281d;
+  --on-accent: var(--ink);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cut: cubic-bezier(0.77, 0, 0.18, 1);
+
+  color-scheme: light;
+}
+
+:root[data-mode="criativo"] {
+  --bg: #0e0e0e;
+  --fg: var(--paper);
+  --surface: #1a1a19;
+  --muted: #a6a196;
+  --line: rgb(244 242 236 / 0.14);
+  --line-strong: rgb(244 242 236 / 0.34);
+  --accent-text: #ff6a5e;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-royal: var(--royal);
+  --color-amber: var(--amber);
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --ease-out: var(--ease-out);
+  --ease-cut: var(--ease-cut);
+}
+
+/* Base rules live in a layer so Tailwind utilities can override them. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition:
+      background-color 0.4s var(--ease-out),
+      color 0.4s var(--ease-out);
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--ink);
+  }
+
+  /* Tailwind v4 resets buttons to the default cursor; every clickable gets a pointer. */
+  button:not(:disabled),
+  [role="button"],
+  [role="switch"],
+  summary,
+  label[for],
+  select {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+.font-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Kinetic marquee used by the creative mode. */
+@keyframes marquee-left {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+@keyframes marquee-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+.marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee-left var(--marquee-duration, 20s) linear infinite;
+}
+.marquee-track[data-direction="right"] {
+  animation-name: marquee-right;
+}
+[data-paused="true"] .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.98);
+  }
+}
+
+/* ROCKETMAN cheat: headings float like they got a jetpack. */
+@keyframes jetpack {
+  from {
+    transform: translate3d(0, 0, 0) rotate(-0.6deg);
+  }
+  to {
+    transform: translate3d(0, -14px, 0) rotate(0.6deg);
+  }
+}
+:root[data-rocket="true"] [data-float] {
+  animation: jetpack 1.6s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i, 0) * -0.3s);
+}
+
+/* IDDQD cheat: god mode turns the accent gold for a few seconds. */
+:root[data-god="true"] {
+  --accent: var(--amber);
+  --accent-text: #9a6a12;
+}
+:root[data-god="true"][data-mode="criativo"] {
+  --accent-text: var(--amber);
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  20% {
+    transform: translate3d(-6px, 2px, 0);
+  }
+  40% {
+    transform: translate3d(5px, -3px, 0);
+  }
+  60% {
+    transform: translate3d(-4px, 1px, 0);
+  }
+  80% {
+    transform: translate3d(3px, -1px, 0);
+  }
+}
+:root[data-shake="true"] body {
+  animation: shake 0.45s linear;
+}
+
+/* Animations are on by default; the footer toggle sets data-motion="reduced". */
+:root[data-motion="reduced"] {
+  scroll-behavior: auto;
+}
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
