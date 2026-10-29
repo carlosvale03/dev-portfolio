@@ -2,7 +2,7 @@
 
 Portfólio pessoal com **dois modos que mostram o mesmo conteúdo**:
 
-- **Modo sério ("Cut-in")**: editorial, com cara de artigo científico. Papel `#F4F2EC`, tinta `#121212` e um único acento vermelho `#E23B2E`. Tem nome revelado letra a letra, foto com tilt 3D e selo giratório, números contando, ticker da stack, a figura de partículas "Do dado ao produto" (dados → modelo → insight → código → produto), casos em destaque com mockup em parallax e um índice editorial dos outros projetos com preview seguindo o cursor.
+- **Modo sério ("Cut-in")**: editorial, com cara de artigo científico. Papel `#F4F2EC`, tinta `#121212` e um único acento vermelho `#E23B2E`. Tem nome revelado letra a letra, foto com tilt 3D e selo giratório, números contando, ticker da stack, a figura de partículas "Do dado ao produto" (dados → modelo → insight → código → produto), casos em destaque com mockup em parallax e um índice editorial dos outros projetos com preview seguindo o cursor, e a seção de Experiência.
 - **Modo criativo**: tipografia cinética, cortinas vermelhas nas viradas de seção e partículas no hero, com seletor de formas: CV, rede neural, bola, controle, esfera de 4 estrelas, shuriken e chapéu de palha. A stack vira "A escalação" (4-3-3 jogável, com card por jogador e pontapé inicial), e a seção "Fora do código" traz stickers chibi de Dragon Ball, Naruto e One Piece, games e futebol. O Goku na nuvem voadora cruza a tela de vez em quando.
 
 A troca acontece pelo switch "Modo criativo" no topo, com uma transição de cut-in de anime. `Esc` volta ao modo sério, e `?modo=criativo` abre direto no criativo.
