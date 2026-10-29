@@ -5,6 +5,7 @@ import { CountUp, Magnetic, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
 import { Container, Reveal, SectionHeader } from "./primitives";
 import { ContactForm } from "./ContactForm";
+import { ExperienceList } from "./Experience";
 import { ParticleFigure } from "./ParticleFigure";
 import { ProjectsShowcase } from "./Projects";
 import { Timeline } from "./Timeline";
@@ -20,6 +21,7 @@ export function SeriousMain({ content }: { content: Content }) {
       <StackTicker content={content} />
       <ParticleFigure ui={content.ui} />
       <Projects content={content} />
+      <Experience content={content} />
       <Research content={content} />
       <About content={content} />
       <Stack content={content} />
@@ -126,12 +128,24 @@ function Projects({ content }: { content: Content }) {
   );
 }
 
+function Experience({ content }: { content: Content }) {
+  const { ui } = content;
+  return (
+    <section id="experiencia" aria-label={ui.experience.title} className="py-16 md:py-24">
+      <Container>
+        <SectionHeader n="03" title={ui.experience.title} lead={ui.experience.lead} />
+        <ExperienceList content={content} />
+      </Container>
+    </section>
+  );
+}
+
 function Research({ content }: { content: Content }) {
   const { publications, ui, profile } = content;
   return (
     <section id="pesquisa" aria-label={ui.research.title} className="py-16 md:py-24">
       <Container>
-        <SectionHeader n="03" title={ui.research.title} lead={ui.research.lead} />
+        <SectionHeader n="04" title={ui.research.title} lead={ui.research.lead} />
         <ol className="mt-12 border-t border-line">
           {publications.map((pub, i) => (
             <li key={pub.id} className="group relative border-b border-line">
@@ -212,7 +226,7 @@ function About({ content }: { content: Content }) {
   return (
     <section id="sobre" aria-label={ui.about.title} className="py-16 md:py-24">
       <Container>
-        <SectionHeader n="04" title={ui.about.title} />
+        <SectionHeader n="05" title={ui.about.title} />
         <div className="mt-12 grid gap-12 md:grid-cols-12 md:gap-8">
           <div className="space-y-5 md:col-span-7 lg:col-start-3">
             {profile.about.map((para, i) => (
@@ -243,12 +257,16 @@ function Stack({ content }: { content: Content }) {
   return (
     <section id="stack" aria-label={ui.stack.title} className="py-16 md:py-24">
       <Container>
-        <SectionHeader n="05" title={ui.stack.title} lead={ui.stack.lead} />
-        <div className="mt-12 grid gap-px border border-fg bg-fg sm:grid-cols-2 lg:grid-cols-4">
+        <SectionHeader n="06" title={ui.stack.title} lead={ui.stack.lead} />
+        <div className="mt-12 grid gap-px border border-fg bg-fg sm:grid-cols-2 lg:grid-cols-5">
           {stack.map((group, i) => (
-            <Reveal key={group.id} delay={i * 0.06} className="group bg-bg p-6 transition-colors duration-300 hover:bg-surface">
+            <Reveal
+              key={group.id}
+              delay={i * 0.06}
+              className="group bg-bg p-6 transition-colors duration-300 last:sm:col-span-2 hover:bg-surface lg:last:col-span-1"
+            >
               <div className="flex items-baseline justify-between">
-                <p className="font-mono text-xs text-muted">05.{i + 1}</p>
+                <p className="font-mono text-xs text-muted">06.{i + 1}</p>
                 <p className="font-tabular font-mono text-xs text-muted">{String(group.items.length).padStart(2, "0")}</p>
               </div>
               <h3 className="mt-1 text-lg font-extrabold tracking-tight">{group.label}</h3>
@@ -274,7 +292,7 @@ function Contact({ content }: { content: Content }) {
     <section id="contato" aria-label={ui.nav.contact} className="py-16 md:py-24">
       <Container>
         <header className="border-t-2 border-fg pt-6 md:pt-8">
-          <p className="font-mono text-xs uppercase tracking-wider text-muted">§06</p>
+          <p className="font-mono text-xs uppercase tracking-wider text-muted">§07</p>
           <h2
             data-float
             className="mt-4 text-[clamp(3rem,10.5vw,9.5rem)] font-extrabold leading-[0.88] tracking-[-0.055em]"

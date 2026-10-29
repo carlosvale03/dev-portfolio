@@ -13,11 +13,12 @@ export function useNavItems() {
   const creative = mode === "criativo";
   return [
     { id: "projetos", n: "02", label: ui.nav.projects },
-    { id: "pesquisa", n: "03", label: ui.nav.research },
-    { id: "sobre", n: "04", label: ui.nav.about },
-    { id: "stack", n: "05", label: ui.nav.stack },
-    ...(creative ? [{ id: "hobbies", n: "06", label: "Hobbies" }] : []),
-    { id: "contato", n: creative ? "07" : "06", label: ui.nav.contact },
+    { id: "experiencia", n: "03", label: ui.nav.experience },
+    { id: "pesquisa", n: "04", label: ui.nav.research },
+    { id: "sobre", n: "05", label: ui.nav.about },
+    { id: "stack", n: "06", label: ui.nav.stack },
+    ...(creative ? [{ id: "hobbies", n: "07", label: "Hobbies" }] : []),
+    { id: "contato", n: creative ? "08" : "07", label: ui.nav.contact },
   ];
 }
 
@@ -36,7 +37,7 @@ export function TopBar() {
           </span>
         </a>
 
-        <nav aria-label="Principal" className="hidden items-center lg:flex">
+        <nav aria-label="Principal" className="hidden items-center xl:flex">
           {nav.map((item) => (
             <a
               key={item.id}
@@ -140,7 +141,7 @@ function MobileMenu() {
     <>
       <button
         type="button"
-        className="grid size-10 place-items-center lg:hidden"
+        className="grid size-10 place-items-center xl:hidden"
         aria-label={content.ui.menu}
         aria-haspopup="dialog"
         onClick={() => ref.current?.showModal()}

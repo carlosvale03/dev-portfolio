@@ -3,7 +3,7 @@
 import { m, useMotionValue, useScroll, useTransform, type MotionValue } from "motion/react";
 import { useRef, useState } from "react";
 import type { Content } from "@/content";
-import { ArrowUpRight, Download } from "../ui/icons";
+import { ArrowRight, ArrowUpRight, Download } from "../ui/icons";
 import { FloatingPreview, Magnetic } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
 import { ParticleField, useShapeCycle } from "../particles/ParticleField";
@@ -23,6 +23,7 @@ export default function CreativeMain({ content }: { content: Content }) {
     <div className="overflow-x-clip">
       <Hero content={content} />
       <Projects content={content} />
+      <ExperienceSection content={content} />
       <Research content={content} />
       <About content={content} />
       <StackSection content={content} />
@@ -176,11 +177,77 @@ function Projects({ content }: { content: Content }) {
   );
 }
 
+function ExperienceSection({ content }: { content: Content }) {
+  const { experience, ui } = content;
+  const { openProject } = useExperience();
+  return (
+    <section id="experiencia" aria-labelledby="c-experiencia" className="pt-20 md:pt-28">
+      <Curtain n="03" title={ui.experience.title} id="c-experiencia" />
+      <ol className="mx-auto max-w-[1320px] px-5 md:px-8">
+        {experience.map((job, i) => (
+          <m.li
+            key={job.id}
+            className="group grid gap-6 border-b border-line py-10 lg:grid-cols-12 lg:gap-10 lg:py-14"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            transition={{ duration: 0.8, ease: EASE, delay: i * 0.05 }}
+          >
+            <div className="lg:col-span-5">
+              <p className="flex flex-wrap items-center gap-3 font-mono text-xs text-accent-text">
+                <span>{job.period}</span>
+                {job.current && (
+                  <span className="inline-flex items-center gap-1.5 bg-accent px-2 py-0.5 uppercase tracking-wider text-ink">
+                    <span aria-hidden="true" className="size-1.5 animate-pulse rounded-full bg-ink" />
+                    {ui.experience.current}
+                  </span>
+                )}
+              </p>
+              <h3 className="mt-3 break-words text-[clamp(2.5rem,6vw,5.5rem)] font-black uppercase leading-[0.85] tracking-[-0.05em] text-transparent transition-colors duration-500 [-webkit-text-stroke:1.5px_var(--fg)] group-hover:text-fg">
+                {job.company}
+              </h3>
+            </div>
+            <div className="lg:col-span-7">
+              <p className="text-2xl font-bold tracking-[-0.02em] md:text-3xl">{job.role}</p>
+              {job.product && <p className="mt-1 font-mono text-xs uppercase tracking-wider text-muted">{job.product}</p>}
+              <ul className="mt-5 space-y-2.5">
+                {job.bullets.map((b, bi) => (
+                  <m.li
+                    key={b}
+                    className="flex gap-3 leading-relaxed text-muted"
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.15 + bi * 0.06 }}
+                  >
+                    <span aria-hidden="true" className="mt-[0.7em] h-0.5 w-4 shrink-0 bg-accent" />
+                    <span>{b}</span>
+                  </m.li>
+                ))}
+              </ul>
+              {job.projectId && (
+                <button
+                  type="button"
+                  onClick={() => openProject(job.projectId!)}
+                  className="group/b mt-6 inline-flex h-11 items-center gap-2 border border-line-strong px-4 text-sm font-semibold transition-colors hover:border-accent hover:bg-accent hover:text-ink"
+                >
+                  {ui.experience.viewProject}
+                  <ArrowRight size={16} className="transition-transform group-hover/b:translate-x-1" />
+                </button>
+              )}
+            </div>
+          </m.li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 function Research({ content }: { content: Content }) {
   const { publications, ui } = content;
   return (
     <section id="pesquisa" aria-labelledby="c-pesquisa" className="pt-20 md:pt-28">
-      <Curtain n="03" title={ui.research.title} id="c-pesquisa" />
+      <Curtain n="04" title={ui.research.title} id="c-pesquisa" />
       <div className="mx-auto max-w-[1320px] px-5 pt-10 md:px-8">
         <ol className="grid gap-px bg-line md:grid-cols-2 lg:grid-cols-3">
           {publications.map((pub, i) => (
@@ -221,7 +288,7 @@ function About({ content }: { content: Content }) {
 
   return (
     <section id="sobre" aria-labelledby="c-sobre" className="pt-20 md:pt-28">
-      <Curtain n="04" title={ui.about.title} id="c-sobre" />
+      <Curtain n="05" title={ui.about.title} id="c-sobre" />
       <div className="mx-auto max-w-[1320px] px-5 pt-12 md:px-8 md:pt-16">
         <p ref={ref} className="max-w-5xl text-[clamp(1.6rem,4.2vw,3.6rem)] font-bold leading-[1.08] tracking-[-0.03em]">
           {words.map((word, i) => (
@@ -271,7 +338,7 @@ function StackSection({ content }: { content: Content }) {
   const { ui } = content;
   return (
     <section id="stack" aria-labelledby="c-stack" className="pt-20 md:pt-28">
-      <Curtain n="05" title={ui.creative.formation.title} id="c-stack" />
+      <Curtain n="06" title={ui.creative.formation.title} id="c-stack" />
       <div className="mx-auto max-w-[1320px] px-5 pt-10 md:px-8">
         <p className="mb-8 max-w-xl text-lg text-muted">{ui.creative.formation.lead}</p>
         <Formation content={content} />
@@ -283,7 +350,7 @@ function StackSection({ content }: { content: Content }) {
 function HobbiesSection({ content }: { content: Content }) {
   return (
     <section id="hobbies" aria-labelledby="c-hobbies" className="pt-20 md:pt-28">
-      <Curtain n="06" title={content.ui.creative.hobbies.title} id="c-hobbies" />
+      <Curtain n="07" title={content.ui.creative.hobbies.title} id="c-hobbies" />
       <div className="mx-auto max-w-[1320px] px-5 pt-10 md:px-8">
         <Hobbies content={content} />
       </div>
@@ -297,7 +364,7 @@ function Contact({ content }: { content: Content }) {
 
   return (
     <section id="contato" aria-labelledby="c-contato" className="pb-10 pt-20 md:pt-28">
-      <Curtain n="07" title={ui.contact.title} id="c-contato" />
+      <Curtain n="08" title={ui.contact.title} id="c-contato" />
       <div className="mx-auto max-w-[1320px] px-5 pt-12 md:px-8">
         <p className="max-w-xl text-lg text-muted">{ui.contact.lead}</p>
         <Magnetic strength={0.12} className="mt-8 max-w-full">
