@@ -16,7 +16,19 @@ import { useMotionPref, type MotionPref } from "@/lib/external";
 
 export type Mode = "serio" | "criativo";
 export type GameId = "snake" | "pong" | "penalty";
-export type CheatId = "konami" | "hesoyam" | "aezakmi" | "rocketman" | "iddqd";
+export type CheatId =
+  | "konami"
+  | "hesoyam"
+  | "aezakmi"
+  | "rocketman"
+  | "iddqd"
+  | "lxgiwyl"
+  | "aiwprton"
+  | "cpktnwt"
+  | "turnuptheheat"
+  | "ninjatown";
+/** What a click does while a San Andreas cheat is armed. */
+export type Armed = "guns" | "tank" | "ninja" | null;
 export type ToastKind = "secret" | "cheat" | "info";
 
 export interface ToastItem {
@@ -28,8 +40,16 @@ export interface ToastItem {
 }
 
 export interface CheatFx {
-  id: "hesoyam" | "aezakmi";
+  id: "hesoyam" | "aezakmi" | "cpktnwt";
   key: number;
+}
+
+export interface GtaState {
+  /** The HUD stays up from the first San Andreas cheat until it is closed. */
+  hud: boolean;
+  armed: Armed;
+  wanted: number;
+  money: number;
 }
 
 type Cut = { to: Mode; phase: "cover" | "reveal" } | null;
@@ -65,6 +85,13 @@ interface ExperienceValue {
   cheat: CheatFx | null;
   runCheat: (id: CheatId) => void;
   rocket: boolean;
+  gta: GtaState;
+  setArmed: (armed: Armed) => void;
+  addWanted: (stars: number) => void;
+  clearWanted: () => void;
+  closeGta: () => void;
+  manualOpen: boolean;
+  setManualOpen: (open: boolean) => void;
   scoreGoal: () => void;
 }
 
@@ -89,6 +116,8 @@ export function ExperienceProvider({ content, children }: { content: Content; ch
   const [projectId, setProjectId] = useState<string | null>(null);
   const [cheat, setCheat] = useState<CheatFx | null>(null);
   const [rocket, setRocket] = useState(false);
+  const [gta, setGta] = useState<GtaState>({ hud: false, armed: null, wanted: 0, money: 0 });
+  const [manualOpen, setManualOpen] = useState(false);
   const goals = useRef(0);
   const toastId = useRef(0);
   const found = useSyncExternalStore(secretStore.subscribe, secretStore.get, secretStore.getServer);
@@ -136,6 +165,11 @@ export function ExperienceProvider({ content, children }: { content: Content; ch
   };
   const onCutRevealed = () => setCut(null);
 
+  const addWanted = (stars: number) => setGta((g) => ({ ...g, hud: true, wanted: Math.min(6, g.wanted + stars) }));
+  const clearWanted = () => setGta((g) => ({ ...g, wanted: 0 }));
+  const setArmed = (armed: Armed) => setGta((g) => ({ ...g, hud: g.hud || !!armed, armed }));
+  const closeGta = () => setGta((g) => ({ ...g, hud: false, armed: null, wanted: 0 }));
+
   const runCheat = (id: CheatId) => {
     const root = document.documentElement;
     if (id === "konami") {
@@ -145,27 +179,35 @@ export function ExperienceProvider({ content, children }: { content: Content; ch
     }
     const isNew = secretStore.add(id);
     const suffix = isNew ? ` · ${ui.secrets.unlocked.toLowerCase()} ${counter()}` : "";
+    const toast = (body: string, on = true) =>
+      pushToast({ kind: "cheat", title: on ? ui.secrets.cheatActivated : ui.secrets.cheatOff, body: on ? `${body}${suffix}` : body });
+
     if (id === "rocketman") {
       const next = !rocket;
       setRocket(next);
       root.dataset.rocket = String(next);
-      pushToast({
-        kind: "cheat",
-        title: ui.secrets.cheatActivated,
-        body: next ? `${ui.secrets.messages.rocketman}${suffix}` : "ROCKETMAN off",
-      });
+      toast(next ? ui.secrets.messages.rocketman! : "ROCKETMAN", next);
       return;
     }
-    if (id === "hesoyam" || id === "aezakmi") setCheat({ id, key: Date.now() });
-    if (id === "hesoyam") {
-      root.dataset.shake = "true";
-      window.setTimeout(() => delete root.dataset.shake, 500);
+    // San Andreas cheats that take over the click: typing one again turns it off.
+    const armedBy = { lxgiwyl: "guns", aiwprton: "tank", ninjatown: "ninja" } as const;
+    if (id === "lxgiwyl" || id === "aiwprton" || id === "ninjatown") {
+      const next = gta.armed === armedBy[id] ? null : armedBy[id];
+      setArmed(next);
+      toast(next ? ui.secrets.messages[id]! : id.toUpperCase(), !!next);
+      return;
     }
+    if (id === "hesoyam" || id === "aezakmi" || id === "cpktnwt") setCheat({ id, key: Date.now() });
+    if (id === "hesoyam") setGta((g) => ({ ...g, hud: true, money: g.money + 250000 }));
+    if (id === "aezakmi") clearWanted();
+    // Blowing everything up draws the police, like in the game.
+    if (id === "cpktnwt") addWanted(1);
+    if (id === "turnuptheheat") addWanted(2);
     if (id === "iddqd") {
       root.dataset.god = "true";
       window.setTimeout(() => delete root.dataset.god, 10000);
     }
-    pushToast({ kind: "cheat", title: ui.secrets.cheatActivated, body: `${ui.secrets.messages[id]}${suffix}` });
+    toast(ui.secrets.messages[id] ?? id.toUpperCase());
   };
 
   const scoreGoal = () => {
@@ -229,6 +271,16 @@ export function ExperienceProvider({ content, children }: { content: Content; ch
     cheat,
     runCheat,
     rocket,
+    gta,
+    setArmed,
+    addWanted,
+    clearWanted,
+    closeGta,
+    manualOpen,
+    setManualOpen: (open) => {
+      setManualOpen(open);
+      if (open) setTerminalOpen(false);
+    },
     scoreGoal,
   };
 

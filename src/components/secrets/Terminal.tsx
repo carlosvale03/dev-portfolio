@@ -32,6 +32,7 @@ const COMMANDS = [
   "penalti",
   "segredos",
   "cheats",
+  "manual",
   "github",
   "linkedin",
   "sudo",
@@ -50,6 +51,9 @@ const ALIASES: Record<string, string> = {
   mode: "modo",
   penalty: "penalti",
   secrets: "segredos",
+  codigos: "manual",
+  codes: "manual",
+  cheatsheet: "manual",
   ls: "projetos",
   quit: "exit",
   resume: "cv",
@@ -106,6 +110,7 @@ export default function Terminal() {
             `  modo <serio|criativo>, lang <pt|en>`,
             `  snake | pong | penalti   ${t("jogos clássicos", "classic games")}`,
             `  segredos | cheats ${t("sua caça aos segredos", "your secret hunt")}`,
+            `  manual            ${ui.secrets.manual.command}`,
             `  clear | exit`,
           ),
         ];
@@ -177,6 +182,9 @@ export default function Terminal() {
             text: `  ${exp.found.includes(id) ? "■" : "□"} ${exp.found.includes(id) ? ui.secrets.names[id] : "???"}`,
           })),
         ];
+      case "manual":
+        exp.setManualOpen(true);
+        return [];
       case "cheats":
         return out(
           t(

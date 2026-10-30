@@ -235,7 +235,9 @@ export function FloatingPreview({
  * clickable. Hidden on touch devices and when motion is reduced.
  */
 export function Cursor() {
-  const { reducedMotion: reduced } = useExperience();
+  const { reducedMotion: reduced, gta, terminalOpen, game, projectId, manualOpen } = useExperience();
+  // An armed San Andreas cheat draws its own sight instead.
+  const armed = !!gta.armed && !terminalOpen && !game && !projectId && !manualOpen;
   const [enabled, setEnabled] = useState(false);
   const [hover, setHover] = useState(false);
   const [down, setDown] = useState(false);
@@ -271,7 +273,7 @@ export function Cursor() {
     };
   }, [reduced, x, y]);
 
-  if (reduced || !enabled) return null;
+  if (reduced || !enabled || armed) return null;
   return (
     <>
       <m.div

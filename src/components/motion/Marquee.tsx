@@ -34,7 +34,7 @@ export function Marquee({
           <li key={r.text}>{r.text}</li>
         ))}
       </ul>
-      <div aria-hidden="true" className="overflow-hidden">
+      <div aria-hidden="true" data-gta-skip className="overflow-hidden">
         {rows.map((r, i) => (
           <div key={i} className="overflow-hidden whitespace-nowrap py-1">
             <div

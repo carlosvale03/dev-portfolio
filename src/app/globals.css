@@ -199,3 +199,166 @@
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
+
+/* San Andreas cheats ---------------------------------------------------- */
+/* While a cheat owns the click, the page swaps the cursor for its own sight. */
+:root[data-armed] body,
+:root[data-armed] body *:not([data-gta-ui], [data-gta-ui] *) {
+  cursor: none !important;
+  user-select: none;
+}
+
+.gta-outline {
+  text-shadow:
+    2px 0 #111,
+    -2px 0 #111,
+    0 2px #111,
+    0 -2px #111,
+    2px 2px #111,
+    -2px -2px #111,
+    2px -2px #111,
+    -2px 2px #111;
+}
+
+#gta-decals {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 70;
+  overflow: hidden;
+  /* Marks never paint over the sticky top bar. */
+  clip-path: inset(65px 0 0 0);
+}
+
+.gta-decal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+
+.gta-decal > span {
+  position: absolute;
+  display: block;
+  transform: translate(-50%, -50%) rotate(var(--r, 0deg));
+  animation: gta-decal 22s linear forwards;
+}
+
+.gta-hole > span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #050505 0 24%, #3a332c 32%, rgba(190, 180, 165, 0.55) 40%, rgba(120, 110, 100, 0.35) 52%, transparent 70%),
+    conic-gradient(from var(--r), transparent 0 8%, rgba(200, 190, 175, 0.4) 9% 10%, transparent 11% 33%, rgba(200, 190, 175, 0.4) 34% 35%, transparent 36% 62%, rgba(200, 190, 175, 0.4) 63% 64%, transparent 65%);
+  mask: radial-gradient(circle, #000 0 62%, transparent 72%);
+}
+
+.gta-scorch > span {
+  width: 170px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(20, 14, 10, 0.62) 0 18%, rgba(40, 26, 16, 0.38) 42%, transparent 70%);
+  animation-duration: 16s;
+}
+
+.gta-shuriken > span {
+  width: 30px;
+  height: 30px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-20 -20 40 40'%3E%3Cpath d='M0 -19 L5 -5 L19 0 L5 5 L0 19 L-5 5 L-19 0 L-5 -5 Z' fill='%23c9ccd1' stroke='%23111' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle r='4' fill='%23111'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.35));
+}
+
+@keyframes gta-decal {
+  0%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.gta-shell,
+.gta-flying-star {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 82;
+  pointer-events: none;
+}
+
+.gta-shell {
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbe0 0 30%, #ffb43a 55%, transparent 72%);
+  box-shadow: 0 0 18px 6px rgba(255, 170, 50, 0.6);
+}
+
+.gta-flying-star {
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-20 -20 40 40'%3E%3Cpath d='M0 -19 L5 -5 L19 0 L5 5 L0 19 L-5 5 L-19 0 L-5 -5 Z' fill='%23c9ccd1' stroke='%23111' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle r='4' fill='%23111'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+/* Police lights on the screen edges while wanted. */
+.gta-siren {
+  animation: gta-siren 0.9s steps(1, end) infinite;
+}
+
+@keyframes gta-siren {
+  0% {
+    box-shadow: inset var(--siren) 0 var(--siren) -8px rgba(226, 40, 40, 0.75), inset calc(var(--siren) * -1) 0 var(--siren) -8px rgba(40, 90, 230, 0.25);
+  }
+  50% {
+    box-shadow: inset var(--siren) 0 var(--siren) -8px rgba(226, 40, 40, 0.25), inset calc(var(--siren) * -1) 0 var(--siren) -8px rgba(40, 90, 230, 0.8);
+  }
+}
+
+/* Seen from the side, a spinning blade grows and shrinks through zero. */
+.gta-blade {
+  transform-box: view-box;
+  transform-origin: 190px 28px;
+  animation: gta-blade 0.16s linear infinite;
+}
+.gta-blade-b {
+  animation-delay: -0.04s;
+}
+
+@keyframes gta-blade {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-1);
+  }
+}
+
+.gta-rotor-tail {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gta-tail 0.09s linear infinite;
+}
+
+@keyframes gta-tail {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:root[data-motion="reduced"] .gta-siren,
+:root[data-motion="reduced"] .gta-blade,
+:root[data-motion="reduced"] .gta-rotor-tail {
+  animation: none;
+}
+
+/* With animations off, decals stay put instead of fading (the layer caps them). */
+:root[data-motion="reduced"] .gta-decal > span {
+  animation: none !important;
+}
