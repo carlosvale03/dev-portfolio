@@ -19,8 +19,11 @@ export const CHEAT_CODES: Record<string, CheatId> = {
   NINJATOWN: "ninjatown",
 };
 
+/** Typed words that open the hidden fighting game. */
+const GAME_CODES = ["SOBRECARGA", "OVERLOAD"];
+
 export function SecretKeys() {
-  const { mode, switchMode, terminalOpen, setTerminalOpen, game, projectId, runCheat } = useExperience();
+  const { mode, switchMode, terminalOpen, setTerminalOpen, game, projectId, runCheat, openGame } = useExperience();
 
   const onKey = useEffectEvent((e: KeyboardEvent, state: { konami: number; typed: string }) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -52,6 +55,11 @@ export function SecretKeys() {
 
     if (/^[a-z]$/.test(key)) {
       state.typed = (state.typed + key.toUpperCase()).slice(-16);
+      if (GAME_CODES.some((c) => state.typed.endsWith(c))) {
+        state.typed = "";
+        openGame("sobrecarga");
+        return;
+      }
       const code = Object.keys(CHEAT_CODES).find((c) => state.typed.endsWith(c));
       if (code) {
         state.typed = "";

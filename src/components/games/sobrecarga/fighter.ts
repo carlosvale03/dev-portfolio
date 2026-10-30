@@ -1,0 +1,839 @@
+import { CARRIES, CHAIN_K, CHAIN_P, SPECIAL_CHAIN, hitAt, moveOf, type Ease, type HitSpec, type MoveId } from "./moves";
+import { FLOOR, GRAVITY, Ragdoll } from "./ragdoll";
+import { ROSTER, type Archetype, type Head, type Kind } from "./roster";
+import { JOINTS, POSES, fk, footDrop, mixJoints, mixPose, place, type Joints, type Pose, type PoseId, type Vec } from "./skeleton";
+
+// One fighter, player or enemy: the same state machine runs both, driven by
+// an Intent that comes from the keyboard or from the AI.
+
+export type State = "idle" | "walk" | "run" | "crouch" | "air" | "attack" | "block" | "roll" | "hit" | "rag" | "getup" | "grab" | "held" | "dead";
+
+export interface Intent {
+  dx: number;
+  /** Arrow up / down held. */
+  up: boolean;
+  down: boolean;
+  block: boolean;
+  /** Pressed this step: up jumps, down dodges (or dives, in the air). */
+  jump: boolean;
+  dodge: boolean;
+  punch: boolean;
+  kick: boolean;
+  grab: boolean;
+  /** Q, W, E: 1, 2, 3. */
+  special: 0 | 1 | 2 | 3;
+  overload: boolean;
+}
+
+export const NO_INTENT: Intent = { dx: 0, up: false, down: false, block: false, jump: false, dodge: false, punch: false, kick: false, grab: false, special: 0, overload: false };
+
+export type Outcome = "none" | "hit" | "block" | "parry" | "armor" | "ko";
+
+/** What the fighter needs from the world around it. */
+export interface Host {
+  left: number;
+  right: number;
+  /** Real milliseconds since the game started. */
+  now: number;
+  foe(f: Fighter): Fighter | null;
+  orb(from: Fighter): void;
+  /** Spends slow-motion battery for a special; false when there is not enough. */
+  spend(f: Fighter, cost: number): boolean;
+  event(name: "land" | "jump" | "whoosh" | "whooshHeavy" | "roll" | "stomp" | "wall" | "charge" | "bolt" | "overload" | "special" | "meteor" | "tired", f: Fighter, at?: Vec): void;
+}
+
+const ease = (t: number) => 1 - (1 - t) * (1 - t);
+const EASES: Record<Ease, (t: number) => number> = {
+  out: ease,
+  lin: (t) => t,
+  io: (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2),
+  // Overshoots a touch past the pose and settles: the snap of a strike.
+  snap: (t) => 1 - Math.pow(1 - t, 4),
+};
+const WALK = 240;
+const RUN = 520;
+const JUMP = 900;
+const SPECIAL_COST = 0.34;
+const PARRY_WINDOW = 160;
+let nextId = 1;
+
+export class Fighter {
+  id = nextId++;
+  x: number;
+  y = FLOOR;
+  vx = 0;
+  vy = 0;
+  facing = 1;
+  hp: number;
+  maxHp: number;
+  scale: number;
+  color: string;
+  head: Head;
+  arch?: Archetype;
+  kind?: Kind;
+
+  state: State = "idle";
+  t = 0;
+  move: MoveId | null = null;
+  moveT = 0;
+  chain = 0;
+  moveHit = false;
+  hitSet = new Set<number>();
+  startPose: Pose = POSES.stance;
+  pose: Pose = POSES.stance;
+  spin = 0;
+  stun = 0;
+  invuln = 0;
+  flash = 0;
+  phase = 0;
+  jumps = 1;
+  blockPressedAt = -9999;
+  rollDir = 1;
+  juggle = 0;
+  holding: Fighter | null = null;
+  heldBy: Fighter | null = null;
+  holdT = 0;
+  knees = 0;
+  rag: Ragdoll | null = null;
+  ragFrom: Joints | null = null;
+  /** 0..1 dissolving into pixels after a KO. */
+  dissolve = 0;
+  joints: Joints;
+  trail: Joints[] = [];
+  /** Overload meter, 0..100: three charges of 33. */
+  meter = 0;
+  lastHit = -9999;
+  /** How long the current run has lasted, ms (running attacks need a run-up). */
+  runT = 0;
+  /** Secondary motion: the head and chest snap back when hit, then settle. */
+  jolt = 0;
+  /** Recent positions of the striking limb, drawn as a motion arc. */
+  smear: Vec[] = [];
+  /** Real ms of the last landing, for a quick squash. */
+  landAt = -9999;
+  /** In the middle of a slow-motion special (and anything it chains into). */
+  special = false;
+  /** The body a chained special is chasing (the super kick follows it up). */
+  homing: Fighter | null = null;
+  /** Pose before smoothing, so state changes blend instead of popping. */
+  private shown: Pose = POSES.stance;
+  /** AI bookkeeping. */
+  brain = { next: 0, plan: "idle" as string, chainLeft: 0, token: false, strafe: 1, wantMove: null as MoveId | null };
+
+  constructor(
+    public team: 0 | 1,
+    x: number,
+    kind?: Kind,
+  ) {
+    this.x = x;
+    if (kind) {
+      const a = ROSTER[kind];
+      this.arch = a;
+      this.kind = kind;
+      this.hp = this.maxHp = a.hp;
+      this.scale = a.scale;
+      this.color = a.color;
+      this.head = a.head;
+    } else {
+      this.hp = this.maxHp = 100;
+      this.scale = 1;
+      this.color = "#f4f2ec";
+      this.head = "round";
+    }
+    this.joints = place(fk(POSES.stance, this.scale), x, FLOOR - 76, 1);
+  }
+
+  get alive() {
+    return this.hp > 0;
+  }
+  get grounded() {
+    return this.y >= FLOOR - 0.5;
+  }
+  get busy() {
+    return this.state === "attack" || this.state === "hit" || this.state === "rag" || this.state === "getup" || this.state === "held" || this.state === "roll" || this.state === "dead";
+  }
+  /** Can be hit at all. */
+  get hittable() {
+    return this.invuln <= 0 && this.state !== "dead" && this.dissolve === 0;
+  }
+
+  private go(state: State) {
+    this.state = state;
+    this.t = 0;
+  }
+
+  startMove(id: MoveId, host: Host) {
+    const m = moveOf(id);
+    this.startPose = this.pose;
+    this.move = id;
+    this.moveT = 0;
+    this.moveHit = false;
+    this.hitSet.clear();
+    this.go("attack");
+    if (m.vel) {
+      this.vx = m.vel[0] * this.facing;
+      if (m.vel[1]) this.vy = m.vel[1];
+      if (m.vel[1] < 0) this.y = Math.min(this.y, FLOOR - 1);
+    }
+    if (m.invuln) this.invuln = m.invuln[1] - m.invuln[0];
+    if (m.float) this.vy = 0;
+    this.smear = [];
+    if (m.special) this.special = true;
+    else if (!SPECIAL_CHAIN.includes(id)) this.special = false;
+    if (id === "overload") host.event("charge", this);
+    if (m.special) host.event("special", this);
+  }
+
+  // --- Taking hits ------------------------------------------------------------
+
+  takeHit(from: Fighter, spec: HitSpec, at: Vec, host: Host): Outcome {
+    if (!this.hittable) return "none";
+    const dir = Math.sign(this.x - from.x) || from.facing;
+    const facingFoe = Math.sign(from.x - this.x) === this.facing;
+    if (this.state === "block" && facingFoe && !(spec.level === "low" && !this.crouchBlock())) {
+      if (host.now - this.blockPressedAt < PARRY_WINDOW) return "parry";
+      this.vx = dir * spec.kb[0] * 0.55;
+      this.stun = spec.stun * 0.55;
+      return "block";
+    }
+    this.special = false;
+    this.homing = null;
+    // Knees from the one holding you land without breaking the hold.
+    const kneed = this.heldBy === from && !spec.launch;
+    if (this.heldBy && !kneed) this.release();
+    if (this.holding) this.holding.release();
+
+    this.hp = Math.max(0, this.hp - spec.dmg * (this.team === 0 ? 0.7 : 1));
+    this.flash = 110;
+    this.lastHit = host.now;
+    this.meter = Math.min(100, this.meter + spec.dmg * 0.6);
+    if (kneed) {
+      this.jolt = Math.min(1.4, this.jolt + 1);
+      if (this.alive) return "hit";
+      this.release();
+      return this.ko(dir, spec);
+    }
+
+    const armored = this.state === "attack" && this.move && moveOf(this.move).armor && this.alive;
+    if (armored || (this.arch?.heavy && !spec.launch && this.alive && this.state !== "rag")) {
+      if (!armored) {
+        this.stun = spec.stun * 0.4;
+        this.vx = dir * spec.kb[0] * 0.3;
+        if (this.state !== "attack") {
+          this.go("hit");
+          this.pose = POSES.flinchHigh;
+        }
+      }
+      return this.alive ? "armor" : this.ko(dir, spec);
+    }
+    if (!this.alive) return this.ko(dir, spec);
+
+    const airborne = !this.grounded || this.state === "rag";
+    if (spec.launch || airborne || spec.knockdown) {
+      const decay = Math.max(0.35, 1 - this.juggle * 0.12);
+      const heavy = this.arch?.heavy ? 0.6 : 1;
+      const kb = { x: dir * Math.abs(spec.kb[0]) * heavy * (spec.kb[0] < 0 ? 1 : 1), y: spec.kb[1] * decay * heavy };
+      if (spec.kb[0] < 0) kb.x = -from.facing * Math.abs(spec.kb[0]) * heavy;
+      // Light hits in the air still keep the body up a little.
+      if (!spec.launch && airborne) kb.y = Math.min(kb.y, -380 * decay);
+      this.toRag(kb, spec);
+      this.juggle++;
+    } else {
+      this.go("hit");
+      this.move = null;
+      this.stun = spec.stun;
+      this.vx = dir * spec.kb[0];
+      this.startPose = this.pose;
+      this.pose = spec.level === "low" ? POSES.flinchLow : POSES.flinchHigh;
+      this.jolt = Math.min(1.4, this.jolt + (spec.heavy ? 1.2 : 0.8));
+    }
+    void at;
+    return "hit";
+  }
+
+  private crouchBlock() {
+    return this.pose === POSES.crouch;
+  }
+
+  private ko(dir: number, spec: HitSpec): Outcome {
+    const kb = { x: dir * Math.max(420, Math.abs(spec.kb[0]) * 1.3), y: Math.min(-520, spec.kb[1] * 1.2) };
+    this.toRag(kb, spec);
+    this.state = "rag";
+    return "ko";
+  }
+
+  toRag(kb: Vec, spec?: HitSpec) {
+    this.move = null;
+    if (this.rag) {
+      const v = this.rag.velocity();
+      this.rag.impulse({ x: kb.x - v.x * 0.6, y: kb.y - Math.min(0, v.y) * 0.6 });
+    } else {
+      this.rag = new Ragdoll(this.joints, { x: this.vx + kb.x, y: this.vy + kb.y }, this.scale);
+      this.rag.impulse({ x: 0, y: 0 });
+    }
+    if (spec?.wallBounce) this.rag.wallBounce = 1;
+    if (spec?.groundBounce) this.rag.groundBounce = true;
+    this.go("rag");
+  }
+
+  release() {
+    const other = this.holding ?? this.heldBy;
+    this.holding = null;
+    this.heldBy = null;
+    if (this.state === "grab" || this.state === "held") this.go("idle");
+    if (other) {
+      other.holding = null;
+      other.heldBy = null;
+      if (other.state === "grab" || other.state === "held") other.go("idle");
+    }
+  }
+
+  /** Dodge: a roll forward, or a backflip away. */
+  roll(dir: number, host: Host) {
+    if ((this.busy && this.state !== "block") || !this.grounded) return;
+    this.rollDir = Math.sign(dir) || -this.facing;
+    this.go("roll");
+    this.invuln = 320;
+    host.event("roll", this);
+  }
+
+  /** Thrown off balance by a parry. */
+  stagger(ms: number) {
+    this.move = null;
+    this.spin = 0;
+    this.stun = ms;
+    this.vx = -this.facing * 160;
+    this.startPose = this.pose;
+    this.pose = POSES.stagger;
+    this.go("hit");
+  }
+
+  grabbed(by: Fighter) {
+    this.release();
+    this.move = null;
+    this.heldBy = by;
+    by.holding = this;
+    by.holdT = 0;
+    by.knees = 0;
+    by.move = null;
+    by.state = "grab";
+    by.t = 0;
+    this.go("held");
+    this.vx = 0;
+  }
+
+  // --- Update -----------------------------------------------------------------
+
+  update(dtReal: number, scale: number, intent: Intent, host: Host) {
+    const dt = dtReal * scale;
+    const ms = dt * 1000;
+    this.t += ms;
+    this.invuln = Math.max(0, this.invuln - ms);
+    this.flash = Math.max(0, this.flash - dtReal * 1000);
+    this.stun = Math.max(0, this.stun - ms);
+
+    if (this.state === "rag" || (this.state === "dead" && this.rag)) {
+      this.updateRag(dtReal, scale, host);
+      // Still down; otherwise it just started getting up and poses below.
+      if (this.rag) {
+        this.joints = this.rag.joints();
+        return;
+      }
+    }
+
+    const foe = host.foe(this);
+    const face = () => {
+      if (this.team === 1 && foe) this.facing = Math.sign(foe.x - this.x) || this.facing;
+      else if (intent.dx) this.facing = Math.sign(intent.dx);
+    };
+
+    switch (this.state) {
+      case "idle":
+      case "walk":
+      case "run":
+      case "crouch": {
+        face();
+        if (intent.block) {
+          this.go("block");
+          this.blockPressedAt = host.now;
+          this.vx = 0;
+          break;
+        }
+        if (this.tryAttack(intent, host)) break;
+        if (intent.dodge) {
+          this.roll(intent.dx || -this.facing, host);
+          break;
+        }
+        if (intent.jump) {
+          this.vy = -JUMP * (this.arch?.heavy ? 0.82 : 1);
+          this.y = FLOOR - 1;
+          this.jumps = 1;
+          this.go("air");
+          host.event("jump", this);
+          break;
+        }
+        // The player always runs; enemies walk, and run when dx is beyond 1.
+        const fast = this.team === 0 || Math.abs(intent.dx) > 1;
+        const speed = this.team === 0 ? RUN : (this.arch?.walk ?? WALK) * (fast ? 1.6 : 1);
+        const target = intent.dx ? Math.sign(intent.dx) * speed : 0;
+        this.vx += (target - this.vx) * Math.min(1, dt * (target ? 12 : 16));
+        this.runT = intent.dx ? this.runT + ms : 0;
+        const next: State = intent.dx ? (fast ? "run" : "walk") : "idle";
+        if (next !== this.state) this.state = next;
+        break;
+      }
+      case "air": {
+        if (intent.dx) this.vx += (intent.dx * RUN * 0.8 - this.vx) * Math.min(1, dt * 3);
+        if (intent.jump && this.jumps > 0) {
+          this.jumps = 0;
+          this.vy = -JUMP * 0.86;
+          this.spin = 0;
+          this.t = 0;
+          host.event("jump", this);
+        }
+        this.tryAttack(intent, host);
+        break;
+      }
+      case "attack":
+        this.updateAttack(dt, ms, intent, host);
+        break;
+      case "block": {
+        this.vx *= Math.max(0, 1 - dt * 10);
+        if (intent.dodge && this.stun <= 0) {
+          this.state = "idle";
+          this.roll(intent.dx || -this.facing, host);
+          break;
+        }
+        if (!intent.block && this.stun <= 0) this.go("idle");
+        else if (this.stun <= 0 && this.tryAttack(intent, host)) break;
+        break;
+      }
+      case "roll": {
+        this.vx = this.rollDir * 620 * (1 - this.t / 400);
+        if (this.t > 400) {
+          this.go("idle");
+          face();
+        }
+        break;
+      }
+      case "hit": {
+        this.vx *= Math.max(0, 1 - dt * 7);
+        if (this.stun <= 0) this.go("idle");
+        break;
+      }
+      case "getup": {
+        this.vx = 0;
+        if (this.t > 520) {
+          this.ragFrom = null;
+          this.go("idle");
+          face();
+        }
+        break;
+      }
+      case "grab": {
+        const held = this.holding;
+        this.holdT += ms;
+        this.vx = 0;
+        if (!held) {
+          this.go("idle");
+          break;
+        }
+        held.x = this.x + this.facing * 42 * this.scale;
+        held.y = FLOOR;
+        held.facing = -this.facing;
+        if (intent.punch && this.knees < 3) {
+          this.knees++;
+          this.startMove("knee", host);
+          this.state = "attack";
+        } else if (intent.kick || intent.grab) {
+          const back = intent.dx && Math.sign(intent.dx) !== this.facing;
+          this.startMove(back ? "throwB" : "throwF", host);
+        } else if (this.holdT > 1600) this.release();
+        break;
+      }
+      case "held": {
+        this.vx = 0;
+        // Mashing breaks free sooner.
+        this.vy = 0;
+        const holder = this.heldBy;
+        if (holder && (intent.punch || intent.kick || intent.jump || intent.grab)) holder.holdT += 160;
+        if (!holder) {
+          this.go("idle");
+          break;
+        }
+        // Throws carry the body along an arc before letting go.
+        if (holder.state === "attack" && holder.move && CARRIES.includes(holder.move)) this.carry(holder);
+        this.computePose(dt, host);
+        return;
+      }
+    }
+
+    this.physics(dt, host);
+    this.computePose(dt, host);
+  }
+
+  private tryAttack(intent: Intent, host: Host): boolean {
+    let id: MoveId | null = null;
+    const air = this.state === "air" || (this.state === "attack" && !this.grounded);
+    // Running into an attack turns it into a running move.
+    const running = this.state === "run" && this.runT > 200 && Math.abs(this.vx) > 300;
+    if (intent.overload && this.meter >= 99) {
+      id = "overload";
+      this.meter -= 99;
+    } else if (intent.special) {
+      const sp: MoveId[][] = [[], ["rajada", "rajadaAr"], ["ciclone", "meteoro"], ["choque", "bolt"]];
+      if (host.spend(this, SPECIAL_COST)) id = sp[intent.special][air ? 1 : 0];
+      else {
+        host.event("tired", this);
+        const normal: (MoveId | null)[] = [null, air ? "airPunch" : this.chainNext(CHAIN_P), air ? "airKick" : this.chainNext(CHAIN_K), air ? null : "grab"];
+        id = normal[intent.special];
+      }
+    } else if (intent.dodge && air) id = "diveKick";
+    else if (intent.punch) {
+      if (air) id = "airPunch";
+      else if (intent.up) id = "uppercut";
+      else if (running) id = "dashPunch";
+      else id = this.chainNext(CHAIN_P);
+    } else if (intent.kick) {
+      if (air) id = intent.down ? "diveKick" : "airKick";
+      else if (intent.up) id = "highKick";
+      else if (running) id = "slideKick";
+      else if (intent.down) id = "sweep";
+      else id = this.chainNext(CHAIN_K);
+    } else if (intent.grab && !air) id = running ? "tackle" : "grab";
+    if (!id) return false;
+    // Enemies only use the moves they know.
+    if (this.arch && !this.arch.moves.includes(id) && id !== "airPunch") {
+      const fallback = this.arch.moves.find((m) => m === "jab" || m === "cross") ?? this.arch.moves[0];
+      id = fallback;
+    }
+    if (CHAIN_P.includes(id) || CHAIN_K.includes(id)) {
+      const idx = Math.max(CHAIN_P.indexOf(id), CHAIN_K.indexOf(id));
+      this.chain = idx + 1;
+    } else this.chain = 0;
+    this.runT = 0;
+    this.startMove(id, host);
+    return true;
+  }
+
+  private chainNext(list: MoveId[]): MoveId {
+    const inChain = this.state === "attack" && this.move && (CHAIN_P.includes(this.move) || CHAIN_K.includes(this.move));
+    const step = inChain ? Math.min(this.chain, list.length - 1) : 0;
+    return list[step];
+  }
+
+  private updateAttack(dt: number, ms: number, intent: Intent, host: Host) {
+    const id = this.move!;
+    const m = moveOf(id);
+    const before = this.moveT;
+    this.moveT += ms;
+    const [a, b] = m.active;
+    if (m.lunge && this.moveT >= a - 40 && this.moveT <= b) this.vx = this.facing * m.lunge;
+    else if (this.grounded && !m.air) this.vx *= Math.max(0, 1 - dt * 9);
+    else if (m.float) this.vx *= Math.max(0, 1 - dt * 6);
+    if (m.rehit) for (const t of m.rehit) if (before < t && this.moveT >= t) this.hitSet.clear();
+    if (m.spins) this.spin = Math.PI * 2 * m.spins * EASES.io(Math.min(1, this.moveT / (m.spinEnd ?? m.active[1])));
+    if (id === "superChute" && this.homing && this.moveT < a + 60) {
+      // Leap after the body that was thrown up, to meet it at the top.
+      const t = this.homing.joints.hip;
+      const tx = t.x - this.facing * 58 * this.scale;
+      const ty = t.y + 70 * this.scale;
+      this.vx = Math.max(-1100, Math.min(1100, (tx - this.x) * 9));
+      this.vy = this.moveT < 70 ? 0 : Math.max(-1500, Math.min(700, (ty - this.y) * 9));
+      this.y = Math.min(this.y, FLOOR - 1);
+    }
+    // The striking limb leaves an arc through the active frames.
+    const hit = hitAt(m, this.moveT);
+    if (hit && hit.joint !== "hip" && this.moveT >= a - 50 && this.moveT <= b + 40) {
+      this.smear.push({ ...this.joints[hit.joint] });
+      if (this.smear.length > 9) this.smear.shift();
+    } else if (this.smear.length) this.smear.shift();
+    if (before < a && this.moveT >= a) {
+      if (m.whoosh) host.event(m.whoosh === "heavy" ? "whooshHeavy" : "whoosh", this);
+      if (id === "throwOrb") host.orb(this);
+      if (id === "stomp") host.event("stomp", this);
+      if (id === "bolt") host.event("bolt", this);
+      if (id === "overload") host.event("overload", this);
+    }
+    // Cancels: chain strings, launchers into a jump, anything into a special.
+    if (m.cancel && this.moveT >= m.cancel) {
+      if ((intent.punch || intent.kick) && (CHAIN_P.includes(id) || CHAIN_K.includes(id)) && this.chain < 3) {
+        if (this.tryAttack(intent, host)) return;
+      }
+      if ((intent.special || intent.overload) && !m.special && this.tryAttack({ ...intent, punch: false, kick: false, grab: false }, host)) return;
+      if (intent.jump && this.moveHit && this.grounded) {
+        this.move = null;
+        this.vy = -JUMP;
+        this.y = FLOOR - 1;
+        this.jumps = 1;
+        this.go("air");
+        host.event("jump", this);
+        return;
+      }
+      if ((intent.punch || intent.kick) && !this.grounded && m.air) {
+        if (this.tryAttack(intent, host)) return;
+      }
+    }
+    if (m.untilLand) {
+      if (this.grounded && this.moveT > 120) this.endMove(host, true);
+      return;
+    }
+    if (this.moveT >= m.total) this.endMove(host, false);
+  }
+
+  private endMove(host: Host, landed: boolean) {
+    const id = this.move;
+    if (id === "lancar" && this.homing) {
+      this.release();
+      this.startMove("superChute", host);
+      return;
+    }
+    if (id === "superChute") this.homing = null;
+    this.move = null;
+    this.spin = 0;
+    if (landed) host.event("land", this);
+    if (this.holding && (id === "knee")) {
+      this.state = "grab";
+      return;
+    }
+    if (this.holding && id && CARRIES.includes(id)) this.release();
+    if (this.grounded) this.special = false;
+    this.go(this.grounded ? "idle" : "air");
+  }
+
+  private physics(dt: number, host: Host) {
+    const airborne = !this.grounded || this.vy < 0;
+    if (airborne) {
+      const m = this.move ? moveOf(this.move) : null;
+      const floating = this.state === "attack" && ((m?.float && this.moveT < m.active[1]) || (this.move === "superChute" && this.homing && this.moveT < m!.active[0] + 60));
+      // Air attacks hang a little after they connect.
+      const low = this.state === "attack" && m?.lowGravity && this.moveT < m.active[1] ? m.lowGravity : 1;
+      const hang = floating ? 0 : this.state === "attack" && m?.air && this.moveHit && !m.untilLand ? Math.min(0.45, low) : low;
+      // Floating specials hold still; the super kick keeps its chase velocity.
+      if (floating && m?.float) this.vy = 0;
+      this.vy += GRAVITY * dt * hang;
+    }
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+    if (this.y >= FLOOR) {
+      if (airborne && this.vy > 0) {
+        this.y = FLOOR;
+        this.vy = 0;
+        this.jumps = 1;
+        this.landAt = host.now;
+        if (this.state !== "attack") this.special = false;
+        if (this.state === "air") {
+          this.go("idle");
+          host.event("land", this);
+        }
+      }
+      this.y = FLOOR;
+    } else if (this.state !== "attack" && this.state !== "air" && this.state !== "held") this.state = "air";
+    const pad = 18 * this.scale;
+    this.x = Math.max(host.left + pad, Math.min(host.right - pad, this.x));
+  }
+
+  private updateRag(dtReal: number, scale: number, host: Host) {
+    const rag = this.rag!;
+    const wall = rag.step(dtReal, host.left, host.right, scale);
+    if (wall) host.event("wall", this, rag.p.hip);
+    this.x = rag.p.hip.x;
+    this.y = FLOOR;
+    if (rag.still > 0.35 && this.state === "rag") {
+      if (this.alive) {
+        this.ragFrom = rag.joints();
+        this.rag = null;
+        this.juggle = 0;
+        this.vx = 0;
+        this.vy = 0;
+        this.invuln = 600;
+        this.spin = 0;
+        const foe = host.foe(this);
+        if (foe) this.facing = Math.sign(foe.x - this.x) || this.facing;
+        this.go("getup");
+      } else this.go("dead");
+    }
+    if (this.state === "dead" && rag.still > 0.9) this.dissolve = Math.min(1, this.dissolve + dtReal * 0.9);
+  }
+
+  // --- Pose -------------------------------------------------------------------
+
+  private computePose(dt: number, host: Host) {
+    let p: Pose;
+    const T = this.t;
+    switch (this.state) {
+      case "idle":
+        // A light bounce on the balls of the feet.
+        p = mixPose(POSES.stance, POSES.stance2, (Math.sin(host.now / 170 + this.id) + 1) / 2);
+        break;
+      case "walk": {
+        this.phase += (dt * Math.abs(this.vx)) / 34;
+        const k = (Math.sin(this.phase) + 1) / 2;
+        p = mixPose(POSES.walk1, POSES.walk2, Math.sign(this.vx) === this.facing ? k : 1 - k);
+        break;
+      }
+      case "run":
+        this.phase += (dt * Math.abs(this.vx)) / 44;
+        p = runPose(this.phase, Math.min(1, Math.abs(this.vx) / RUN));
+        break;
+      case "crouch":
+        p = POSES.crouch;
+        break;
+      case "air":
+        p = this.vy < 0 ? POSES.jump : mixPose(POSES.jump, POSES.fall, Math.min(1, this.vy / 600));
+        if (this.jumps === 0) {
+          p = POSES.flip;
+          this.spin = Math.PI * 2 * ease(Math.min(1, T / 460));
+          if (T > 460) p = POSES.fall;
+        } else this.spin = 0;
+        break;
+      case "block":
+        p = POSES.block;
+        break;
+      case "roll": {
+        // Away from where it faces: a backflip; towards it: a forward roll.
+        const back = this.rollDir !== this.facing;
+        p = back ? POSES.flip : POSES.roll;
+        this.spin = (back ? -1 : 1) * Math.PI * 2 * EASES.io(Math.min(1, T / 400));
+        break;
+      }
+      case "hit":
+        p = mixPose(this.pose, POSES.stance, Math.max(0, 1 - this.stun / 260) * 0.2);
+        break;
+      case "getup":
+        p = mixPose(POSES.getup, POSES.stance, ease(Math.min(1, T / 520)));
+        break;
+      case "grab":
+        p = POSES.hold;
+        break;
+      case "held":
+        p = this.heldBy?.state === "attack" && this.heldBy.move && CARRIES.includes(this.heldBy.move) ? POSES.fall : POSES.heldHunch;
+        break;
+      case "attack":
+        p = this.movePose();
+        break;
+      default:
+        p = POSES.stance;
+    }
+    if (this.state !== "air" && this.state !== "roll" && this.state !== "attack" && this.state !== "held") this.spin = 0;
+    // Landing squash and the hit jolt ride on top of whatever pose is showing.
+    const squash = Math.max(0, 1 - (host.now - this.landAt) / 140);
+    if (squash > 0 && this.grounded && this.state !== "attack") p = mixPose(p, POSES.crouch, squash * 0.45);
+    if (this.jolt > 0.01) {
+      p = { ...p, lean: p.lean - this.jolt * 0.35, neck: p.neck + this.jolt * 0.5 };
+      this.jolt *= Math.exp(-dt * 7);
+    }
+    // Blend towards the new pose so state changes never pop. Attacks follow
+    // their keyframes closely; everything else eases in.
+    const rate = this.state === "attack" ? 60 : this.state === "hit" ? 30 : 20;
+    this.shown = mixPose(this.shown, p, 1 - Math.exp(-dt * rate));
+    p = this.shown;
+    this.pose = p;
+
+    let rel = fk(p, this.scale);
+    if (this.spin) {
+      const c = Math.cos(this.spin * this.facing);
+      const s = Math.sin(this.spin * this.facing);
+      const cy = -40 * this.scale;
+      for (const k of JOINTS) {
+        const j = rel[k];
+        const y = j.y - cy;
+        rel[k] = { x: j.x * c - y * s, y: j.x * s + y * c + cy };
+      }
+      void rel;
+    }
+    const grounded = this.grounded && this.state !== "air" && this.state !== "held";
+    const drop = grounded || this.state === "roll" ? footDrop(rel) : 76 * this.scale;
+    const m = this.state === "attack" && this.move ? moveOf(this.move) : null;
+    const turned = m?.turn && this.moveT >= m.turn[0] && this.moveT < m.turn[1];
+    let j = place(rel, this.x, this.y - drop, turned ? -this.facing : this.facing);
+    if (this.state === "getup" && this.ragFrom) j = mixJoints(this.ragFrom, j, ease(Math.min(1, T / 340)));
+    this.joints = j;
+    rel = j;
+  }
+
+  private movePose(): Pose {
+    const m = moveOf(this.move!);
+    let prev: Pose = this.startPose;
+    let t0 = 0;
+    for (const [id, t1, how] of m.frames) {
+      const target = POSES[id as PoseId];
+      if (this.moveT <= t1) {
+        const k = t1 > t0 ? (this.moveT - t0) / (t1 - t0) : 1;
+        return mixPose(prev, target, EASES[how ?? "out"](Math.max(0, Math.min(1, k))));
+      }
+      prev = target;
+      t0 = t1;
+    }
+    return prev;
+  }
+
+  /** The point a move hits from, in world space. */
+  hitPoint(): Vec | null {
+    if (this.state !== "attack" || !this.move) return null;
+    const m = moveOf(this.move);
+    const spec = hitAt(m, this.moveT);
+    if (!spec && !m.grab) return null;
+    if (this.moveT < m.active[0] || this.moveT > m.active[1]) return null;
+    return this.joints[spec?.joint ?? "handF"];
+  }
+
+  /** Puts a held body where the holder's throw has it right now. */
+  private carry(holder: Fighter) {
+    const m = moveOf(holder.move!);
+    const k = Math.min(1, holder.moveT / m.active[0]);
+    const f = holder.facing;
+    const s = holder.scale;
+    let x: number;
+    let lift: number;
+    let spin: number;
+    if (holder.move === "throwF") {
+      // Pulled in, hoisted onto the hip, heaved forward.
+      x = 42 - 14 * Math.sin(k * Math.PI) + 30 * k * k;
+      lift = 70 * Math.sin((k * Math.PI) / 2);
+      spin = -0.9 * k;
+    } else if (holder.move === "throwB") {
+      // Swung up and over the head.
+      const a = k * Math.PI;
+      x = 46 * Math.cos(a);
+      lift = 30 + 110 * Math.sin(a);
+      spin = Math.PI * k;
+    } else {
+      // Toss: dipped low, then pressed up overhead before it lets go.
+      const dip = Math.sin(Math.min(1, k / 0.45) * Math.PI) * 0.25;
+      const up = Math.max(0, (k - 0.35) / 0.65);
+      x = 42 - 26 * up;
+      lift = 20 - 30 * dip + 130 * up * up;
+      spin = -0.4 * up;
+    }
+    this.x = holder.x + f * x * s;
+    this.y = FLOOR - lift * s;
+    this.spin = spin;
+    this.facing = -f;
+  }
+
+  snapshot() {
+    this.trail.unshift(this.joints);
+    if (this.trail.length > (this.special ? 10 : 6)) this.trail.pop();
+  }
+}
+
+const D = Math.PI / 180;
+
+/** A running stride at phase `ph`; `k` scales the stride with speed. */
+function runPose(ph: number, k: number): Pose {
+  const sw = Math.sin(ph);
+  const lift = (a: number) => Math.pow((Math.cos(a) + 1) / 2, 1.4);
+  return {
+    lean: (14 + 12 * k) * D,
+    neck: -12 * D,
+    uaF: (30 - 58 * sw * k) * D,
+    faF: (95 + 10 * sw) * D,
+    uaB: (30 + 58 * sw * k) * D,
+    faB: (95 - 10 * sw) * D,
+    thF: (16 + 50 * sw * k) * D,
+    shF: -(18 + 100 * lift(ph) * k) * D,
+    thB: (16 - 50 * sw * k) * D,
+    shB: -(18 + 100 * lift(ph + Math.PI) * k) * D,
+  };
+}

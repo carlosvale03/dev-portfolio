@@ -230,5 +230,6 @@ export const SECRETS = [
   "cpktnwt",
   "turnuptheheat",
   "ninjatown",
+  "sobrecarga",
 ] as const;
 export type SecretId = (typeof SECRETS)[number];
