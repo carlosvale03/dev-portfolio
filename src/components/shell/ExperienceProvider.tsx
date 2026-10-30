@@ -15,7 +15,7 @@ import { secretStore } from "@/lib/secret-store";
 import { useMotionPref, type MotionPref } from "@/lib/external";
 
 export type Mode = "serio" | "criativo";
-export type GameId = "snake" | "pong" | "penalty";
+export type GameId = "snake" | "pong" | "penalty" | "sobrecarga";
 export type CheatId =
   | "konami"
   | "hesoyam"
@@ -218,7 +218,7 @@ export function ExperienceProvider({ content, children }: { content: Content; ch
   const openGame = (id: GameId) => {
     setTerminalOpen(false);
     setGame(id);
-    if (id === "snake" || id === "pong") unlock(id);
+    if (id === "snake" || id === "pong" || id === "sobrecarga") unlock(id);
   };
 
   // Deep link: /pt?modo=criativo opens straight into the creative mode, with the

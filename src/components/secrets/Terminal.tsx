@@ -30,6 +30,7 @@ const COMMANDS = [
   "snake",
   "pong",
   "penalti",
+  "sobrecarga",
   "segredos",
   "cheats",
   "manual",
@@ -50,6 +51,7 @@ const ALIASES: Record<string, string> = {
   contact: "contato",
   mode: "modo",
   penalty: "penalti",
+  overload: "sobrecarga",
   secrets: "segredos",
   codigos: "manual",
   codes: "manual",
@@ -109,6 +111,7 @@ export default function Terminal() {
             `  contato | cv      ${t("contatos e currículo", "contacts and résumé")}`,
             `  modo <serio|criativo>, lang <pt|en>`,
             `  snake | pong | penalti   ${t("jogos clássicos", "classic games")}`,
+            `  sobrecarga        ${t("luta contra os bugs", "fight the bugs")}`,
             `  segredos | cheats ${t("sua caça aos segredos", "your secret hunt")}`,
             `  manual            ${ui.secrets.manual.command}`,
             `  clear | exit`,
@@ -173,6 +176,9 @@ export default function Terminal() {
         return [];
       case "penalti":
         exp.openGame("penalty");
+        return [];
+      case "sobrecarga":
+        exp.openGame("sobrecarga");
         return [];
       case "segredos":
         return [

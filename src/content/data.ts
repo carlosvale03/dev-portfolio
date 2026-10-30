@@ -882,6 +882,7 @@ const ui: Bi<Ui> = {
       cpktnwt: "CPKTNWT",
       turnuptheheat: "TURNUPTHEHEAT",
       ninjatown: "NINJATOWN",
+      sobrecarga: { pt: "Jogou Sobrecarga", en: "Played Sobrecarga" },
     },
     messages: {
       konami: { pt: "Super Dev Soccer liberado. Hora dos pênaltis.", en: "Super Dev Soccer unlocked. Penalty time." },
@@ -923,6 +924,7 @@ const ui: Bi<Ui> = {
       cpktnwt: "CPKTNWT",
       turnuptheheat: "TURNUPTHEHEAT",
       ninjatown: "NINJATOWN",
+      sobrecarga: { pt: "Digite SOBRECARGA (ou OVERLOAD), ou no terminal: sobrecarga", en: "Type OVERLOAD (or SOBRECARGA), or in the terminal: sobrecarga" },
     },
     short: {
       terminal: { pt: "um terminal de verdade", en: "a real terminal" },
@@ -939,6 +941,7 @@ const ui: Bi<Ui> = {
       cpktnwt: { pt: "explode tudo", en: "blows everything up" },
       turnuptheheat: { pt: "+2 estrelas de procurado", en: "+2 wanted stars" },
       ninjatown: { pt: "shurikens e katana", en: "shurikens and katana" },
+      sobrecarga: { pt: "jogo de luta contra os bugs", en: "fighting game against the bugs" },
     },
     manual: {
       title: { pt: "Manual de segredos", en: "Secrets manual" },

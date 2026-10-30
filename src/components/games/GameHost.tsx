@@ -5,12 +5,15 @@ import { useExperience } from "../shell/ExperienceProvider";
 import { Snake } from "./Snake";
 import { Pong } from "./Pong";
 import { Penalty } from "./Penalty";
+import Sobrecarga from "./sobrecarga/Sobrecarga";
 
 const TITLES = { snake: "SNAKE", pong: "PONG", penalty: "SUPER DEV SOCCER" } as const;
 
 export default function GameHost() {
-  const { game, closeGame, content } = useExperience();
+  const { game, closeGame, content, reducedMotion } = useExperience();
   if (!game) return null;
+  // The fighting game takes the whole screen and runs its own dialog.
+  if (game === "sobrecarga") return <Sobrecarga lang={content.lang} onClose={closeGame} reducedMotion={reducedMotion} />;
   const { ui } = content;
 
   return (

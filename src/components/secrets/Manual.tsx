@@ -18,7 +18,7 @@ export default function Manual() {
   const run = (id: SecretId) => {
     exp.setManualOpen(false);
     if (CHEATS.has(id)) exp.runCheat(id as CheatId);
-    else if (id === "snake" || id === "pong") exp.openGame(id);
+    else if (id === "snake" || id === "pong" || id === "sobrecarga") exp.openGame(id);
     else if (id === "terminal") exp.setTerminalOpen(true);
   };
 
@@ -37,7 +37,7 @@ export default function Manual() {
       <ol className="max-h-[60vh] divide-y divide-line overflow-y-auto">
         {SECRETS.map((id, i) => {
           const found = exp.found.includes(id);
-          const runnable = CHEATS.has(id) || id === "snake" || id === "pong" || id === "terminal";
+          const runnable = CHEATS.has(id) || id === "snake" || id === "pong" || id === "sobrecarga" || id === "terminal";
           return (
             <m.li
               key={id}
