@@ -7,7 +7,7 @@ import type { ShapeId } from "../particles/shapes";
 import { Scramble, SplitReveal } from "../motion/kit";
 import { useExperience } from "../shell/ExperienceProvider";
 
-const SHAPES: ShapeId[] = ["scatter", "network", "chart", "code", "cv"];
+const SHAPES: ShapeId[] = ["database", "network", "chart", "code", "cv"];
 const STEP_MS = 3600;
 
 // "fig. 1": the data → model → insight → code → product story, told by a

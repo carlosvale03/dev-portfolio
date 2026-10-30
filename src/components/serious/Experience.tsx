@@ -8,6 +8,12 @@ import { useExperience } from "../shell/ExperienceProvider";
 const EASE = [0.16, 1, 0.3, 1] as const;
 const preloadDialog = () => void import("../shell/ProjectDialog");
 
+// One linked project reads "See project"; several are told apart by title.
+export function projectLabel(content: Content, ids: string[], id: string) {
+  if (ids.length === 1) return content.ui.experience.viewProject;
+  return content.projects.find((p) => p.id === id)?.title ?? id;
+}
+
 // Serious-mode experience: one row per role, in the same editorial rhythm as
 // the research list (period on the left, role and bullets in the middle).
 export function ExperienceList({ content }: { content: Content }) {
@@ -57,19 +63,20 @@ export function ExperienceList({ content }: { content: Content }) {
               </ul>
             </div>
 
-            <div className="flex items-start md:col-span-2 md:justify-end">
-              {job.projectId && (
+            <div className="flex flex-wrap items-start gap-2 md:col-span-2 md:flex-col md:items-end">
+              {job.projectIds?.map((id) => (
                 <button
+                  key={id}
                   type="button"
-                  onClick={() => openProject(job.projectId!)}
+                  onClick={() => openProject(id)}
                   onPointerEnter={preloadDialog}
                   onFocus={preloadDialog}
-                  className="group/b inline-flex h-11 items-center gap-2 border border-fg px-4 text-sm font-semibold transition-colors hover:bg-fg hover:text-bg"
+                  className="group/b inline-flex h-11 items-center gap-2 whitespace-nowrap border border-fg px-4 text-sm font-semibold transition-colors hover:bg-fg hover:text-bg"
                 >
-                  {ui.experience.viewProject}
+                  {projectLabel(content, job.projectIds!, id)}
                   <ArrowRight size={16} className="transition-transform group-hover/b:translate-x-1" />
                 </button>
-              )}
+              ))}
             </div>
           </article>
         </m.li>

@@ -31,36 +31,58 @@ const text = (label: string, scale: number): Draw => (c, cx, cy, s, font) => {
 export const SHAPES = {
   cv: text("CV", 0.66),
   code: text("</>", 0.5),
-  scatter: (c, cx, cy, s) => {
-    // A noisy cloud of raw data points.
-    let seed = 7;
-    const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    for (let i = 0; i < 150; i++) {
-      const a = rand() * Math.PI * 2;
-      const r = Math.sqrt(rand()) * s * 0.55;
+  database: (c, cx, cy, s) => {
+    // The classic stacked-disk database: three bands, each with a status light.
+    const rx = s * 0.34;
+    const ry = s * 0.09;
+    const top = cy - s * 0.32;
+    const bottom = cy + s * 0.32;
+    c.lineWidth = s * 0.04;
+    c.beginPath();
+    c.ellipse(cx, top, rx, ry, 0, 0, Math.PI * 2);
+    c.moveTo(cx - rx, top);
+    c.lineTo(cx - rx, bottom);
+    c.moveTo(cx + rx, top);
+    c.lineTo(cx + rx, bottom);
+    c.stroke();
+    for (const t of [1 / 3, 2 / 3, 1]) {
+      const y = top + (bottom - top) * t;
       c.beginPath();
-      c.arc(cx + Math.cos(a) * r * 1.25, cy + Math.sin(a) * r * 0.8, s * 0.018 + rand() * s * 0.02, 0, Math.PI * 2);
+      c.ellipse(cx, y, rx, ry, 0, 0, Math.PI);
+      c.stroke();
+      c.beginPath();
+      c.arc(cx + rx * 0.62, y - (bottom - top) / 6 + ry * 0.35, s * 0.028, 0, Math.PI * 2);
       c.fill();
     }
   },
   network: (c, cx, cy, s) => {
-    const layers = [3, 5, 5, 2];
+    // A small feed-forward net: hollow nodes, with the connections stopping at
+    // each node's edge so the layers stay readable.
+    const layers = [3, 4, 2];
+    const r = s * 0.065;
     const nodes = layers.map((n, i) =>
-      Array.from({ length: n }, (_, j) => [cx - s * 0.45 + (i * s * 0.9) / 3, cy + (j - (n - 1) / 2) * s * 0.19] as const),
+      Array.from({ length: n }, (_, j) => [cx + (i - 1) * s * 0.5, cy + (j - (n - 1) / 2) * s * 0.25] as const),
     );
-    c.lineWidth = Math.max(2, s * 0.014);
+    c.lineWidth = Math.max(3, s * 0.012);
     for (let i = 0; i < nodes.length - 1; i++)
       for (const a of nodes[i])
         for (const b of nodes[i + 1]) {
+          const d = Math.hypot(b[0] - a[0], b[1] - a[1]);
+          const ux = (b[0] - a[0]) / d;
+          const uy = (b[1] - a[1]) / d;
           c.beginPath();
-          c.moveTo(a[0], a[1]);
-          c.lineTo(b[0], b[1]);
+          c.moveTo(a[0] + ux * r * 1.5, a[1] + uy * r * 1.5);
+          c.lineTo(b[0] - ux * r * 1.5, b[1] - uy * r * 1.5);
           c.stroke();
         }
+    c.lineWidth = s * 0.032;
     for (const layer of nodes)
       for (const [x, y] of layer) {
         c.beginPath();
-        c.arc(x, y, s * 0.045, 0, Math.PI * 2);
+        c.arc(x, y, r, 0, Math.PI * 2);
+        c.stroke();
+        c.beginPath();
+        c.arc(x, y, r * 0.3, 0, Math.PI * 2);
         c.fill();
       }
   },
