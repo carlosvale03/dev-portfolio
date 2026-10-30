@@ -29,6 +29,8 @@ export interface Project {
   highlights: { label: string; text: string }[];
   stack: string[];
   links: { kind: LinkKind; href: string }[];
+  /** Replaces the default private-code note in the project dialog. */
+  codeNote?: string;
   metrics?: { value: string; label: string }[];
 }
 
@@ -39,7 +41,8 @@ export interface ExperienceItem {
   period: string;
   current?: boolean;
   product?: string;
-  projectId?: string;
+  /** Projects this role links to, in order; each one gets its own button. */
+  projectIds?: string[];
   bullets: string[];
 }
 

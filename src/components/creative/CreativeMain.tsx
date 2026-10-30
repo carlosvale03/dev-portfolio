@@ -9,6 +9,7 @@ import { Marquee } from "../motion/Marquee";
 import { ParticleField, useShapeCycle } from "../particles/ParticleField";
 import type { ShapeId } from "../particles/shapes";
 import { useExperience } from "../shell/ExperienceProvider";
+import { projectLabel } from "../serious/Experience";
 import { Curtain } from "./Curtain";
 import { Formation } from "./Formation";
 import { Hobbies, NimbusCameo } from "./Hobbies";
@@ -225,15 +226,20 @@ function ExperienceSection({ content }: { content: Content }) {
                   </m.li>
                 ))}
               </ul>
-              {job.projectId && (
-                <button
-                  type="button"
-                  onClick={() => openProject(job.projectId!)}
-                  className="group/b mt-6 inline-flex h-11 items-center gap-2 border border-line-strong px-4 text-sm font-semibold transition-colors hover:border-accent hover:bg-accent hover:text-ink"
-                >
-                  {ui.experience.viewProject}
-                  <ArrowRight size={16} className="transition-transform group-hover/b:translate-x-1" />
-                </button>
+              {job.projectIds && (
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {job.projectIds.map((id) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => openProject(id)}
+                      className="group/b inline-flex h-11 items-center gap-2 border border-line-strong px-4 text-sm font-semibold transition-colors hover:border-accent hover:bg-accent hover:text-ink"
+                    >
+                      {projectLabel(content, job.projectIds!, id)}
+                      <ArrowRight size={16} className="transition-transform group-hover/b:translate-x-1" />
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
           </m.li>
