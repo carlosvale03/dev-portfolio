@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
 import type { Content } from "@/content";
 import { ExperienceProvider, useExperience } from "./ExperienceProvider";
@@ -10,7 +10,6 @@ import { Footer } from "./Footer";
 import { CutTransition } from "./CutTransition";
 import { Toaster } from "./Toaster";
 import { SecretKeys } from "../secrets/SecretKeys";
-import { CheatOverlay } from "../secrets/CheatOverlay";
 import { loadCreative } from "../creative/load";
 import { Cursor } from "../motion/kit";
 
@@ -21,6 +20,8 @@ const CreativeMain = dynamic(loadCreative, {
 const Terminal = dynamic(() => import("../secrets/Terminal"), { ssr: false });
 const GameHost = dynamic(() => import("../games/GameHost"), { ssr: false });
 const ProjectDialog = dynamic(() => import("./ProjectDialog"), { ssr: false });
+const GtaLayer = dynamic(() => import("../secrets/gta/GtaLayer"), { ssr: false });
+const Manual = dynamic(() => import("../secrets/Manual"), { ssr: false });
 
 export function Experience({ content, children }: { content: Content; children: ReactNode }) {
   return (
@@ -38,7 +39,7 @@ export function Experience({ content, children }: { content: Content; children: 
         <Footer />
         <Overlays />
         <CutTransition />
-        <CheatOverlay />
+        <Gta />
         <Toaster />
         <SecretKeys />
         <Cursor />
@@ -63,12 +64,22 @@ function Stage({ serious }: { serious: ReactNode }) {
 }
 
 function Overlays() {
-  const { terminalOpen, game, projectId } = useExperience();
+  const { terminalOpen, game, projectId, manualOpen } = useExperience();
   return (
     <>
       {terminalOpen && <Terminal />}
       {game && <GameHost />}
       {projectId && <ProjectDialog />}
+      {manualOpen && <Manual />}
     </>
   );
+}
+
+// The San Andreas layer loads the first time one of its cheats runs, then stays
+// mounted so its decals and HUD can animate out.
+function Gta() {
+  const { gta } = useExperience();
+  const [loaded, setLoaded] = useState(false);
+  if (!loaded && (gta.hud || gta.armed)) setLoaded(true);
+  return loaded ? <GtaLayer /> : null;
 }

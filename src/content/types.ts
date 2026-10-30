@@ -192,8 +192,24 @@ export interface Ui {
   secrets: {
     unlocked: string;
     cheatActivated: string;
+    cheatOff: string;
     names: Record<SecretId, string>;
     messages: Partial<Record<SecretId, string>>;
+    /** How each secret is triggered, shown in the manual. */
+    how: Record<SecretId, string>;
+    /** A few words on what each one does, shown in the manual. */
+    short: Record<SecretId, string>;
+    manual: { title: string; lead: string; found: string; missing: string; run: string; command: string };
+  };
+  gta: {
+    hud: string;
+    hide: string;
+    clearWanted: string;
+    weapons: Record<"pistol" | "shotgun" | "uzi", string>;
+    switchHint: string;
+    reload: string;
+    empty: string;
+    chips: Record<"guns" | "tank" | "ninja", string>;
   };
   terminal: { title: string; placeholder: string; welcome: string[]; notFound: string }; // "{cmd}" is replaced
   games: { close: string; score: string; best: string; restart: string; controls: Record<"snake" | "pong" | "penalty", string> };
@@ -209,5 +225,10 @@ export const SECRETS = [
   "pong",
   "hattrick",
   "iddqd",
+  "lxgiwyl",
+  "aiwprton",
+  "cpktnwt",
+  "turnuptheheat",
+  "ninjatown",
 ] as const;
 export type SecretId = (typeof SECRETS)[number];

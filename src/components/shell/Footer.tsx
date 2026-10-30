@@ -65,7 +65,7 @@ export function Footer() {
                 {ui.close}
               </button>
             </div>
-            <ul className="divide-y divide-line">
+            <ul className="max-h-[55vh] divide-y divide-line overflow-y-auto">
               {SECRETS.map((id, i) => {
                 const unlocked = found.includes(id);
                 return (
@@ -84,8 +84,8 @@ export function Footer() {
             </ul>
             <p className="border-t border-line px-5 py-3 text-xs text-muted">
               {content.lang === "pt"
-                ? "Dica: comece pelo terminal e digite cheats. Alguns códigos de jogos clássicos também funcionam fora dele."
-                : "Hint: start in the terminal and type cheats. Some classic game codes also work outside it."}
+                ? "Dica: abra o terminal e digite manual para ver todos os segredos, ou cheats para jogar sem spoiler."
+                : "Hint: open the terminal and type manual to see every secret, or cheats to play without spoilers."}
             </p>
           </div>
         </div>

@@ -50,19 +50,24 @@ As animações vêm ligadas por padrão, inclusive quando o sistema pede movimen
 ## Segredos (spoiler)
 
 <details>
-<summary>Lista completa dos 9 segredos</summary>
+<summary>Lista completa dos 14 segredos</summary>
 
 1. Abrir o terminal com `/` (ou pelo botão no rodapé)
 2. Código Konami `↑ ↑ ↓ ↓ ← → ← → B A` → **Super Dev Soccer** (pênaltis contra o goleiro Bug)
-3. `HESOYAM` (GTA San Andreas) → dinheiro, vida e colete
-4. `AEZAKMI` (GTA San Andreas) → nível de procurado zerado
+3. `HESOYAM` (GTA San Andreas) → dinheiro, vida, colete e munição no HUD
+4. `AEZAKMI` (GTA San Andreas) → zera as estrelas de procurado
 5. `ROCKETMAN` (GTA San Andreas) → jetpack: os títulos flutuam e a gravidade do playground inverte
 6. Jogar Snake (`snake` no terminal)
 7. Jogar Pong (`pong` no terminal)
 8. Hat-trick: 3 gols com o pontapé inicial da escalação no modo criativo
 9. `IDDQD` (Doom) → modo deus, com o acento dourado por 10 segundos
+10. `LXGIWYL` (GTA San Andreas) → kit de armas: o cursor vira mira, o clique atira (pistola, escopeta e Uzi com 1 2 3) e deixa marcas de bala
+11. `AIWPRTON` (GTA San Andreas) → tanque Rhino que segue o mouse; o clique dispara e explode o que estiver perto
+12. `CPKTNWT` (GTA San Andreas) → explode os elementos da tela, que se reconstroem em seguida
+13. `TURNUPTHEHEAT` (GTA San Andreas) → +2 estrelas; com 4 ou mais, o helicóptero da polícia persegue o cursor com o holofote
+14. `NINJATOWN` (GTA San Andreas) → o clique lança shurikens e arrastar corta com a katana
 
-Os cheats funcionam digitados em qualquer lugar da página (fora de campos de formulário) ou como comandos no terminal. O progresso fica no `localStorage` e aparece no contador "segredos n/9" do rodapé.
+Os cheats funcionam digitados em qualquer lugar da página (fora de campos de formulário) ou como comandos no terminal. Os de San Andreas abrem um HUD no estilo do jogo, e digitar `LXGIWYL`, `AIWPRTON` ou `NINJATOWN` de novo desliga. O comando `manual` no terminal lista todos os segredos e ativa qualquer um com um clique. O progresso fica no `localStorage` e aparece no contador "segredos n/14" do rodapé.
 
 </details>
 

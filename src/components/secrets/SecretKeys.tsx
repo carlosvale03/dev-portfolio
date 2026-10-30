@@ -5,13 +5,18 @@ import { useExperience, type CheatId } from "../shell/ExperienceProvider";
 
 const KONAMI = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
 
-// Typed anywhere on the page (outside form fields). HESOYAM, AEZAKMI and
-// ROCKETMAN come from GTA San Andreas; IDDQD is Doom's god mode.
+// Typed anywhere on the page (outside form fields). HESOYAM, AEZAKMI,
+// ROCKETMAN and the rest come from GTA San Andreas; IDDQD is Doom's god mode.
 export const CHEAT_CODES: Record<string, CheatId> = {
   HESOYAM: "hesoyam",
   AEZAKMI: "aezakmi",
   ROCKETMAN: "rocketman",
   IDDQD: "iddqd",
+  LXGIWYL: "lxgiwyl",
+  AIWPRTON: "aiwprton",
+  CPKTNWT: "cpktnwt",
+  TURNUPTHEHEAT: "turnuptheheat",
+  NINJATOWN: "ninjatown",
 };
 
 export function SecretKeys() {
@@ -46,7 +51,7 @@ export function SecretKeys() {
     }
 
     if (/^[a-z]$/.test(key)) {
-      state.typed = (state.typed + key.toUpperCase()).slice(-12);
+      state.typed = (state.typed + key.toUpperCase()).slice(-16);
       const code = Object.keys(CHEAT_CODES).find((c) => state.typed.endsWith(c));
       if (code) {
         state.typed = "";
