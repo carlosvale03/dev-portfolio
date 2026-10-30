@@ -50,7 +50,7 @@ As animações vêm ligadas por padrão, inclusive quando o sistema pede movimen
 ## Segredos (spoiler)
 
 <details>
-<summary>Lista completa dos 14 segredos</summary>
+<summary>Lista completa dos 15 segredos</summary>
 
 1. Abrir o terminal com `/` (ou pelo botão no rodapé)
 2. Código Konami `↑ ↑ ↓ ↓ ← → ← → B A` → **Super Dev Soccer** (pênaltis contra o goleiro Bug)
@@ -66,8 +66,9 @@ As animações vêm ligadas por padrão, inclusive quando o sistema pede movimen
 12. `CPKTNWT` (GTA San Andreas) → explode os elementos da tela, que se reconstroem em seguida
 13. `TURNUPTHEHEAT` (GTA San Andreas) → +2 estrelas; com 4 ou mais, o helicóptero da polícia persegue o cursor com o holofote
 14. `NINJATOWN` (GTA San Andreas) → o clique lança shurikens e arrastar corta com a katana
+15. `SOBRECARGA` ou `OVERLOAD` (ou `sobrecarga` no terminal) → abre um jogo de luta original de bonecos de palito em tela cheia, com combos, câmera lenta, física de boneco de pano e um torneio contra os bugs, de localhost até produção
 
-Os cheats funcionam digitados em qualquer lugar da página (fora de campos de formulário) ou como comandos no terminal. Os de San Andreas abrem um HUD no estilo do jogo, e digitar `LXGIWYL`, `AIWPRTON` ou `NINJATOWN` de novo desliga. O comando `manual` no terminal lista todos os segredos e ativa qualquer um com um clique. O progresso fica no `localStorage` e aparece no contador "segredos n/14" do rodapé.
+Os cheats funcionam digitados em qualquer lugar da página (fora de campos de formulário) ou como comandos no terminal. Os de San Andreas abrem um HUD no estilo do jogo, e digitar `LXGIWYL`, `AIWPRTON` ou `NINJATOWN` de novo desliga. O comando `manual` no terminal lista todos os segredos e ativa qualquer um com um clique. O progresso fica no `localStorage` e aparece no contador "segredos n/15" do rodapé.
 
 </details>
 
