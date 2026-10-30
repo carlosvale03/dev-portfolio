@@ -8,6 +8,9 @@ import { ArrowUpRight } from "../ui/icons";
 import { StatusBadge } from "../ui/StatusBadge";
 import { useExperience } from "./ExperienceProvider";
 
+// Without one of these the code is private, and the dialog says so.
+const CODE_LINKS = new Set(["code", "front", "back"]);
+
 export default function ProjectDialog() {
   const { content, projectId, closeProject, mode } = useExperience();
   const { ui } = content;
@@ -124,7 +127,7 @@ function ProjectInfo({ project }: { project: Project }) {
       {project.metrics && project.metrics.length > 0 && (
         <div>
           <h3 className="font-mono text-xs uppercase tracking-wider text-muted">{ui.projects.metrics}</h3>
-          <dl className="mt-2 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
+          <dl className="mt-2 grid grid-cols-2 gap-px border border-line bg-line sm:grid-flow-col sm:grid-cols-none sm:auto-cols-fr">
             {project.metrics.map((m) => (
               <div key={m.label} className="flex flex-col bg-bg px-3 py-2.5">
                 <dt className="order-2 text-[11px] leading-tight text-muted">{m.label}</dt>
@@ -157,9 +160,8 @@ function ProjectInfo({ project }: { project: Project }) {
         ))}
       </ul>
 
-      <div className="mt-auto flex flex-wrap gap-2 pt-2">
-        {project.links.length > 0 ? (
-          project.links.map((l, i) => (
+      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-2">
+        {project.links.map((l, i) => (
             <a
               key={l.href}
               href={l.href}
@@ -172,10 +174,8 @@ function ProjectInfo({ project }: { project: Project }) {
               {ui.projects.links[l.kind]}
               <ArrowUpRight size={16} />
             </a>
-          ))
-        ) : (
-          <p className="text-sm text-muted">{ui.projects.privateNote}</p>
-        )}
+          ))}
+        {!project.links.some((l) => CODE_LINKS.has(l.kind)) && <p className="text-sm text-muted">{project.codeNote ?? ui.projects.privateNote}</p>}
       </div>
     </div>
   );
