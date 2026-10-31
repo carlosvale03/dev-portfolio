@@ -66,7 +66,7 @@ As animações vêm ligadas por padrão, inclusive quando o sistema pede movimen
 12. `CPKTNWT` (GTA San Andreas) → explode os elementos da tela, que se reconstroem em seguida
 13. `TURNUPTHEHEAT` (GTA San Andreas) → +2 estrelas; com 4 ou mais, o helicóptero da polícia persegue o cursor com o holofote
 14. `NINJATOWN` (GTA San Andreas) → o clique lança shurikens e arrastar corta com a katana
-15. `SOBRECARGA` ou `OVERLOAD` (ou `sobrecarga` no terminal) → abre um jogo de luta original de bonecos de palito em tela cheia, com combos, câmera lenta, física de boneco de pano e um torneio contra os bugs, de localhost até produção
+15. `SOBRECARGA` ou `OVERLOAD` (ou `sobrecarga` no terminal) → abre um jogo de luta original de bonecos de palito em tela cheia, com combos, câmera lenta, física de boneco de pano e um torneio contra os bugs, de localhost até produção. As poses de guarda, socos e chutes foram convertidas de captura de movimento da CMU: the data used in this project was obtained from [mocap.cs.cmu.edu](http://mocap.cs.cmu.edu)
 
 Os cheats funcionam digitados em qualquer lugar da página (fora de campos de formulário) ou como comandos no terminal. Os de San Andreas abrem um HUD no estilo do jogo, e digitar `LXGIWYL`, `AIWPRTON` ou `NINJATOWN` de novo desliga. O comando `manual` no terminal lista todos os segredos e ativa qualquer um com um clique. O progresso fica no `localStorage` e aparece no contador "segredos n/15" do rodapé.
 
