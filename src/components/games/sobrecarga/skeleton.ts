@@ -59,6 +59,37 @@ export function mixPose(a: Pose, b: Pose, t: number): Pose {
   return out;
 }
 
+const KEYS: (keyof Pose)[] = ["lean", "neck", "uaF", "faF", "uaB", "faB", "thF", "shF", "thB", "shB"];
+
+/** A pose from the degree arrays in mocap.ts. */
+export function poseOf(a: number[]): Pose {
+  const out = {} as Pose;
+  KEYS.forEach((k, i) => (out[k] = a[i] * D));
+  return out;
+}
+
+/**
+ * Catmull-Rom between b and c (a and d are the neighbours): the limbs travel
+ * along smooth curves through the keyframes, with no corner at each key.
+ */
+export function splinePose(a: Pose, b: Pose, c: Pose, d: Pose, t: number): Pose {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const out = {} as Pose;
+  for (const k of KEYS) {
+    out[k] = 0.5 * (2 * b[k] + (-a[k] + c[k]) * t + (2 * a[k] - 5 * b[k] + 4 * c[k] - d[k]) * t2 + (-a[k] + 3 * b[k] - 3 * c[k] + d[k]) * t3);
+  }
+  return out;
+}
+
+/** Samples a pose track at a fractional index, smoothly; `loop` wraps around. */
+export function sampleTrack(track: Pose[], s: number, loop = false): Pose {
+  const n = track.length;
+  const at = (i: number) => (loop ? track[((i % n) + n) % n] : track[Math.max(0, Math.min(n - 1, i))]);
+  const i = Math.floor(s);
+  return splinePose(at(i - 1), at(i), at(i + 1), at(i + 2), s - i);
+}
+
 const down = (len: number, a: number): Vec => ({ x: Math.sin(a) * len, y: Math.cos(a) * len });
 const add = (a: Vec, b: Vec): Vec => ({ x: a.x + b.x, y: a.y + b.y });
 

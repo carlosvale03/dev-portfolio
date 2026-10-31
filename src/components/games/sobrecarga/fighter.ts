@@ -1,7 +1,8 @@
 import { CARRIES, CHAIN_K, CHAIN_P, SPECIAL_CHAIN, hitAt, moveOf, type Ease, type HitSpec, type MoveId } from "./moves";
 import { FLOOR, GRAVITY, Ragdoll } from "./ragdoll";
 import { ROSTER, type Archetype, type Head, type Kind } from "./roster";
-import { JOINTS, POSES, fk, footDrop, mixJoints, mixPose, place, type Joints, type Pose, type PoseId, type Vec } from "./skeleton";
+import { KICK_TRACKS, RUN_CYCLE, RUN_STRIDE } from "./mocap";
+import { JOINTS, POSES, fk, footDrop, mixJoints, mixPose, place, poseOf, sampleTrack, splinePose, type Joints, type Pose, type PoseId, type Vec } from "./skeleton";
 
 // One fighter, player or enemy: the same state machine runs both, driven by
 // an Intent that comes from the keyboard or from the AI.
@@ -695,10 +696,12 @@ export class Fighter {
         p = mixPose(POSES.walk1, POSES.walk2, Math.sign(this.vx) === this.facing ? k : 1 - k);
         break;
       }
-      case "run":
-        this.phase += (dt * Math.abs(this.vx)) / 44;
+      case "run": {
+        // The captured cycle advances with the ground covered, so feet don't slide.
+        this.phase = (this.phase + (dt * Math.abs(this.vx) * RUN_SAMPLES.length) / (RUN_STRIDE * this.scale)) % RUN_SAMPLES.length;
         p = runPose(this.phase, Math.min(1, Math.abs(this.vx) / RUN));
         break;
+      }
       case "crouch":
         p = POSES.crouch;
         break;
@@ -772,7 +775,10 @@ export class Fighter {
       void rel;
     }
     const grounded = this.grounded && this.state !== "air" && this.state !== "held";
-    const drop = grounded || this.state === "roll" ? footDrop(rel) : 76 * this.scale;
+    // Running uses the captured hip height (with its flight phase); other
+    // grounded poses plant the lowest foot.
+    const drop =
+      this.state === "run" ? runHip(this.phase) * this.scale : grounded || this.state === "roll" ? footDrop(rel) : 76 * this.scale;
     const m = this.state === "attack" && this.move ? moveOf(this.move) : null;
     const turned = m?.turn && this.moveT >= m.turn[0] && this.moveT < m.turn[1];
     let j = place(rel, this.x, this.y - drop, turned ? -this.facing : this.facing);
@@ -783,18 +789,38 @@ export class Fighter {
 
   private movePose(): Pose {
     const m = moveOf(this.move!);
-    let prev: Pose = this.startPose;
-    let t0 = 0;
-    for (const [id, t1, how] of m.frames) {
-      const target = POSES[id as PoseId];
-      if (this.moveT <= t1) {
-        const k = t1 > t0 ? (this.moveT - t0) / (t1 - t0) : 1;
-        return mixPose(prev, target, EASES[how ?? "out"](Math.max(0, Math.min(1, k))));
+    if (m.track) return this.trackPose(m);
+    // Keyframes joined by a spline, each segment timed by its ease.
+    const keys: Pose[] = [this.startPose, ...m.frames.map(([id]) => POSES[id as PoseId])];
+    const times = [0, ...m.frames.map(([, t]) => t)];
+    for (let i = 1; i < keys.length; i++) {
+      if (this.moveT <= times[i]) {
+        const span = times[i] - times[i - 1];
+        const k = span > 0 ? (this.moveT - times[i - 1]) / span : 1;
+        const u = EASES[m.frames[i - 1][2] ?? "out"](Math.max(0, Math.min(1, k)));
+        const a = keys[Math.max(0, i - 2)];
+        const d = keys[Math.min(keys.length - 1, i + 1)];
+        return splinePose(a, keys[i - 1], keys[i], d, u);
       }
-      prev = target;
-      t0 = t1;
     }
-    return prev;
+    return keys[keys.length - 1];
+  }
+
+  /** A captured kick, retimed so its peak lands on the move's strike. */
+  private trackPose(m: ReturnType<typeof moveOf>): Pose {
+    const { name, peakAt } = m.track!;
+    const track = KICK_POSES[name];
+    const peak = KICK_TRACKS[name].peak;
+    const last = track.length - 1;
+    const t = this.moveT;
+    const s = t < peakAt ? peak * Math.pow(t / peakAt, 0.8) : peak + (last - peak) * Math.min(1, (t - peakAt) / (m.total - peakAt));
+    let p = sampleTrack(track, s);
+    // Snap the leg straight around the peak so the strike reads clearly.
+    const near = Math.exp(-(((s - peak) / 3) ** 2));
+    p = { ...p, shF: p.shF * (1 - 0.75 * near) };
+    // Ease in from whatever pose the move started from.
+    const blend = Math.min(1, t / 60);
+    return blend < 1 ? mixPose(this.startPose, p, blend) : p;
   }
 
   /** The point a move hits from, in world space. */
@@ -848,21 +874,31 @@ export class Fighter {
 }
 
 const D = Math.PI / 180;
+const RUN_SAMPLES = RUN_CYCLE.map(poseOf);
+const RUN_HIPS = RUN_CYCLE.map((r) => r[10]);
+const KICK_POSES = Object.fromEntries(Object.entries(KICK_TRACKS).map(([k, v]) => [k, v.poses.map(poseOf)])) as Record<string, Pose[]>;
 
-/** A running stride at phase `ph`; `k` scales the stride with speed. */
+/**
+ * The captured running cycle at phase `ph` (in samples). The capture is a
+ * steady jog, so the body leans further into it at full speed: a sprint.
+ */
 function runPose(ph: number, k: number): Pose {
-  const sw = Math.sin(ph);
-  const lift = (a: number) => Math.pow((Math.cos(a) + 1) / 2, 1.4);
+  const p = sampleTrack(RUN_SAMPLES, ph, true);
   return {
-    lean: (14 + 20 * k) * D,
-    neck: -16 * D,
-    uaF: (34 - 64 * sw * k) * D,
-    faF: (100 + 14 * sw) * D,
-    uaB: (34 + 64 * sw * k) * D,
-    faB: (100 - 14 * sw) * D,
-    thF: (22 + 58 * sw * k) * D,
-    shF: -(20 + 110 * lift(ph) * k) * D,
-    thB: (22 - 58 * sw * k) * D,
-    shB: -(20 + 110 * lift(ph + Math.PI) * k) * D,
+    ...p,
+    lean: p.lean + 16 * k * D,
+    neck: p.neck - 10 * k * D,
+    uaF: p.uaF * (1 + 0.25 * k) + 6 * k * D,
+    uaB: p.uaB * (1 + 0.25 * k) + 6 * k * D,
+    thF: p.thF * (1 + 0.15 * k) + 6 * k * D,
+    thB: p.thB * (1 + 0.15 * k) + 6 * k * D,
   };
+}
+
+/** Hip height through the cycle (game units, before scaling). */
+function runHip(ph: number) {
+  const n = RUN_HIPS.length;
+  const i = Math.floor(ph);
+  const f = ph - i;
+  return RUN_HIPS[i % n] * (1 - f) + RUN_HIPS[(i + 1) % n] * f;
 }

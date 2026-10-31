@@ -69,6 +69,11 @@ export interface Move {
   spinEnd?: number;
   /** Window in which the body is turned away from the target: a spinning move. */
   turn?: [number, number];
+  /**
+   * Plays a captured motion (mocap.ts) instead of the keyframes: its peak
+   * lands at `peakAt` ms, and the leg straightens a little there.
+   */
+  track?: { name: "frontKick" | "roundhouse" | "highKick"; peakAt: number };
   /** Slow-motion special: its name shows on screen while time crawls. */
   special?: { pt: string; en: string };
 }
@@ -110,12 +115,12 @@ export const MOVES = {
   },
   frontKick: {
     frames: [["kickWind", 75, "io"], ["frontKick", 125, "snap"], ["frontKick", 190, "lin"], ["kickWind", 245, "io"], ["stance", 315, "io"]],
-    total: 315, active: [100, 190], cancel: 180, lunge: 110, whoosh: "light",
+    total: 315, active: [100, 190], cancel: 180, lunge: 110, whoosh: "light", track: { name: "frontKick", peakAt: 128 },
     hit: { joint: "footF", r: 18, dmg: 7, kb: [320, 0], stun: 340, level: "mid", stop: 60 },
   },
   roundhouse: {
     frames: [["roundWind", 90, "io"], ["roundhouse", 145, "snap"], ["roundhouse", 215, "lin"], ["roundFollow", 285, "io"], ["stance", 370, "io"]],
-    total: 370, active: [120, 215], cancel: 235, lunge: 130, whoosh: "heavy",
+    total: 370, active: [120, 215], cancel: 235, lunge: 130, whoosh: "heavy", track: { name: "roundhouse", peakAt: 150 },
     hit: { joint: "footF", r: 20, dmg: 10, kb: [420, -160], stun: 400, level: "high", stop: 80, heavy: true, shake: 4 },
   },
   spinKick: {
@@ -131,7 +136,7 @@ export const MOVES = {
   /** Up + kick: a kick to the head that pops them up for a juggle. */
   highKick: {
     frames: [["roundWind", 85, "io"], ["highKick", 145, "snap"], ["highKick", 215, "lin"], ["roundFollow", 290, "io"], ["stance", 390, "io"]],
-    total: 390, active: [120, 215], cancel: 270, lunge: 100, whoosh: "heavy",
+    total: 390, active: [120, 215], cancel: 270, lunge: 100, whoosh: "heavy", track: { name: "highKick", peakAt: 150 },
     hit: { joint: "footF", r: 21, dmg: 10, kb: [180, -780], stun: 420, level: "high", stop: 90, launch: true, heavy: true, shake: 6 },
   },
   flipKick: {
