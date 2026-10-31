@@ -93,10 +93,21 @@ const BEAM_START = BEAM_SEQ.slice(0, 2);
 const BEAM_KEY_MS = 1150;
 const BEAM_WEAK: HitSpec = { joint: "hip", r: 0, dmg: 38, kb: [1300, -520], stun: 600, level: "mid", stop: 50, launch: true, wallBounce: true, heavy: true, zap: true };
 const BEAM_BLAST: HitSpec = { joint: "hip", r: 140, dmg: 10, kb: [600, -600], stun: 500, level: "mid", stop: 90, launch: true, heavy: true, zap: true };
+/** Share of max health the blast takes, by size class: full / weak. */
+const BEAM_DAMAGE = {
+  small: { full: Infinity, weak: 0.55 },
+  medium: { full: 0.7, weak: 0.4 },
+  boss: { full: 0.25, weak: 0.12 },
+};
+/** When the boss guards: what it still takes, and the blast around it. */
+const BLOCK_CHIP = 0.05;
+const SPLASH: HitSpec = { joint: "hip", r: 0, dmg: 50, kb: [700, -760], stun: 500, level: "mid", stop: 70, launch: true, heavy: true, zap: true };
 export interface Beam {
   x: number;
   y: number;
   dir: number;
+  /** A boss guarding against it: the blast stops at its arms and splashes. */
+  blocker: Fighter | null;
   /** Real seconds since it went out. */
   t: number;
   dur: number;
@@ -277,6 +288,7 @@ export class Game implements Host {
     this.slowMeter = 1;
     this.cine.ms = 0;
     this.charge = null;
+    this.beam?.blocker?.unbrace();
     this.beam = null;
     this.combo = 0;
   }
@@ -413,7 +425,7 @@ export class Game implements Host {
     } else {
       p.endCharge(this, "fire");
       const full = correct === BEAM_SEQ.length;
-      this.beam = { x: h.x, y: h.y, dir: p.facing, t: 0, dur: full ? 1.35 : 0.95, full, hit: new Set() };
+      this.beam = { x: h.x, y: h.y, dir: p.facing, t: 0, dur: full ? 1.35 : 0.95, full, hit: new Set(), blocker: null };
       this.impactAt = this.now;
       this.flashAt = this.now;
       this.hitstop = Math.max(this.hitstop, 120);
@@ -451,17 +463,37 @@ export class Game implements Host {
       b.x = h.x;
       b.y = h.y;
     }
-    const len = Math.min(2600, b.t * 4200);
+    let len = Math.min(2600, b.t * 4200);
     const half = (b.full ? 52 : 32) + 40;
     this.shake = Math.max(this.shake, b.full ? 9 : 6);
-    for (const t of this.enemies) {
-      if (!t.alive || b.hit.has(t.id)) continue;
-      const d = (t.joints.hip.x - b.x) * b.dir;
-      if (d < 0 || d > len || Math.abs(t.joints.hip.y - b.y) > half + 30) continue;
+    // A guarding boss holds the blast at its arms.
+    if (b.blocker) {
+      const contact = this.blockPoint(b);
+      len = Math.min(len, Math.max(0, (contact - b.x) * b.dir));
+      this.splash(b, contact);
+    }
+    // Nearest first, so a boss that guards shields whoever is behind it.
+    const inLine = this.enemies
+      .filter((t) => t.alive && !b.hit.has(t.id) && Math.abs(t.joints.hip.y - b.y) <= half + 30)
+      .map((t) => ({ t, d: (t.joints.hip.x - b.x) * b.dir }))
+      .filter(({ d }) => d >= 0 && d <= len)
+      .sort((a, z) => a.d - z.d);
+    for (const { t } of inLine) {
+      if (b.blocker) break;
       b.hit.add(t.id);
-      const boss = t.kind === "legacy";
-      // The full blast erases regular enemies; the boss takes a big chunk.
-      const dmg = b.full ? (boss ? t.maxHp * 0.4 : t.hp + 999) : boss ? t.maxHp * 0.15 : BEAM_WEAK.dmg;
+      const tier = t.arch?.tier ?? "small";
+      if (tier === "boss" && this.rand() < 0.5) {
+        // The boss crosses its arms and takes it: the blast stops there.
+        b.blocker = t;
+        t.brace(b.x - t.x);
+        this.float(t.x, t.joints.head.y - 50, this.lang === "pt" ? "BLOQUEOU!" : "BLOCKED!", t.color, true);
+        this.sound("block");
+        this.sound("heavy");
+        this.shake = Math.max(this.shake, 14);
+        break;
+      }
+      const share = BEAM_DAMAGE[tier][b.full ? "full" : "weak"];
+      const dmg = share === Infinity ? t.hp + 999 : t.maxHp * share;
       t.invuln = 0;
       this.applyHit(p, t, { ...BEAM_WEAK, dmg, kb: [b.full ? 1700 : 1300, b.full ? -650 : -520] }, { x: t.joints.hip.x, y: b.y }, "orb");
     }
@@ -469,7 +501,59 @@ export class Game implements Host {
       const x = b.x + b.dir * this.rand() * len;
       this.sparks.push({ x, y: b.y + (this.rand() - 0.5) * half * 1.4, vx: b.dir * (300 + this.rand() * 500), vy: (this.rand() - 0.5) * 200, life: 0.35, max: 0.35, color: this.rand() < 0.5 ? "#f4f2ec" : "#e23b2e", kind: "spark", size: 2 + this.rand() * 3 });
     }
-    if (b.t > b.dur) this.beam = null;
+    if (b.t > b.dur) {
+      if (b.blocker) this.blockBlast(b);
+      this.beam = null;
+    }
+  }
+
+  /** Where a guarding boss's arms meet the blast. */
+  private blockPoint(b: Beam) {
+    const t = b.blocker!;
+    return (t.joints.handF.x + t.joints.handB.x) / 2 - b.dir * 6;
+  }
+
+  /** The blast hitting the guard sprays out above and below. */
+  private splash(b: Beam, x: number) {
+    for (let i = 0; i < 3; i++) {
+      const up = this.rand() < 0.5 ? -1 : 1;
+      const v = 500 + this.rand() * 700;
+      this.sparks.push({ x, y: b.y + (this.rand() - 0.5) * 20, vx: -b.dir * (80 + this.rand() * 260), vy: up * v, life: 0.4, max: 0.4, color: this.rand() < 0.5 ? "#f4f2ec" : "#e23b2e", kind: "spark", size: 2 + this.rand() * 3 });
+    }
+    if (this.rand() < 0.25) this.rings.push({ x, y: b.y, r: 10, grow: 300, life: 0.2, max: 0.2, color: "#f4f2ec" });
+    if (this.rand() < 0.2) this.zap({ x, y: b.y }, { x: x - b.dir * 30, y: b.y + (this.rand() - 0.5) * 220 });
+  }
+
+  /**
+   * The energy held off by the guard bursts where it was stopped: it throws
+   * everyone around and barely scratches the boss.
+   */
+  private blockBlast(b: Beam) {
+    const t = b.blocker!;
+    const x = this.blockPoint(b);
+    const y = b.y;
+    this.rings.push({ x, y, r: 20, grow: 1300, life: 0.45, max: 0.45, color: "#e23b2e" });
+    this.rings.push({ x, y, r: 10, grow: 800, life: 0.5, max: 0.5, color: "#f4f2ec" });
+    this.rings.push({ x, y: FLOOR, r: 30, grow: 1100, life: 0.5, max: 0.5, color: "#e23b2e" });
+    this.burst(x, y, "#e23b2e", 36, 900);
+    this.burst(x, y, "#f4f2ec", 20, 700);
+    this.flashAt = this.now;
+    this.impactAt = this.now;
+    this.shake = Math.max(this.shake, 18);
+    this.sound("wall");
+    this.sound("heavy");
+    t.unbrace();
+    t.hp = Math.max(1, t.hp - t.maxHp * BLOCK_CHIP);
+    t.flash = 120;
+    t.lastHit = this.now;
+    const strength = b.full ? 1 : 0.65;
+    for (const o of this.enemies) {
+      if (o === t || !o.alive) continue;
+      if (Math.hypot(o.joints.hip.x - x, o.joints.hip.y - y) > 300) continue;
+      o.invuln = 0;
+      this.applyHit(this.player, o, { ...SPLASH, dmg: SPLASH.dmg * strength }, { x: o.joints.hip.x, y: o.joints.hip.y }, "orb");
+    }
+    this.float(x, y - 80, this.lang === "pt" ? "EXPLOSÃO!" : "BLAST!", "#f3b14e", true);
   }
 
   spend(f: Fighter, cost: number) {

@@ -37,7 +37,7 @@ export function think(f: Fighter, foe: Fighter | null, host: Host, rand: () => n
   const b = f.brain;
   const now = host.now;
   if (f.state === "held") return rand() < 0.012 ? { ...NO_INTENT, punch: true } : NO_INTENT;
-  if (!f.alive || f.state === "rag" || f.state === "getup" || f.state === "hit" || f.state === "dead") return NO_INTENT;
+  if (!f.alive || f.state === "rag" || f.state === "getup" || f.state === "hit" || f.state === "dead" || f.state === "brace") return NO_INTENT;
   if (!foe || !foe.alive) return NO_INTENT;
 
   const enraged = f.kind === "legacy" && f.hp < f.maxHp * 0.5;

@@ -161,7 +161,12 @@ function energy(ctx: CanvasRenderingContext2D, g: Game, S: (p: Vec) => Vec, k: n
   const b = g.beam;
   if (b) {
     const s = S({ x: b.x, y: b.y });
-    const len = Math.min(2600, b.t * 4200) * k;
+    let len = Math.min(2600, b.t * 4200) * k;
+    if (b.blocker) {
+      const t = b.blocker;
+      const contact = (t.joints.handF.x + t.joints.handB.x) / 2 - b.dir * 6;
+      len = Math.min(len, Math.max(0, (contact - b.x) * b.dir) * k);
+    }
     const fade = Math.min(1, (b.dur - b.t) / 0.25, b.t / 0.05);
     const base = (b.full ? 52 : 32) * k;
     const x1 = s.x + b.dir * Math.min(len, W * 2);

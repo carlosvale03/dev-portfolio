@@ -211,6 +211,7 @@ export const POSES = {
   beamCharge: deg({ lean: -6, neck: 6, uaF: -41, faF: 45, uaB: -38, faB: 40, thF: 38, shF: -58, thB: -34, shB: -30 }),
   beamFire: deg({ lean: 14, neck: -4, uaF: 100, faF: 0, uaB: 96, faB: 6, thF: 50, shF: -48, thB: -48, shB: -6 }),
   beamFizzle: deg({ lean: 24, neck: -16, uaF: 30, faF: 20, uaB: 24, faB: 24, thF: 24, shF: -30, thB: -20, shB: -20 }),
+  beamGuard: deg({ lean: 20, neck: -12, uaF: 104, faF: 96, uaB: 84, faB: 118, thF: 36, shF: -46, thB: -42, shB: -8 }),
   // getting hit
   flinchHigh: deg({ lean: -24, neck: 30, uaF: 20, faF: 60, uaB: -10, faB: 60, thF: 20, shF: -20, thB: -20, shB: -10 }),
   flinchLow: deg({ lean: 46, neck: -10, uaF: -10, faF: 20, uaB: -20, faB: 20, thF: 30, shF: -40, thB: -24, shB: -20 }),

@@ -7,7 +7,7 @@ import { JOINTS, POSES, fk, footDrop, mixJoints, mixPose, place, poseOf, sampleT
 // One fighter, player or enemy: the same state machine runs both, driven by
 // an Intent that comes from the keyboard or from the AI.
 
-export type State = "idle" | "walk" | "run" | "crouch" | "air" | "attack" | "block" | "roll" | "hit" | "rag" | "getup" | "grab" | "held" | "dead" | "charge";
+export type State = "idle" | "walk" | "run" | "crouch" | "air" | "attack" | "block" | "roll" | "hit" | "rag" | "getup" | "grab" | "held" | "dead" | "charge" | "brace";
 
 export interface Intent {
   dx: number;
@@ -154,7 +154,7 @@ export class Fighter {
     return this.y >= FLOOR - 0.5;
   }
   get busy() {
-    return this.state === "attack" || this.state === "hit" || this.state === "rag" || this.state === "getup" || this.state === "held" || this.state === "roll" || this.state === "dead" || this.state === "charge";
+    return this.state === "attack" || this.state === "hit" || this.state === "rag" || this.state === "getup" || this.state === "held" || this.state === "roll" || this.state === "dead" || this.state === "charge" || this.state === "brace";
   }
   /** Can be hit at all. */
   get hittable() {
@@ -324,6 +324,20 @@ export class Fighter {
     } else this.special = false;
   }
 
+  /** Crosses the arms and digs in against the energy blast, pushed back by it. */
+  brace(towards: number) {
+    this.move = null;
+    this.release();
+    this.facing = Math.sign(towards) || this.facing;
+    this.invuln = 0;
+    this.go("brace");
+  }
+
+  /** Lets go of the guard once the blast is over. */
+  unbrace() {
+    if (this.state === "brace") this.go("idle");
+  }
+
   /** Dodge: a roll forward, or a backflip away. */
   roll(dir: number, host: Host) {
     if ((this.busy && this.state !== "block") || !this.grounded) return;
@@ -459,6 +473,10 @@ export class Fighter {
       }
       case "charge":
         this.vx *= Math.max(0, 1 - dt * 12);
+        break;
+      case "brace":
+        // Shoved back a little at a time, heels dragging.
+        this.vx = -this.facing * 70;
         break;
       case "getup": {
         this.vx = 0;
@@ -763,6 +781,13 @@ export class Fighter {
       case "getup":
         p = mixPose(POSES.getup, POSES.stance, ease(Math.min(1, T / 520)));
         break;
+      case "brace": {
+        // Into the guard fast, then strain against the push.
+        p = mixPose(POSES.stance, POSES.beamGuard, EASES.out(Math.min(1, T / 160)));
+        const q = 0.03;
+        p = { ...p, lean: p.lean + Math.sin(host.now / 21) * q, neck: p.neck + Math.sin(host.now / 27) * q };
+        break;
+      }
       case "charge": {
         // Swing the hands back, sink into the stance, then shake with the power.
         p = T < 260 ? mixPose(POSES.stance, POSES.beamWind, EASES.io(T / 260)) : mixPose(POSES.beamWind, POSES.beamCharge, EASES.io(Math.min(1, (T - 260) / 240)));
