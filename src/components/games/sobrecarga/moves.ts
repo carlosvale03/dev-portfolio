@@ -51,6 +51,12 @@ export interface Move {
   float?: boolean;
   /** Gravity scale through the active frames: a slow, floating rise. */
   lowGravity?: number;
+  /** At this time, drive straight down at this speed (an axe-kick finish). */
+  dive?: [number, number];
+  /** Dash to (and stay on) the nearest enemy until this time, this far from it. */
+  homeIn?: [number, number];
+  /** When `vel` kicks in, ms (default: at the start). */
+  velAt?: number;
   /** Lands the move when the fighter touches the floor. */
   untilLand?: boolean;
   grab?: boolean;
@@ -180,11 +186,15 @@ export const MOVES = {
 
   // --- Slow-motion specials (Q, W, E) ------------------------------------------
   /** Q: a storm of punches that ends in a launching uppercut. */
+  /**
+   * Q: dash in, a storm of punches, a beat to wind back, then one straight
+   * punch that sends them across the arena.
+   */
   rajada: {
-    frames: [["rajadaCharge", 150, "io"], ...flurry(150, 8, 45), ["upperWind", 590, "io"], ["upper", 650, "snap"], ["upper", 800, "lin"], ["stance", 960, "io"]],
-    total: 960, active: [170, 700], lunge: 200, rehit: [...beats(195, 8, 45), 600],
-    hit: { joint: "handF", r: 26, dmg: 3, kb: [70, -50], stun: 500, level: "high", stop: 28, zap: true },
-    final: [590, { joint: "handF", r: 42, dmg: 12, kb: [260, -1050], stun: 500, level: "mid", stop: 130, launch: true, heavy: true, shake: 12, zap: true }],
+    frames: [["rajadaCharge", 150, "io"], ...flurry(150, 8, 45), ["rajadaCharge", 610, "io"], ["dashPunch", 680, "snap"], ["dashPunch", 820, "lin"], ["jabBack", 900, "io"], ["stance", 1020, "io"]],
+    total: 1020, active: [170, 760], homeIn: [630, 60], rehit: [...beats(195, 8, 45), 640],
+    hit: { joint: "handF", r: 26, dmg: 3, kb: [40, -40], stun: 520, level: "high", stop: 28, zap: true },
+    final: [630, { joint: "handF", r: 44, dmg: 14, kb: [1500, -220], stun: 500, level: "mid", stop: 140, launch: true, wallBounce: true, heavy: true, shake: 14, zap: true }],
     special: { pt: "RAJADA", en: "BARRAGE" },
   },
   /** Q in the air: hangs there punching, then smashes down. */
@@ -196,11 +206,15 @@ export const MOVES = {
     special: { pt: "TEMPESTADE", en: "STORM" },
   },
   /** W: a rising cyclone of kicks. */
+  /**
+   * W: dash in, spin up carrying them with kicks, raise the leg at the top
+   * and drive them into the floor with an axe kick.
+   */
   ciclone: {
-    frames: [["cicloneCoil", 110, "io"], ["roundhouse", 180, "snap"], ["spinKick", 260, "snap"], ["roundhouse", 340, "snap"], ["spinKick", 420, "snap"], ["highKick", 500, "snap"], ["highKick", 580, "lin"], ["fall", 800, "io"]],
-    total: 800, active: [120, 600], vel: [130, -640], lowGravity: 0.3, air: true, spins: 3, spinEnd: 470, rehit: beats(190, 4, 80).concat([490]),
+    frames: [["cicloneCoil", 110, "io"], ["roundhouse", 180, "snap"], ["spinKick", 260, "snap"], ["roundhouse", 340, "snap"], ["spinKick", 420, "snap"], ["axeUp", 520, "io"], ["diveKick", 580, "snap"], ["diveKick", 1400, "lin"]],
+    total: 1400, active: [120, 1400], homeIn: [110, 46], velAt: 110, vel: [130, -640], lowGravity: 0.3, air: true, spins: 3, spinEnd: 470, untilLand: true, dive: [560, 1300], rehit: beats(190, 4, 80).concat([560]),
     hit: { joint: "footF", r: 36, dmg: 4, kb: [110, -560], stun: 500, level: "mid", stop: 35, launch: true },
-    final: [480, { joint: "footF", r: 36, dmg: 11, kb: [780, -300], stun: 500, level: "mid", stop: 130, launch: true, wallBounce: true, heavy: true, shake: 12 }],
+    final: [540, { joint: "footF", r: 42, dmg: 13, kb: [160, 1150], stun: 500, level: "high", stop: 140, launch: true, groundBounce: true, heavy: true, shake: 14 }],
     special: { pt: "CICLONE", en: "CYCLONE" },
   },
   /** W in the air: an axe kick that crashes down and shakes the floor. */

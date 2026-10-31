@@ -167,6 +167,10 @@ export class Audio {
         this.tone("square", 220, 220, 0.18, 0.15);
         this.tone("square", 330, 330, 0.3, 0.15, undefined, this.ctx.currentTime + 0.2);
         break;
+      case "pickup":
+        this.tone("triangle", 660, 990, 0.12, 0.22);
+        this.tone("triangle", 990, 1320, 0.16, 0.18, undefined, this.ctx.currentTime + 0.08);
+        break;
       case "fight":
         this.tone("sawtooth", 440, 880, 0.35, 0.2);
         break;

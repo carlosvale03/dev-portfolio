@@ -16,7 +16,7 @@ const RANK_AT = [0, 90, 190, 300, 420, 540, 660];
 export type Phase = "intro" | "fight" | "wave" | "clear" | "over" | "victory";
 export type Sound =
   | "light" | "heavy" | "block" | "parry" | "whoosh" | "whooshHeavy" | "jump" | "land" | "ko" | "zap"
-  | "wall" | "stomp" | "slowIn" | "slowOut" | "grab" | "orb" | "charge" | "round" | "fight" | "roll" | "reflect" | "special" | "tired";
+  | "wall" | "stomp" | "slowIn" | "slowOut" | "grab" | "orb" | "charge" | "round" | "fight" | "roll" | "reflect" | "special" | "tired" | "pickup";
 
 export interface Spark {
   x: number;
@@ -60,6 +60,29 @@ export interface Orb {
   owner: Fighter;
 }
 
+export type PickupKind = "cafe" | "bateria" | "carga" | "firewall" | "overclock";
+export interface Pickup {
+  kind: PickupKind;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  /** Seconds left before it vanishes (it blinks for the last three). */
+  life: number;
+  t: number;
+}
+
+/** What each pickup does, and how often it drops. */
+export const PICKUPS: Record<PickupKind, { weight: number; color: string; name: { pt: string; en: string } }> = {
+  cafe: { weight: 34, color: "#f3b14e", name: { pt: "CAFÉ +VIDA", en: "COFFEE +HEALTH" } },
+  bateria: { weight: 24, color: "#9fc3ff", name: { pt: "BATERIA CHEIA", en: "FULL BATTERY" } },
+  carga: { weight: 18, color: "#e23b2e", name: { pt: "+1 SOBRECARGA", en: "+1 OVERLOAD" } },
+  firewall: { weight: 12, color: "#6fcf73", name: { pt: "FIREWALL", en: "FIREWALL" } },
+  overclock: { weight: 12, color: "#ff8a3d", name: { pt: "OVERCLOCK", en: "OVERCLOCK" } },
+};
+const SHIELD_MS = 9000;
+const BOOST_MS = 10000;
+
 export interface StageStats {
   time: number;
   damage: number;
@@ -100,6 +123,9 @@ export class Game implements Host {
   fighters: Fighter[] = [];
   player: Fighter;
   orbs: Orb[] = [];
+  pickups: Pickup[] = [];
+  /** Real time the player's health was last restored, for the HUD to glow. */
+  healAt = -9999;
   sparks: Spark[] = [];
   arcs: Arc[] = [];
   rings: Ring[] = [];
@@ -185,7 +211,9 @@ export class Game implements Host {
     this.stats = { time: 0, damage: 0, maxCombo: 0, bestRank: 0 };
     this.fighters = this.fighters.filter((f) => f.team === 0);
     this.orbs = [];
-    this.resetPlayer(stage === 0 && this.endless < 0);
+    this.pickups = [];
+    // Every new round starts with full health.
+    this.resetPlayer(true);
     this.setPhase("intro");
     this.sound("round");
   }
@@ -194,7 +222,8 @@ export class Game implements Host {
     this.endless = 0;
     this.wave = 0;
     this.fighters = this.fighters.filter((f) => f.team === 0);
-    this.resetPlayer(false);
+    this.pickups = [];
+    this.resetPlayer(true);
     this.setPhase("intro");
     this.sound("round");
   }
@@ -213,8 +242,12 @@ export class Game implements Host {
     p.dissolve = 0;
     p.special = false;
     p.homing = null;
+    if (full && p.hp < p.maxHp && this.score > 0) {
+      this.healAt = this.now;
+      this.float(p.x, -230, this.lang === "pt" ? "VIDA RESTAURADA" : "HEALTH RESTORED", "#f3b14e", true);
+    }
     p.hp = full ? p.maxHp : Math.min(p.maxHp, Math.max(p.hp, 1) + p.maxHp * 0.45);
-    if (full) p.meter = 0;
+    p.shieldUntil = p.boostUntil = -1;
     this.slowMeter = 1;
     this.cine.ms = 0;
     this.combo = 0;
@@ -331,6 +364,7 @@ export class Game implements Host {
         this.cine = { ms: 200, max: 200, name: m.special[this.lang] };
         this.sound("special");
         this.addStyle(f.move!, 30);
+        if (f.homing) this.chainTarget = f.homing;
         break;
       }
       case "meteor": {
@@ -488,7 +522,7 @@ export class Game implements Host {
       if (f.team === 0 && this.phase !== "fight") intent = { ...intent, special: 0, overload: false };
       f.update(STEP, this.timeScale(f), intent, this);
       if (f.team === 0) used(f, before);
-      if (f.team === 0 && before.move === "meteoro" && f.move !== "meteoro" && f.grounded) this.event("meteor", f);
+      if (f.team === 0 && (before.move === "meteoro" || before.move === "ciclone") && f.move !== before.move && f.grounded) this.event("meteor", f);
       // The bolt leaves a lightning trail along the dash.
       const from = this.boltFrom.get(f.id);
       if (from && f.move === "bolt" && f.moveT >= 90 && f.moveT <= 320) {
@@ -504,6 +538,7 @@ export class Game implements Host {
     this.separate();
     this.resolveHits();
     this.updateOrbs(STEP * world);
+    this.updatePickups(STEP * world);
     this.tokens();
     this.bossSummons();
     this.fighters = this.fighters.filter((f) => f.dissolve < 1);
@@ -649,6 +684,7 @@ export class Game implements Host {
 
   private applyHit(atk: Fighter, t: Fighter, spec: HitSpec, at: Vec, id: MoveId | "orb") {
     const wasLastAlive = t.team === 1 && this.enemies.filter((e) => e.alive).length === 1 && t.alive;
+    if (atk === this.player && this.now < atk.boostUntil) spec = { ...spec, dmg: spec.dmg * 1.6, kb: [spec.kb[0] * 1.2, spec.kb[1] * 1.1] };
     const outcome: Outcome = t.takeHit(atk, spec, at, this);
     if (outcome === "none") return;
     if (outcome === "parry") {
@@ -721,6 +757,9 @@ export class Game implements Host {
       if (t.team === 1) {
         this.award(t.arch!.points);
         this.float(t.x, t.joints.head.y - 40, "K.O.", "#e23b2e", true);
+        // The last enemy of a wave always drops something; the rest, sometimes.
+        const drops = t.kind === "legacy" ? 3 : wasLastAlive || this.rand() < 0.4 ? 1 : 0;
+        for (let i = 0; i < drops; i++) this.drop(t.joints.hip.x, t.joints.hip.y, i);
       }
       // The last blow of a wave (or the player's fall) plays in slow motion.
       if (wasLastAlive || t.team === 0) {
@@ -729,6 +768,59 @@ export class Game implements Host {
         this.hitstop = 140;
       }
     }
+  }
+
+  private drop(x: number, y: number, i: number) {
+    const total = Object.values(PICKUPS).reduce((s, p) => s + p.weight, 0);
+    let r = this.rand() * total;
+    let kind: PickupKind = "cafe";
+    for (const [k, p] of Object.entries(PICKUPS) as [PickupKind, (typeof PICKUPS)[PickupKind]][]) {
+      r -= p.weight;
+      if (r <= 0) {
+        kind = k;
+        break;
+      }
+    }
+    this.pickups.push({ kind, x, y: Math.min(FLOOR - 20, y), vx: (i - 1) * 140 + (this.rand() - 0.5) * 120, vy: -520 - this.rand() * 200, life: 12, t: 0 });
+  }
+
+  private updatePickups(dt: number) {
+    const p = this.player;
+    for (const it of this.pickups) {
+      it.t += dt;
+      it.life -= dt;
+      it.vy += 1600 * dt;
+      it.x += it.vx * dt;
+      it.y += it.vy * dt;
+      if (it.y > FLOOR - 18) {
+        it.y = FLOOR - 18;
+        it.vy *= -0.35;
+        it.vx *= 0.6;
+      }
+      it.x = Math.max(ARENA.left + 30, Math.min(ARENA.right - 30, it.x));
+      if (!p.alive || it.t < 0.35) continue;
+      if (Math.abs(p.joints.hip.x - it.x) < 46 && Math.abs(p.joints.hip.y - it.y) < 110) {
+        it.life = 0;
+        this.collect(it);
+      }
+    }
+    this.pickups = this.pickups.filter((it) => it.life > 0);
+  }
+
+  private collect(it: Pickup) {
+    const p = this.player;
+    const info = PICKUPS[it.kind];
+    if (it.kind === "cafe") {
+      p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.35);
+      this.healAt = this.now;
+    } else if (it.kind === "bateria") this.slowMeter = 1;
+    else if (it.kind === "carga") p.meter = Math.min(100, p.meter + 34);
+    else if (it.kind === "firewall") p.shieldUntil = this.now + SHIELD_MS;
+    else p.boostUntil = this.now + BOOST_MS;
+    this.rings.push({ x: it.x, y: it.y, r: 8, grow: 420, life: 0.35, max: 0.35, color: info.color });
+    this.burst(it.x, it.y, info.color, 14, 380);
+    this.float(it.x, it.y - 40, info.name[this.lang], info.color, true);
+    this.sound("pickup");
   }
 
   private updateOrbs(dt: number) {

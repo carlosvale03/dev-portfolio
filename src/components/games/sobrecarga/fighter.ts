@@ -115,6 +115,9 @@ export class Fighter {
   special = false;
   /** The body a chained special is chasing (the super kick follows it up). */
   homing: Fighter | null = null;
+  /** Power-ups from pickups: world times (ms) until they wear off. */
+  shieldUntil = -1;
+  boostUntil = -1;
   /** Pose before smoothing, so state changes blend instead of popping. */
   private shown: Pose = POSES.stance;
   /** AI bookkeeping. */
@@ -170,7 +173,7 @@ export class Fighter {
     this.moveHit = false;
     this.hitSet.clear();
     this.go("attack");
-    if (m.vel) {
+    if (m.vel && !m.velAt) {
       this.vx = m.vel[0] * this.facing;
       if (m.vel[1]) this.vy = m.vel[1];
       if (m.vel[1] < 0) this.y = Math.min(this.y, FLOOR - 1);
@@ -180,6 +183,12 @@ export class Fighter {
     this.smear = [];
     if (m.special) this.special = true;
     else if (!SPECIAL_CHAIN.includes(id)) this.special = false;
+    // Specials that dash in pick the nearest enemy within reach.
+    if (m.homeIn) {
+      const foe = host.foe(this);
+      this.homing = foe && Math.abs(foe.x - this.x) < 460 ? foe : null;
+      if (this.homing) this.facing = Math.sign(this.homing.x - this.x) || this.facing;
+    }
     if (id === "overload") host.event("charge", this);
     if (m.special) host.event("special", this);
   }
@@ -190,7 +199,8 @@ export class Fighter {
     if (!this.hittable) return "none";
     const dir = Math.sign(this.x - from.x) || from.facing;
     const facingFoe = Math.sign(from.x - this.x) === this.facing;
-    if (this.state === "block" && facingFoe && !(spec.level === "low" && !this.crouchBlock())) {
+    // Specials go through guards and parries: once they connect, they play out.
+    if (this.state === "block" && facingFoe && !from.special && !(spec.level === "low" && !this.crouchBlock())) {
       if (host.now - this.blockPressedAt < PARRY_WINDOW) return "parry";
       this.vx = dir * spec.kb[0] * 0.55;
       this.stun = spec.stun * 0.55;
@@ -203,7 +213,8 @@ export class Fighter {
     if (this.heldBy && !kneed) this.release();
     if (this.holding) this.holding.release();
 
-    this.hp = Math.max(0, this.hp - spec.dmg * (this.team === 0 ? 0.7 : 1));
+    const shielded = host.now < this.shieldUntil;
+    this.hp = Math.max(0, this.hp - spec.dmg * (this.team === 0 ? 0.7 : 1) * (shielded ? 0.3 : 1));
     this.flash = 110;
     this.lastHit = host.now;
     this.meter = Math.min(100, this.meter + spec.dmg * 0.6);
@@ -533,6 +544,18 @@ export class Fighter {
     else if (m.float) this.vx *= Math.max(0, 1 - dt * 6);
     if (m.rehit) for (const t of m.rehit) if (before < t && this.moveT >= t) this.hitSet.clear();
     if (m.spins) this.spin = Math.PI * 2 * m.spins * EASES.io(Math.min(1, this.moveT / (m.spinEnd ?? m.active[1])));
+    if (m.homeIn && this.homing && this.moveT < m.homeIn[0]) {
+      // Close the gap before the first strike lands.
+      const tx = this.homing.x - this.facing * m.homeIn[1] * this.scale;
+      this.vx = Math.max(-1600, Math.min(1600, (tx - this.x) * 14));
+    } else if (m.homeIn && this.moveT < m.homeIn[0] + 40) this.vx *= 0.5;
+    if (m.dive && before < m.dive[0] && this.moveT >= m.dive[0]) this.vy = m.dive[1];
+    if (m.vel && m.velAt && before < m.velAt && this.moveT >= m.velAt) {
+      // Launch only once the dash-in has closed the gap.
+      this.vx = m.vel[0] * this.facing;
+      this.vy = m.vel[1];
+      this.y = Math.min(this.y, FLOOR - 1);
+    }
     if (id === "superChute" && this.homing && this.moveT < a + 60) {
       // Leap after the body that was thrown up, to meet it at the top.
       const t = this.homing.joints.hip;
@@ -588,7 +611,7 @@ export class Fighter {
       this.startMove("superChute", host);
       return;
     }
-    if (id === "superChute") this.homing = null;
+    if (id === "superChute" || (id && moveOf(id).homeIn)) this.homing = null;
     this.move = null;
     this.spin = 0;
     if (landed) host.event("land", this);
@@ -607,7 +630,7 @@ export class Fighter {
       const m = this.move ? moveOf(this.move) : null;
       const floating = this.state === "attack" && ((m?.float && this.moveT < m.active[1]) || (this.move === "superChute" && this.homing && this.moveT < m!.active[0] + 60));
       // Air attacks hang a little after they connect.
-      const low = this.state === "attack" && m?.lowGravity && this.moveT < m.active[1] ? m.lowGravity : 1;
+      const low = this.state === "attack" && m?.lowGravity && this.moveT < (m.dive?.[0] ?? m.active[1]) ? m.lowGravity : 1;
       const hang = floating ? 0 : this.state === "attack" && m?.air && this.moveHit && !m.untilLand ? Math.min(0.45, low) : low;
       // Floating specials hold still; the super kick keeps its chase velocity.
       if (floating && m?.float) this.vy = 0;
@@ -680,7 +703,13 @@ export class Fighter {
         p = POSES.crouch;
         break;
       case "air":
-        p = this.vy < 0 ? POSES.jump : mixPose(POSES.jump, POSES.fall, Math.min(1, this.vy / 600));
+        // Stretch on the way up, tuck at the top, reach for the floor coming down.
+        p =
+          this.vy < -380
+            ? mixPose(POSES.jumpTuck, POSES.jumpStretch, Math.min(1, (-this.vy - 380) / 300))
+            : this.vy < 380
+              ? POSES.jumpTuck
+              : mixPose(POSES.jumpTuck, POSES.jumpFall, Math.min(1, (this.vy - 380) / 400));
         if (this.jumps === 0) {
           p = POSES.flip;
           this.spin = Math.PI * 2 * ease(Math.min(1, T / 460));
@@ -825,15 +854,15 @@ function runPose(ph: number, k: number): Pose {
   const sw = Math.sin(ph);
   const lift = (a: number) => Math.pow((Math.cos(a) + 1) / 2, 1.4);
   return {
-    lean: (14 + 12 * k) * D,
-    neck: -12 * D,
-    uaF: (30 - 58 * sw * k) * D,
-    faF: (95 + 10 * sw) * D,
-    uaB: (30 + 58 * sw * k) * D,
-    faB: (95 - 10 * sw) * D,
-    thF: (16 + 50 * sw * k) * D,
-    shF: -(18 + 100 * lift(ph) * k) * D,
-    thB: (16 - 50 * sw * k) * D,
-    shB: -(18 + 100 * lift(ph + Math.PI) * k) * D,
+    lean: (14 + 20 * k) * D,
+    neck: -16 * D,
+    uaF: (34 - 64 * sw * k) * D,
+    faF: (100 + 14 * sw) * D,
+    uaB: (34 + 64 * sw * k) * D,
+    faB: (100 - 14 * sw) * D,
+    thF: (22 + 58 * sw * k) * D,
+    shF: -(20 + 110 * lift(ph) * k) * D,
+    thB: (22 - 58 * sw * k) * D,
+    shB: -(20 + 110 * lift(ph + Math.PI) * k) * D,
   };
 }
