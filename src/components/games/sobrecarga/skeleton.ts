@@ -59,6 +59,37 @@ export function mixPose(a: Pose, b: Pose, t: number): Pose {
   return out;
 }
 
+const KEYS: (keyof Pose)[] = ["lean", "neck", "uaF", "faF", "uaB", "faB", "thF", "shF", "thB", "shB"];
+
+/** A pose from the degree arrays in mocap.ts. */
+export function poseOf(a: number[]): Pose {
+  const out = {} as Pose;
+  KEYS.forEach((k, i) => (out[k] = a[i] * D));
+  return out;
+}
+
+/**
+ * Catmull-Rom between b and c (a and d are the neighbours): the limbs travel
+ * along smooth curves through the keyframes, with no corner at each key.
+ */
+export function splinePose(a: Pose, b: Pose, c: Pose, d: Pose, t: number): Pose {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const out = {} as Pose;
+  for (const k of KEYS) {
+    out[k] = 0.5 * (2 * b[k] + (-a[k] + c[k]) * t + (2 * a[k] - 5 * b[k] + 4 * c[k] - d[k]) * t2 + (-a[k] + 3 * b[k] - 3 * c[k] + d[k]) * t3);
+  }
+  return out;
+}
+
+/** Samples a pose track at a fractional index, smoothly; `loop` wraps around. */
+export function sampleTrack(track: Pose[], s: number, loop = false): Pose {
+  const n = track.length;
+  const at = (i: number) => (loop ? track[((i % n) + n) % n] : track[Math.max(0, Math.min(n - 1, i))]);
+  const i = Math.floor(s);
+  return splinePose(at(i - 1), at(i), at(i + 1), at(i + 2), s - i);
+}
+
 const down = (len: number, a: number): Vec => ({ x: Math.sin(a) * len, y: Math.cos(a) * len });
 const add = (a: Vec, b: Vec): Vec => ({ x: a.x + b.x, y: a.y + b.y });
 
@@ -104,10 +135,12 @@ export function footDrop(j: Joints) {
 }
 
 // --- Pose library ------------------------------------------------------------
+// The guard, punches and kicks follow CMU motion capture (mocap.cs.cmu.edu),
+// converted to these joint angles.
 
 export const POSES = {
-  stance: deg({ lean: 4, neck: -2, uaF: 34, faF: 90, uaB: 19, faB: 115, thF: 16, shF: -10, thB: -14, shB: -6 }),
-  stance2: deg({ lean: 7, neck: -4, uaF: 30, faF: 96, uaB: 16, faB: 118, thF: 21, shF: -20, thB: -17, shB: -15 }),
+  stance: deg({ lean: 7, neck: -4, uaF: 43, faF: 165, uaB: 21, faB: 132, thF: 31, shF: -39, thB: -27, shB: 0 }),
+  stance2: deg({ lean: 5, neck: 2, uaF: 49, faF: 147, uaB: 36, faB: 110, thF: 37, shF: -43, thB: -32, shB: -4 }),
   walk1: deg({ lean: 10, neck: -6, uaF: 50, faF: 96, uaB: 30, faB: 108, thF: 32, shF: -14, thB: -28, shB: -22 }),
   walk2: deg({ lean: 10, neck: -6, uaF: 50, faF: 96, uaB: 30, faB: 108, thF: -6, shF: -40, thB: 10, shB: -6 }),
   run1: deg({ lean: 26, neck: -14, uaF: -40, faF: 100, uaB: 60, faB: 80, thF: 60, shF: -40, thB: -38, shB: -70 }),
@@ -119,9 +152,9 @@ export const POSES = {
   block: deg({ lean: 0, neck: -16, uaF: 70, faF: 120, uaB: 58, faB: 128, thF: 18, shF: -18, thB: -18, shB: -10 }),
   roll: deg({ lean: 90, neck: -40, uaF: 60, faF: 110, uaB: 50, faB: 110, thF: 120, shF: -150, thB: 110, shB: -150 }),
   // punches
-  jabWind: deg({ lean: 3, neck: -3, uaF: 26, faF: 112, uaB: 18, faB: 118, thF: 17, shF: -12, thB: -15, shB: -6 }),
-  jab: deg({ lean: 9, neck: -5, uaF: 101, faF: 2, uaB: 27, faB: 116, thF: 24, shF: -12, thB: -21, shB: -5 }),
-  cross: deg({ lean: 15, neck: -7, uaF: 40, faF: 104, uaB: 107, faB: 2, thF: 28, shF: -16, thB: -24, shB: -3 }),
+  jabWind: deg({ lean: -2, neck: 8, uaF: -4, faF: 123, uaB: -18, faB: 105, thF: 26, shF: -42, thB: 16, shB: -42 }),
+  jab: deg({ lean: -2, neck: 8, uaF: 78, faF: 16, uaB: -24, faB: 102, thF: 22, shF: -38, thB: 18, shB: -45 }),
+  cross: deg({ lean: 11, neck: 0, uaF: 45, faF: 136, uaB: 82, faB: 10, thF: 41, shF: -44, thB: -25, shB: -14 }),
   hookWind: deg({ lean: -6, neck: -2, uaF: -30, faF: 70, uaB: 22, faB: 116, thF: 14, shF: -16, thB: -20, shB: -10 }),
   hook: deg({ lean: 28, neck: -12, uaF: 128, faF: 12, uaB: 30, faB: 112, thF: 34, shF: -24, thB: -26, shB: -4 }),
   upperWind: deg({ lean: 22, neck: -10, uaF: 12, faF: 60, uaB: 30, faB: 112, thF: 50, shF: -70, thB: -6, shB: -60 }),
@@ -130,10 +163,10 @@ export const POSES = {
   lowPunch: deg({ lean: 40, neck: -30, uaF: 110, faF: 0, uaB: 40, faB: 100, thF: 80, shF: -120, thB: 20, shB: -110 }),
   airPunch: deg({ lean: 20, neck: -14, uaF: 120, faF: 0, uaB: 20, faB: 100, thF: 70, shF: -100, thB: 10, shB: -90 }),
   // kicks
-  kickWind: deg({ lean: -4, neck: -4, uaF: 61, faF: 50, uaB: -34, faB: 20, thF: 100, shF: -120, thB: -6, shB: -4 }),
-  frontKick: deg({ lean: -16, neck: 4, uaF: 44, faF: 55, uaB: -61, faB: 20, thF: 90, shF: -2, thB: -4, shB: -2 }),
-  roundWind: deg({ lean: -16, neck: 0, uaF: 54, faF: 50, uaB: -51, faB: 20, thF: 115, shF: -125, thB: -12, shB: -4 }),
-  roundhouse: deg({ lean: -26, neck: 6, uaF: 49, faF: 45, uaB: -76, faB: 15, thF: 128, shF: -4, thB: -14, shB: -2 }),
+  kickWind: deg({ lean: -9, neck: 20, uaF: -13, faF: 110, uaB: 14, faB: 56, thF: 131, shF: -88, thB: 17, shB: -48 }),
+  frontKick: deg({ lean: -12, neck: 20, uaF: -4, faF: 108, uaB: 8, faB: 66, thF: 128, shF: -14, thB: 9, shB: -43 }),
+  roundWind: deg({ lean: -26, neck: 24, uaF: -10, faF: 134, uaB: 12, faB: 130, thF: 147, shF: -53, thB: 11, shB: -30 }),
+  roundhouse: deg({ lean: -26, neck: 24, uaF: -8, faF: 134, uaB: 8, faB: 130, thF: 129, shF: 3, thB: 12, shB: -30 }),
   spinWind: deg({ lean: 25, neck: -12, uaF: 20, faF: 100, uaB: 70, faB: 80, thF: 16, shF: -20, thB: -40, shB: -110 }),
   spinKick: deg({ lean: 55, neck: -22, uaF: 10, faF: 60, uaB: 100, faB: 20, thF: 12, shF: -10, thB: -110, shB: -2 }),
   sweep: deg({ lean: 50, neck: -30, uaF: 120, faF: 20, uaB: 70, faB: 50, thF: 86, shF: -2, thB: 40, shB: -150 }),
@@ -152,16 +185,16 @@ export const POSES = {
   burst: deg({ lean: 30, neck: -30, uaF: 100, faF: 0, uaB: 90, faB: 0, thF: 70, shF: -90, thB: -50, shB: -10 }),
   bolt: deg({ lean: 60, neck: -50, uaF: 110, faF: 0, uaB: -40, faB: 10, thF: 20, shF: -20, thB: -70, shB: -20 }),
   // follow-through, so strikes swing past the target instead of stopping dead
-  jabBack: deg({ lean: 6, neck: -4, uaF: 60, faF: 60, uaB: 24, faB: 116, thF: 20, shF: -12, thB: -17, shB: -6 }),
-  crossBack: deg({ lean: 10, neck: -5, uaF: 36, faF: 98, uaB: 60, faB: 60, thF: 22, shF: -14, thB: -19, shB: -5 }),
+  jabBack: deg({ lean: -2, neck: 8, uaF: 66, faF: 57, uaB: -28, faB: 100, thF: 19, shF: -35, thB: 17, shB: -43 }),
+  crossBack: deg({ lean: 12, neck: 0, uaF: 46, faF: 149, uaB: 44, faB: 89, thF: 37, shF: -40, thB: -23, shB: -12 }),
   hookFollow: deg({ lean: 30, neck: -14, uaF: 70, faF: 30, uaB: 32, faB: 110, thF: 32, shF: -26, thB: -24, shB: -6 }),
-  roundFollow: deg({ lean: -10, neck: -2, uaF: 40, faF: 70, uaB: -30, faB: 30, thF: 95, shF: -115, thB: -10, shB: -4 }),
+  roundFollow: deg({ lean: -23, neck: 24, uaF: -4, faF: 134, uaB: 5, faB: 130, thF: 139, shF: -45, thB: 13, shB: -32 }),
   spinFollow: deg({ lean: 22, neck: -10, uaF: 30, faF: 100, uaB: 40, faB: 110, thF: 26, shF: -36, thB: -26, shB: -60 }),
   slamDown: deg({ lean: 70, neck: -40, uaF: 150, faF: 0, uaB: 140, faB: 10, thF: 70, shF: -90, thB: -50, shB: -20 }),
   overhead: deg({ lean: -20, neck: 20, uaF: 190, faF: 0, uaB: 180, faB: 0, thF: 20, shF: -30, thB: -20, shB: -20 }),
   axeUp: deg({ lean: -10, neck: -10, uaF: 20, faF: 90, uaB: -30, faB: 60, thF: 175, shF: -2, thB: 20, shB: -100 }),
   tackle: deg({ lean: 60, neck: -40, uaF: 110, faF: 20, uaB: 100, faB: 30, thF: 40, shF: -50, thB: -70, shB: -30 }),
-  highKick: deg({ lean: -38, neck: 10, uaF: 42, faF: 40, uaB: -98, faB: 15, thF: 160, shF: -2, thB: -12, shB: 0 }),
+  highKick: deg({ lean: -30, neck: 24, uaF: -7, faF: 128, uaB: 13, faB: 130, thF: 160, shF: -6, thB: 8, shB: -23 }),
   spinTwist: deg({ lean: 8, neck: 0, uaF: 40, faF: 120, uaB: 40, faB: 120, thF: 10, shF: -30, thB: 4, shB: -30 }),
   lowWind: deg({ lean: 30, neck: -20, uaF: 80, faF: 60, uaB: 60, faB: 70, thF: 70, shF: -130, thB: 10, shB: -120 }),
   heldHunch: deg({ lean: 40, neck: -10, uaF: 30, faF: 20, uaB: 24, faB: 24, thF: 24, shF: -34, thB: -18, shB: -24 }),
@@ -171,6 +204,14 @@ export const POSES = {
   rajadaCharge: deg({ lean: -12, neck: -10, uaF: -62, faF: 110, uaB: 14, faB: 122, thF: 42, shF: -64, thB: -32, shB: -42 }),
   cicloneCoil: deg({ lean: 30, neck: -16, uaF: 60, faF: 130, uaB: 70, faB: 130, thF: 85, shF: -135, thB: 20, shB: -125 }),
   choqueCharge: deg({ lean: 18, neck: -12, uaF: 96, faF: 8, uaB: -30, faB: 40, thF: 36, shF: -50, thB: -36, shB: -26 }),
+  jumpStretch: deg({ lean: 2, neck: -8, uaF: 120, faF: 40, uaB: 70, faB: 60, thF: 18, shF: -10, thB: -14, shB: -16 }),
+  jumpTuck: deg({ lean: 14, neck: -10, uaF: 60, faF: 100, uaB: 40, faB: 110, thF: 100, shF: -130, thB: 70, shB: -120 }),
+  jumpFall: deg({ lean: 4, neck: -4, uaF: 80, faF: 50, uaB: -20, faB: 50, thF: 30, shF: -30, thB: -10, shB: -40 }),
+  beamWind: deg({ lean: 0, neck: 2, uaF: -20, faF: 70, uaB: -16, faB: 66, thF: 30, shF: -40, thB: -28, shB: -20 }),
+  beamCharge: deg({ lean: -6, neck: 6, uaF: -41, faF: 45, uaB: -38, faB: 40, thF: 38, shF: -58, thB: -34, shB: -30 }),
+  beamFire: deg({ lean: 14, neck: -4, uaF: 100, faF: 0, uaB: 96, faB: 6, thF: 50, shF: -48, thB: -48, shB: -6 }),
+  beamFizzle: deg({ lean: 24, neck: -16, uaF: 30, faF: 20, uaB: 24, faB: 24, thF: 24, shF: -30, thB: -20, shB: -20 }),
+  beamGuard: deg({ lean: 20, neck: -12, uaF: 104, faF: 96, uaB: 84, faB: 118, thF: 36, shF: -46, thB: -42, shB: -8 }),
   // getting hit
   flinchHigh: deg({ lean: -24, neck: 30, uaF: 20, faF: 60, uaB: -10, faB: 60, thF: 20, shF: -20, thB: -20, shB: -10 }),
   flinchLow: deg({ lean: 46, neck: -10, uaF: -10, faF: 20, uaB: -20, faB: 20, thF: 30, shF: -40, thB: -24, shB: -20 }),

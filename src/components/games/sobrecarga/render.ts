@@ -2,7 +2,7 @@ import type { Fighter } from "./fighter";
 import { MOVES, type MoveId } from "./moves";
 import { FLOOR } from "./ragdoll";
 import { BONES, SEGMENTS, type Joints, type Vec } from "./skeleton";
-import { ARENA, RANKS, type Game } from "./world";
+import { ARENA, PICKUPS, RANKS, type Game, type Pickup } from "./world";
 
 // Draws a frame: the server-room arena, fighters as thick-lined stick
 // figures with reflections and trails, effects, then the HUD.
@@ -99,6 +99,8 @@ export function render(ctx: CanvasRenderingContext2D, g: Game, W: number, H: num
     ctx.ellipse(sx(f.joints.hip.x), floorY + 2, w, w * 0.22, 0, 0, Math.PI * 2);
     ctx.fill();
   }
+  for (const it of g.pickups) drawPickup(ctx, it, S, k);
+  powerAura(ctx, g, S, k);
   if (g.cineK > 0.01) speedLines(ctx, g, S(g.player.joints.hip), W, H);
   for (const f of order) smear(ctx, f, S, k, g);
   // The finisher splits the colour channels for a moment.
@@ -124,7 +126,9 @@ export function render(ctx: CanvasRenderingContext2D, g: Game, W: number, H: num
   }
 
   effects(ctx, g, S, k);
+  energy(ctx, g, S, k, W);
   for (const f of g.enemies) enemyBar(ctx, f, S, k, g);
+  keyPrompts(ctx, g, S, W, H);
   // Impact frame: two frames of white silhouettes on black.
   if (g.now - g.impactAt < 90) {
     ctx.fillStyle = "#000";
@@ -135,6 +139,193 @@ export function render(ctx: CanvasRenderingContext2D, g: Game, W: number, H: num
 
   overlays(ctx, g, W, H);
   hud(ctx, g, W, H, best);
+}
+
+/** The energy gathered in the hands, and the blast once it goes out. */
+function energy(ctx: CanvasRenderingContext2D, g: Game, S: (p: Vec) => Vec, k: number, W: number) {
+  const p = g.player;
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  if (g.charge && p.state === "charge") {
+    const h = S(g.handsOf(p));
+    const r = (7 + 24 * p.charge) * k * (1 + Math.sin(g.now / 40) * 0.08);
+    const glow = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, r * 3);
+    glow.addColorStop(0, "rgba(255,255,255,0.95)");
+    glow.addColorStop(0.25, "rgba(255,120,100,0.8)");
+    glow.addColorStop(1, "rgba(226,59,46,0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(h.x, h.y, r * 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const b = g.beam;
+  if (b) {
+    const s = S({ x: b.x, y: b.y });
+    let len = Math.min(2600, b.t * 4200) * k;
+    if (b.blocker) {
+      const t = b.blocker;
+      const contact = (t.joints.handF.x + t.joints.handB.x) / 2 - b.dir * 6;
+      len = Math.min(len, Math.max(0, (contact - b.x) * b.dir) * k);
+    }
+    const fade = Math.min(1, (b.dur - b.t) / 0.25, b.t / 0.05);
+    const base = (b.full ? 52 : 32) * k;
+    const x1 = s.x + b.dir * Math.min(len, W * 2);
+    // Outer glow, body and white-hot core, each wobbling a little.
+    for (const [color, wk, alpha] of [
+      ["226,59,46", 2.2, 0.28],
+      ["255,90,70", 1.25, 0.75],
+      ["255,235,225", 0.5, 1],
+    ] as const) {
+      const w = base * wk * (1 + Math.sin(g.now / 26 + wk * 3) * 0.07) * fade;
+      const grad = ctx.createLinearGradient(0, s.y - w, 0, s.y + w);
+      grad.addColorStop(0, `rgba(${color},0)`);
+      grad.addColorStop(0.5, `rgba(${color},${alpha})`);
+      grad.addColorStop(1, `rgba(${color},0)`);
+      ctx.fillStyle = grad;
+      ctx.fillRect(Math.min(s.x, x1), s.y - w, Math.abs(x1 - s.x), w * 2);
+      // rounded ends: at the hands and at the head of the blast
+      ctx.beginPath();
+      ctx.ellipse(s.x, s.y, w * 0.9, w, 0, 0, Math.PI * 2);
+      ctx.ellipse(x1, s.y, w * 1.3, w * 1.15, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+/** While charging: the keys to type, the ones done lit in red, a timer under the next. */
+function keyPrompts(ctx: CanvasRenderingContext2D, g: Game, S: (p: Vec) => Vec, W: number, H: number) {
+  const c = g.charge;
+  if (!c) return;
+  const u = Math.min(W / 1280, H / 720);
+  const head = S(g.player.joints.head);
+  const size = 30 * u;
+  const gap = 6 * u;
+  const total = c.seq.length * size + (c.seq.length - 1) * gap;
+  const x0 = Math.max(12, Math.min(W - total - 12, head.x - total / 2));
+  const y = Math.max(90 * u, head.y - 90 * u);
+  ctx.save();
+  ctx.font = `900 ${Math.round(15 * u)}px ui-monospace, monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  c.seq.forEach((key, i) => {
+    const x = x0 + i * (size + gap);
+    const done = i < c.index;
+    const now = i === c.index;
+    ctx.fillStyle = done ? RED : "rgba(14,14,14,0.85)";
+    ctx.strokeStyle = done ? RED : now ? PAPER : "rgba(244,242,236,0.25)";
+    ctx.lineWidth = now ? 2.5 * u : 1.5 * u;
+    const lift = now ? Math.sin(g.now / 70) * 2 * u : 0;
+    ctx.beginPath();
+    ctx.roundRect(x, y - lift, size, size, 5 * u);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = done ? INK : now ? PAPER : "rgba(244,242,236,0.4)";
+    ctx.fillText(key, x + size / 2, y + size / 2 - lift);
+    if (now) {
+      const left = Math.max(0, (c.deadline - g.now) / 1150);
+      ctx.fillStyle = left < 0.35 ? RED : PAPER;
+      ctx.fillRect(x, y + size + 4 * u, size * Math.min(1, left), 3 * u);
+    }
+  });
+  ctx.restore();
+}
+
+/** A pickup: a glowing badge with its icon, bobbing; it blinks before it goes. */
+function drawPickup(ctx: CanvasRenderingContext2D, it: Pickup, S: (p: Vec) => Vec, k: number) {
+  if (it.life < 3 && Math.floor(it.life * 8) % 2 === 0) return;
+  const info = PICKUPS[it.kind];
+  const bob = it.y >= -19 ? Math.sin(it.t * 4) * 5 - 8 : 0;
+  const c = S({ x: it.x, y: it.y + bob });
+  const r = 17 * k;
+  ctx.save();
+  ctx.translate(c.x, c.y);
+  ctx.shadowColor = info.color;
+  ctx.shadowBlur = 18 * k;
+  ctx.fillStyle = INK;
+  ctx.strokeStyle = info.color;
+  ctx.lineWidth = 3 * k;
+  ctx.beginPath();
+  ctx.roundRect(-r, -r, r * 2, r * 2, 6 * k);
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = info.color;
+  ctx.strokeStyle = info.color;
+  ctx.lineWidth = 2.5 * k;
+  const u = k;
+  ctx.beginPath();
+  if (it.kind === "cafe") {
+    // a cup with a handle and steam
+    ctx.fillRect(-8 * u, -3 * u, 13 * u, 11 * u);
+    ctx.arc(7 * u, 2 * u, 4 * u, -Math.PI / 2, Math.PI / 2);
+    ctx.stroke();
+    ctx.beginPath();
+    for (const x of [-5, 1]) {
+      ctx.moveTo(x * u, -6 * u);
+      ctx.quadraticCurveTo((x + 3) * u, -9 * u, x * u, -13 * u);
+    }
+    ctx.stroke();
+  } else if (it.kind === "bateria") {
+    ctx.strokeRect(-10 * u, -6 * u, 18 * u, 12 * u);
+    ctx.fillRect(8 * u, -3 * u, 3 * u, 6 * u);
+    ctx.fillRect(-7 * u, -3 * u, 12 * u, 6 * u);
+  } else if (it.kind === "carga") {
+    ctx.moveTo(2 * u, -12 * u);
+    ctx.lineTo(-7 * u, 2 * u);
+    ctx.lineTo(0, 2 * u);
+    ctx.lineTo(-3 * u, 12 * u);
+    ctx.lineTo(7 * u, -3 * u);
+    ctx.lineTo(0, -3 * u);
+    ctx.closePath();
+    ctx.fill();
+  } else if (it.kind === "firewall") {
+    ctx.moveTo(0, -11 * u);
+    ctx.lineTo(9 * u, -7 * u);
+    ctx.quadraticCurveTo(8 * u, 7 * u, 0, 12 * u);
+    ctx.quadraticCurveTo(-8 * u, 7 * u, -9 * u, -7 * u);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fillRect(-1.5 * u, -6 * u, 3 * u, 12 * u);
+  } else {
+    // a chip with pins
+    ctx.strokeRect(-7 * u, -7 * u, 14 * u, 14 * u);
+    for (const d of [-4, 0, 4]) {
+      ctx.fillRect(d * u - u, -11 * u, 2 * u, 4 * u);
+      ctx.fillRect(d * u - u, 7 * u, 2 * u, 4 * u);
+    }
+    ctx.fillRect(-3 * u, -3 * u, 6 * u, 6 * u);
+  }
+  ctx.restore();
+}
+
+/** Firewall and overclock show on the player: a shield ring and a red heat. */
+function powerAura(ctx: CanvasRenderingContext2D, g: Game, S: (p: Vec) => Vec, k: number) {
+  const p = g.player;
+  if (!p.alive) return;
+  const c = S({ x: p.joints.hip.x, y: p.joints.hip.y - 20 });
+  if (g.now < p.shieldUntil) {
+    const fade = Math.min(1, (p.shieldUntil - g.now) / 1500);
+    ctx.save();
+    ctx.strokeStyle = `rgba(111,207,115,${0.55 * fade})`;
+    ctx.lineWidth = 3 * k;
+    ctx.setLineDash([10 * k, 6 * k]);
+    ctx.lineDashOffset = -g.now / 20;
+    ctx.beginPath();
+    ctx.ellipse(c.x, c.y, 62 * k, 96 * k, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+  if (g.now < p.boostUntil) {
+    ctx.save();
+    for (let i = 0; i < 6; i++) {
+      const a = g.now / 140 + i;
+      const y = ((g.now / 4 + i * 37) % 120) * k;
+      ctx.fillStyle = `rgba(255,138,61,${0.5 - y / (240 * k)})`;
+      ctx.fillRect(c.x + Math.sin(a) * 26 * k, c.y + 60 * k - y, 4 * k, 4 * k);
+    }
+    ctx.restore();
+  }
 }
 
 /** Radial speed lines streaming away from the player during a special. */
@@ -224,6 +415,31 @@ function smear(ctx: CanvasRenderingContext2D, f: Fighter, S: (p: Vec) => Vec, k:
     ctx.stroke();
   }
   ctx.restore();
+  // On contact the arc hardens into a solid wedge for the freeze frames.
+  if (g.hitstop > 0 && f.moveHit && f.state === "attack" && pts.length >= 4) {
+    const path = pts.slice(-6);
+    const left: Vec[] = [];
+    const right: Vec[] = [];
+    path.forEach((q, i) => {
+      const nxt = path[Math.min(path.length - 1, i + 1)];
+      const prv = path[Math.max(0, i - 1)];
+      const dx = nxt.x - prv.x;
+      const dy = nxt.y - prv.y;
+      const n = Math.hypot(dx, dy) || 1;
+      const w = (i / (path.length - 1)) * 11 * f.scale * k;
+      left.push({ x: q.x - (dy / n) * w, y: q.y + (dx / n) * w });
+      right.push({ x: q.x + (dy / n) * w, y: q.y - (dx / n) * w });
+    });
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath();
+    ctx.moveTo(left[0].x, left[0].y);
+    for (const q of left) ctx.lineTo(q.x, q.y);
+    for (const q of right.reverse()) ctx.lineTo(q.x, q.y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
 }
 
 function background(ctx: CanvasRenderingContext2D, g: Game, v: View) {
@@ -318,7 +534,7 @@ function drawFigure(ctx: CanvasRenderingContext2D, f: Fighter, j: Joints, S: (p:
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
 
-  const glow = f.team === 0 && f.meter >= 99 && !reflection && !tint;
+  const glow = f.team === 0 && (f.meter >= 99 || f.state === "charge" || f.move === "beamFire") && !reflection && !tint;
   const line = (a: keyof Joints, b: keyof Joints, color: string, w: number) => {
     const A = P(a);
     const B = P(b);
@@ -626,7 +842,8 @@ function hud(ctx: CanvasRenderingContext2D, g: Game, W: number, H: number, best:
     const fill = Math.max(0, Math.min(1, (p.hp / p.maxHp) * segs - i));
     ctx.fillStyle = "rgba(244,242,236,0.12)";
     ctx.fillRect(x, pad + 18 * u, bw / segs - 3 * u, 14 * u);
-    ctx.fillStyle = p.hp < p.maxHp * 0.3 ? RED : PAPER;
+    const healed = Math.max(0, 1 - (g.now - g.healAt) / 900);
+    ctx.fillStyle = healed > 0 ? AMBER : p.hp < p.maxHp * 0.3 ? RED : PAPER;
     ctx.fillRect(x, pad + 18 * u, (bw / segs - 3 * u) * fill, 14 * u);
   }
   const tired = Math.max(0, 1 - (g.now - g.tiredAt) / 500);
@@ -657,6 +874,24 @@ function hud(ctx: CanvasRenderingContext2D, g: Game, W: number, H: number, best:
     ctx.fillRect(x, pad + 60 * u, 52 * u * fill, 10 * u);
     ctx.shadowBlur = 0;
   }
+  // Active power-ups count down under the bars.
+  let px = pad;
+  for (const [kind, until, total] of [
+    ["firewall", p.shieldUntil, 9000],
+    ["overclock", p.boostUntil, 10000],
+  ] as const) {
+    if (g.now >= until) continue;
+    const info = PICKUPS[kind];
+    ctx.fillStyle = info.color;
+    ctx.font = `800 ${Math.round(10 * u)}px ui-monospace, monospace`;
+    ctx.fillText(info.name[g.lang], px, pad + 90 * u);
+    ctx.fillStyle = "rgba(244,242,236,0.12)";
+    ctx.fillRect(px, pad + 95 * u, 90 * u, 4 * u);
+    ctx.fillStyle = info.color;
+    ctx.fillRect(px, pad + 95 * u, 90 * u * Math.max(0, (until - g.now) / total), 4 * u);
+    px += 110 * u;
+  }
+  ctx.font = `700 ${Math.round(12 * u)}px ui-monospace, monospace`;
   const ready = p.meter >= 99;
   ctx.fillStyle = ready ? (Math.sin(g.now / 120) > 0 ? RED : PAPER) : "rgba(226,59,46,0.85)";
   ctx.fillText(ready ? `${T.over} ${T.ready}` : T.over, pad + 180 * u, pad + 70 * u);

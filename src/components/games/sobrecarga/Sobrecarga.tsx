@@ -76,6 +76,7 @@ const T = {
       ["F", "defender (segure) · no tempo certo, contra-ataca"],
       ["Q W E", "especiais em câmera lenta: rajada, ciclone, choque"],
       ["Espaço", "sobrecarga, com a barra vermelha cheia"],
+      ["G O K U K A M E", "com a bateria cheia: STACK OVERFLOW · errar no meio enfraquece ou estoura"],
       ["Esc / P", "pausa · M som"],
     ],
     tips: "Correndo, A, S e D viram investida, carrinho e agarrão voador · ↑ + A gancho · ↑ + S mortal · ↓ + S rasteira · no ar, Q W E mudam: tempestade, meteoro, raio · cada especial gasta uma carga da bateria · bata nas bolinhas roxas para devolver",
@@ -114,6 +115,7 @@ const T = {
       ["F", "guard (hold) · timed right, parries"],
       ["Q W E", "slow-motion specials: barrage, cyclone, shock"],
       ["Space", "overload, when the red bar is full"],
+      ["G O K U K A M E", "with a full battery: STACK OVERFLOW · a slip weakens it or blows it up"],
       ["Esc / P", "pause · M sound"],
     ],
     tips: "While running, A, S and D become a dash punch, a slide and a flying tackle · ↑ + A uppercut · ↑ + S flip kick · ↓ + S sweep · in the air Q W E change: storm, meteor, bolt · each special spends one battery charge · hit the purple orbs to send them back",
@@ -293,6 +295,12 @@ export default function Sobrecarga({ lang, onClose, reducedMotion }: { lang: "pt
       else if (key === "escape") close();
       return;
     }
+    // While the blast charges, every letter goes to its code, even A, E and M.
+    if (isDown && screen === "play" && game.current?.charge && /^[a-z]$/.test(key)) {
+      e.preventDefault();
+      if (!e.repeat) game.current.beamKey(key.toUpperCase());
+      return;
+    }
     if (isDown && key === "m") return toggleMute();
     if (isDown && key === "enter" && !(e.target instanceof HTMLButtonElement)) {
       e.preventDefault();
@@ -304,6 +312,12 @@ export default function Sobrecarga({ lang, onClose, reducedMotion }: { lang: "pt
       return;
     }
     const a = BIND[key];
+    // Free letters feed the energy blast's key sequence.
+    if (!a && isDown && !e.repeat && screen === "play" && /^[a-z]$/.test(key)) {
+      e.preventDefault();
+      game.current?.beamKey(key.toUpperCase());
+      return;
+    }
     if (!a) return;
     e.preventDefault();
     const g = game.current;

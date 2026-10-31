@@ -167,6 +167,23 @@ export class Audio {
         this.tone("square", 220, 220, 0.18, 0.15);
         this.tone("square", 330, 330, 0.3, 0.15, undefined, this.ctx.currentTime + 0.2);
         break;
+      case "beamTick":
+        this.tone("square", 520, 760, 0.07, 0.14);
+        break;
+      case "beam":
+        this.tone("sawtooth", 70, 30, 1.4, 0.5);
+        this.tone("square", 140, 60, 1.2, 0.18);
+        this.hiss(900, 0.5, 1.3, 0.6, 3000);
+        this.hiss(5000, 1.5, 0.6, 0.3);
+        break;
+      case "fizzle":
+        this.tone("triangle", 600, 120, 0.5, 0.16);
+        this.hiss(3000, 2, 0.4, 0.12, 600);
+        break;
+      case "pickup":
+        this.tone("triangle", 660, 990, 0.12, 0.22);
+        this.tone("triangle", 990, 1320, 0.16, 0.18, undefined, this.ctx.currentTime + 0.08);
+        break;
       case "fight":
         this.tone("sawtooth", 440, 880, 0.35, 0.2);
         break;

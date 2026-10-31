@@ -1,12 +1,13 @@
 import { CARRIES, CHAIN_K, CHAIN_P, SPECIAL_CHAIN, hitAt, moveOf, type Ease, type HitSpec, type MoveId } from "./moves";
 import { FLOOR, GRAVITY, Ragdoll } from "./ragdoll";
 import { ROSTER, type Archetype, type Head, type Kind } from "./roster";
-import { JOINTS, POSES, fk, footDrop, mixJoints, mixPose, place, type Joints, type Pose, type PoseId, type Vec } from "./skeleton";
+import { KICK_TRACKS } from "./mocap";
+import { JOINTS, POSES, fk, footDrop, mixJoints, mixPose, place, poseOf, sampleTrack, splinePose, type Joints, type Pose, type PoseId, type Vec } from "./skeleton";
 
 // One fighter, player or enemy: the same state machine runs both, driven by
 // an Intent that comes from the keyboard or from the AI.
 
-export type State = "idle" | "walk" | "run" | "crouch" | "air" | "attack" | "block" | "roll" | "hit" | "rag" | "getup" | "grab" | "held" | "dead";
+export type State = "idle" | "walk" | "run" | "crouch" | "air" | "attack" | "block" | "roll" | "hit" | "rag" | "getup" | "grab" | "held" | "dead" | "charge" | "brace";
 
 export interface Intent {
   dx: number;
@@ -115,6 +116,9 @@ export class Fighter {
   special = false;
   /** The body a chained special is chasing (the super kick follows it up). */
   homing: Fighter | null = null;
+  /** Power-ups from pickups: world times (ms) until they wear off. */
+  shieldUntil = -1;
+  boostUntil = -1;
   /** Pose before smoothing, so state changes blend instead of popping. */
   private shown: Pose = POSES.stance;
   /** AI bookkeeping. */
@@ -150,7 +154,7 @@ export class Fighter {
     return this.y >= FLOOR - 0.5;
   }
   get busy() {
-    return this.state === "attack" || this.state === "hit" || this.state === "rag" || this.state === "getup" || this.state === "held" || this.state === "roll" || this.state === "dead";
+    return this.state === "attack" || this.state === "hit" || this.state === "rag" || this.state === "getup" || this.state === "held" || this.state === "roll" || this.state === "dead" || this.state === "charge" || this.state === "brace";
   }
   /** Can be hit at all. */
   get hittable() {
@@ -170,7 +174,7 @@ export class Fighter {
     this.moveHit = false;
     this.hitSet.clear();
     this.go("attack");
-    if (m.vel) {
+    if (m.vel && !m.velAt) {
       this.vx = m.vel[0] * this.facing;
       if (m.vel[1]) this.vy = m.vel[1];
       if (m.vel[1] < 0) this.y = Math.min(this.y, FLOOR - 1);
@@ -180,6 +184,12 @@ export class Fighter {
     this.smear = [];
     if (m.special) this.special = true;
     else if (!SPECIAL_CHAIN.includes(id)) this.special = false;
+    // Specials that dash in pick the nearest enemy within reach.
+    if (m.homeIn) {
+      const foe = host.foe(this);
+      this.homing = foe && Math.abs(foe.x - this.x) < 460 ? foe : null;
+      if (this.homing) this.facing = Math.sign(this.homing.x - this.x) || this.facing;
+    }
     if (id === "overload") host.event("charge", this);
     if (m.special) host.event("special", this);
   }
@@ -190,7 +200,8 @@ export class Fighter {
     if (!this.hittable) return "none";
     const dir = Math.sign(this.x - from.x) || from.facing;
     const facingFoe = Math.sign(from.x - this.x) === this.facing;
-    if (this.state === "block" && facingFoe && !(spec.level === "low" && !this.crouchBlock())) {
+    // Specials go through guards and parries: once they connect, they play out.
+    if (this.state === "block" && facingFoe && !from.special && !(spec.level === "low" && !this.crouchBlock())) {
       if (host.now - this.blockPressedAt < PARRY_WINDOW) return "parry";
       this.vx = dir * spec.kb[0] * 0.55;
       this.stun = spec.stun * 0.55;
@@ -203,7 +214,8 @@ export class Fighter {
     if (this.heldBy && !kneed) this.release();
     if (this.holding) this.holding.release();
 
-    this.hp = Math.max(0, this.hp - spec.dmg * (this.team === 0 ? 0.7 : 1));
+    const shielded = host.now < this.shieldUntil;
+    this.hp = Math.max(0, this.hp - spec.dmg * (this.team === 0 ? 0.7 : 1) * (shielded ? 0.3 : 1));
     this.flash = 110;
     this.lastHit = host.now;
     this.meter = Math.min(100, this.meter + spec.dmg * 0.6);
@@ -286,6 +298,44 @@ export class Fighter {
       other.heldBy = null;
       if (other.state === "grab" || other.state === "held") other.go("idle");
     }
+  }
+
+  /** 0..1 how much energy the blast has gathered (drives the trembling). */
+  charge = 0;
+
+  /** Plants the feet and starts gathering the energy blast. */
+  startCharge() {
+    this.move = null;
+    this.vx = 0;
+    this.charge = 0;
+    this.special = true;
+    this.invuln = 60000;
+    this.go("charge");
+  }
+
+  /** Ends the charge: the blast goes out, falls apart, or blows up in the hands. */
+  endCharge(host: Host, how: "fire" | "fizzle" | "explode") {
+    this.invuln = how === "fire" ? 1500 : 0;
+    this.charge = 0;
+    if (how === "fire") this.startMove("beamFire", host);
+    else if (how === "fizzle") {
+      this.startMove("beamFizzle", host);
+      this.special = false;
+    } else this.special = false;
+  }
+
+  /** Crosses the arms and digs in against the energy blast, pushed back by it. */
+  brace(towards: number) {
+    this.move = null;
+    this.release();
+    this.facing = Math.sign(towards) || this.facing;
+    this.invuln = 0;
+    this.go("brace");
+  }
+
+  /** Lets go of the guard once the blast is over. */
+  unbrace() {
+    if (this.state === "brace") this.go("idle");
   }
 
   /** Dodge: a roll forward, or a backflip away. */
@@ -421,6 +471,13 @@ export class Fighter {
         if (this.stun <= 0) this.go("idle");
         break;
       }
+      case "charge":
+        this.vx *= Math.max(0, 1 - dt * 12);
+        break;
+      case "brace":
+        // Shoved back a little at a time, heels dragging.
+        this.vx = -this.facing * 70;
+        break;
       case "getup": {
         this.vx = 0;
         if (this.t > 520) {
@@ -533,6 +590,18 @@ export class Fighter {
     else if (m.float) this.vx *= Math.max(0, 1 - dt * 6);
     if (m.rehit) for (const t of m.rehit) if (before < t && this.moveT >= t) this.hitSet.clear();
     if (m.spins) this.spin = Math.PI * 2 * m.spins * EASES.io(Math.min(1, this.moveT / (m.spinEnd ?? m.active[1])));
+    if (m.homeIn && this.homing && this.moveT < m.homeIn[0]) {
+      // Close the gap before the first strike lands.
+      const tx = this.homing.x - this.facing * m.homeIn[1] * this.scale;
+      this.vx = Math.max(-1600, Math.min(1600, (tx - this.x) * 14));
+    } else if (m.homeIn && this.moveT < m.homeIn[0] + 40) this.vx *= 0.5;
+    if (m.dive && before < m.dive[0] && this.moveT >= m.dive[0]) this.vy = m.dive[1];
+    if (m.vel && m.velAt && before < m.velAt && this.moveT >= m.velAt) {
+      // Launch only once the dash-in has closed the gap.
+      this.vx = m.vel[0] * this.facing;
+      this.vy = m.vel[1];
+      this.y = Math.min(this.y, FLOOR - 1);
+    }
     if (id === "superChute" && this.homing && this.moveT < a + 60) {
       // Leap after the body that was thrown up, to meet it at the top.
       const t = this.homing.joints.hip;
@@ -588,7 +657,7 @@ export class Fighter {
       this.startMove("superChute", host);
       return;
     }
-    if (id === "superChute") this.homing = null;
+    if (id === "superChute" || (id && moveOf(id).homeIn)) this.homing = null;
     this.move = null;
     this.spin = 0;
     if (landed) host.event("land", this);
@@ -607,7 +676,7 @@ export class Fighter {
       const m = this.move ? moveOf(this.move) : null;
       const floating = this.state === "attack" && ((m?.float && this.moveT < m.active[1]) || (this.move === "superChute" && this.homing && this.moveT < m!.active[0] + 60));
       // Air attacks hang a little after they connect.
-      const low = this.state === "attack" && m?.lowGravity && this.moveT < m.active[1] ? m.lowGravity : 1;
+      const low = this.state === "attack" && m?.lowGravity && this.moveT < (m.dive?.[0] ?? m.active[1]) ? m.lowGravity : 1;
       const hang = floating ? 0 : this.state === "attack" && m?.air && this.moveHit && !m.untilLand ? Math.min(0.45, low) : low;
       // Floating specials hold still; the super kick keeps its chase velocity.
       if (floating && m?.float) this.vy = 0;
@@ -672,15 +741,24 @@ export class Fighter {
         p = mixPose(POSES.walk1, POSES.walk2, Math.sign(this.vx) === this.facing ? k : 1 - k);
         break;
       }
-      case "run":
-        this.phase += (dt * Math.abs(this.vx)) / 44;
+      case "run": {
+        // The captured cycle advances with the ground covered, so feet don't slide.
+        // The cycle advances with the ground covered, so the planted foot stays put.
+        this.phase = (this.phase + (dt * Math.abs(this.vx) * RUN_RATE) / this.scale) % 1;
         p = runPose(this.phase, Math.min(1, Math.abs(this.vx) / RUN));
         break;
+      }
       case "crouch":
         p = POSES.crouch;
         break;
       case "air":
-        p = this.vy < 0 ? POSES.jump : mixPose(POSES.jump, POSES.fall, Math.min(1, this.vy / 600));
+        // Stretch on the way up, tuck at the top, reach for the floor coming down.
+        p =
+          this.vy < -380
+            ? mixPose(POSES.jumpTuck, POSES.jumpStretch, Math.min(1, (-this.vy - 380) / 300))
+            : this.vy < 380
+              ? POSES.jumpTuck
+              : mixPose(POSES.jumpTuck, POSES.jumpFall, Math.min(1, (this.vy - 380) / 400));
         if (this.jumps === 0) {
           p = POSES.flip;
           this.spin = Math.PI * 2 * ease(Math.min(1, T / 460));
@@ -703,6 +781,20 @@ export class Fighter {
       case "getup":
         p = mixPose(POSES.getup, POSES.stance, ease(Math.min(1, T / 520)));
         break;
+      case "brace": {
+        // Into the guard fast, then strain against the push.
+        p = mixPose(POSES.stance, POSES.beamGuard, EASES.out(Math.min(1, T / 160)));
+        const q = 0.03;
+        p = { ...p, lean: p.lean + Math.sin(host.now / 21) * q, neck: p.neck + Math.sin(host.now / 27) * q };
+        break;
+      }
+      case "charge": {
+        // Swing the hands back, sink into the stance, then shake with the power.
+        p = T < 260 ? mixPose(POSES.stance, POSES.beamWind, EASES.io(T / 260)) : mixPose(POSES.beamWind, POSES.beamCharge, EASES.io(Math.min(1, (T - 260) / 240)));
+        const q = this.charge * 0.035;
+        p = { ...p, lean: p.lean + Math.sin(host.now / 23) * q, neck: p.neck + Math.sin(host.now / 31) * q, thF: p.thF + Math.sin(host.now / 19) * q };
+        break;
+      }
       case "grab":
         p = POSES.hold;
         break;
@@ -743,7 +835,13 @@ export class Fighter {
       void rel;
     }
     const grounded = this.grounded && this.state !== "air" && this.state !== "held";
-    const drop = grounded || this.state === "roll" ? footDrop(rel) : 76 * this.scale;
+    // Grounded poses plant the lowest foot; running adds the flight between steps.
+    const drop =
+      this.state === "run"
+        ? footDrop(rel) + runLift(this.phase, Math.min(1, Math.abs(this.vx) / RUN)) * this.scale
+        : grounded || this.state === "roll"
+          ? footDrop(rel)
+          : 76 * this.scale;
     const m = this.state === "attack" && this.move ? moveOf(this.move) : null;
     const turned = m?.turn && this.moveT >= m.turn[0] && this.moveT < m.turn[1];
     let j = place(rel, this.x, this.y - drop, turned ? -this.facing : this.facing);
@@ -754,18 +852,38 @@ export class Fighter {
 
   private movePose(): Pose {
     const m = moveOf(this.move!);
-    let prev: Pose = this.startPose;
-    let t0 = 0;
-    for (const [id, t1, how] of m.frames) {
-      const target = POSES[id as PoseId];
-      if (this.moveT <= t1) {
-        const k = t1 > t0 ? (this.moveT - t0) / (t1 - t0) : 1;
-        return mixPose(prev, target, EASES[how ?? "out"](Math.max(0, Math.min(1, k))));
+    if (m.track) return this.trackPose(m);
+    // Keyframes joined by a spline, each segment timed by its ease.
+    const keys: Pose[] = [this.startPose, ...m.frames.map(([id]) => POSES[id as PoseId])];
+    const times = [0, ...m.frames.map(([, t]) => t)];
+    for (let i = 1; i < keys.length; i++) {
+      if (this.moveT <= times[i]) {
+        const span = times[i] - times[i - 1];
+        const k = span > 0 ? (this.moveT - times[i - 1]) / span : 1;
+        const u = EASES[m.frames[i - 1][2] ?? "out"](Math.max(0, Math.min(1, k)));
+        const a = keys[Math.max(0, i - 2)];
+        const d = keys[Math.min(keys.length - 1, i + 1)];
+        return splinePose(a, keys[i - 1], keys[i], d, u);
       }
-      prev = target;
-      t0 = t1;
     }
-    return prev;
+    return keys[keys.length - 1];
+  }
+
+  /** A captured kick, retimed so its peak lands on the move's strike. */
+  private trackPose(m: ReturnType<typeof moveOf>): Pose {
+    const { name, peakAt } = m.track!;
+    const track = KICK_POSES[name];
+    const peak = KICK_TRACKS[name].peak;
+    const last = track.length - 1;
+    const t = this.moveT;
+    const s = t < peakAt ? peak * Math.pow(t / peakAt, 0.8) : peak + (last - peak) * Math.min(1, (t - peakAt) / (m.total - peakAt));
+    let p = sampleTrack(track, s);
+    // Snap the leg straight around the peak so the strike reads clearly.
+    const near = Math.exp(-(((s - peak) / 3) ** 2));
+    p = { ...p, shF: p.shF * (1 - 0.75 * near) };
+    // Ease in from whatever pose the move started from.
+    const blend = Math.min(1, t / 60);
+    return blend < 1 ? mixPose(this.startPose, p, blend) : p;
   }
 
   /** The point a move hits from, in world space. */
@@ -819,21 +937,82 @@ export class Fighter {
 }
 
 const D = Math.PI / 180;
+const KICK_POSES = Object.fromEntries(Object.entries(KICK_TRACKS).map(([k, v]) => [k, v.poses.map(poseOf)])) as Record<string, Pose[]>;
 
-/** A running stride at phase `ph`; `k` scales the stride with speed. */
-function runPose(ph: number, k: number): Pose {
-  const sw = Math.sin(ph);
-  const lift = (a: number) => Math.pow((Math.cos(a) + 1) / 2, 1.4);
-  return {
-    lean: (14 + 12 * k) * D,
-    neck: -12 * D,
-    uaF: (30 - 58 * sw * k) * D,
-    faF: (95 + 10 * sw) * D,
-    uaB: (30 + 58 * sw * k) * D,
-    faB: (95 - 10 * sw) * D,
-    thF: (16 + 50 * sw * k) * D,
-    shF: -(18 + 100 * lift(ph) * k) * D,
-    thB: (16 - 50 * sw * k) * D,
-    shB: -(18 + 100 * lift(ph + Math.PI) * k) * D,
+/**
+ * One leg through a sprint, as [phase, thigh, shin] in degrees; phase 0 is
+ * the foot striking the ground. Contact, the knee giving under the weight,
+ * the push-off behind, the heel snapping up to the hip, the knee driving
+ * high, the shin reaching out for the next strike.
+ */
+const STRIDE: [number, number, number][] = [
+  [0, 26, -14],
+  [0.1, 8, -32],
+  [0.24, -26, -18],
+  [0.34, -36, -62],
+  [0.48, -14, -124],
+  [0.6, 40, -122],
+  [0.74, 70, -92],
+  [0.88, 48, -34],
+];
+/** The foot leaves the ground here; until the other foot lands, both are up. */
+const TOE_OFF = 0.34;
+
+function legAt(ph: number): [number, number] {
+  ph = ((ph % 1) + 1) % 1;
+  const n = STRIDE.length;
+  let i = n - 1;
+  while (i > 0 && STRIDE[i][0] > ph) i--;
+  const k = (o: number) => STRIDE[(((i + o) % n) + n) % n];
+  const t0 = k(0)[0];
+  const t1 = i + 1 < n ? k(1)[0] : 1;
+  const u = (ph - t0) / (t1 - t0);
+  const cr = (a: number, b: number, c: number, d: number) =>
+    0.5 * (2 * b + (-a + c) * u + (2 * a - 5 * b + 4 * c - d) * u * u + (-a + 3 * b - 3 * c + d) * u * u * u);
+  return [cr(k(-1)[1], k(0)[1], k(1)[1], k(2)[1]), cr(k(-1)[2], k(0)[2], k(1)[2], k(2)[2])];
+}
+
+/**
+ * Phase per world unit: while one foot is planted (phase 0 to toe-off) the
+ * body travels exactly as far as that foot moves back under the hip.
+ */
+const RUN_RATE = (() => {
+  const footX = (ph: number) => {
+    const [th, sh] = legAt(ph);
+    return Math.sin(th * D) * 38 + Math.sin((th + sh) * D) * 38;
   };
+  return TOE_OFF / (footX(0) - footX(TOE_OFF));
+})();
+
+/**
+ * A sprinter at phase `ph` (0..1); `k` is how close to full speed. The body
+ * leans into the run, the arms pump opposite the legs with the elbows bent
+ * near 90 degrees, hands driving from the hip up to the chin.
+ */
+function runPose(ph: number, k: number): Pose {
+  const amp = 0.55 + 0.45 * k;
+  const [thF, shF] = legAt(ph);
+  const [thB, shB] = legAt(ph + 0.5);
+  // Each arm swings with the opposite leg: forward as that knee drives up.
+  const arm = (legPh: number) => Math.cos(2 * Math.PI * (legPh - 0.74));
+  const aF = arm(ph + 0.5) * amp;
+  const aB = arm(ph) * amp;
+  return {
+    lean: (10 + 14 * k + 2 * Math.sin(4 * Math.PI * ph)) * D,
+    neck: (-12 - 4 * k) * D,
+    uaF: (6 + 62 * aF) * D,
+    faF: (90 - 24 * aF) * D,
+    uaB: (6 + 62 * aB) * D,
+    faB: (90 - 24 * aB) * D,
+    thF: thF * amp * D,
+    shF: shF * D,
+    thB: thB * amp * D,
+    shB: shB * D,
+  };
+}
+
+/** Height gained in the flight between one foot leaving and the other landing. */
+function runLift(ph: number, k: number) {
+  const u = ((ph % 0.5) - TOE_OFF) / (0.5 - TOE_OFF);
+  return u > 0 && u < 1 ? Math.sin(Math.PI * u) * 9 * k : 0;
 }
