@@ -207,6 +207,10 @@ export const POSES = {
   jumpStretch: deg({ lean: 2, neck: -8, uaF: 120, faF: 40, uaB: 70, faB: 60, thF: 18, shF: -10, thB: -14, shB: -16 }),
   jumpTuck: deg({ lean: 14, neck: -10, uaF: 60, faF: 100, uaB: 40, faB: 110, thF: 100, shF: -130, thB: 70, shB: -120 }),
   jumpFall: deg({ lean: 4, neck: -4, uaF: 80, faF: 50, uaB: -20, faB: 50, thF: 30, shF: -30, thB: -10, shB: -40 }),
+  beamWind: deg({ lean: 0, neck: 2, uaF: -20, faF: 70, uaB: -16, faB: 66, thF: 30, shF: -40, thB: -28, shB: -20 }),
+  beamCharge: deg({ lean: -6, neck: 6, uaF: -41, faF: 45, uaB: -38, faB: 40, thF: 38, shF: -58, thB: -34, shB: -30 }),
+  beamFire: deg({ lean: 14, neck: -4, uaF: 100, faF: 0, uaB: 96, faB: 6, thF: 50, shF: -48, thB: -48, shB: -6 }),
+  beamFizzle: deg({ lean: 24, neck: -16, uaF: 30, faF: 20, uaB: 24, faB: 24, thF: 24, shF: -30, thB: -20, shB: -20 }),
   // getting hit
   flinchHigh: deg({ lean: -24, neck: 30, uaF: 20, faF: 60, uaB: -10, faB: 60, thF: 20, shF: -20, thB: -20, shB: -10 }),
   flinchLow: deg({ lean: 46, neck: -10, uaF: -10, faF: 20, uaB: -20, faB: 20, thF: 30, shF: -40, thB: -24, shB: -20 }),

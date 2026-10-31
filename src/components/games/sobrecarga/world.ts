@@ -16,7 +16,8 @@ const RANK_AT = [0, 90, 190, 300, 420, 540, 660];
 export type Phase = "intro" | "fight" | "wave" | "clear" | "over" | "victory";
 export type Sound =
   | "light" | "heavy" | "block" | "parry" | "whoosh" | "whooshHeavy" | "jump" | "land" | "ko" | "zap"
-  | "wall" | "stomp" | "slowIn" | "slowOut" | "grab" | "orb" | "charge" | "round" | "fight" | "roll" | "reflect" | "special" | "tired" | "pickup";
+  | "wall" | "stomp" | "slowIn" | "slowOut" | "grab" | "orb" | "charge" | "round" | "fight" | "roll" | "reflect" | "special" | "tired" | "pickup"
+  | "beamTick" | "beam" | "fizzle";
 
 export interface Spark {
   x: number;
@@ -81,6 +82,27 @@ export const PICKUPS: Record<PickupKind, { weight: number; color: string; name: 
   overclock: { weight: 12, color: "#ff8a3d", name: { pt: "OVERCLOCK", en: "OVERCLOCK" } },
 };
 const SHIELD_MS = 9000;
+
+/**
+ * The energy blast's fixed code. G O starts the charge; the rest are shown on
+ * screen and, while charging, every letter goes to the code (A, E and M too).
+ */
+export const BEAM_SEQ = "GOKUKAME".split("");
+const BEAM_START = BEAM_SEQ.slice(0, 2);
+/** Time to hit each key, real ms. */
+const BEAM_KEY_MS = 1150;
+const BEAM_WEAK: HitSpec = { joint: "hip", r: 0, dmg: 38, kb: [1300, -520], stun: 600, level: "mid", stop: 50, launch: true, wallBounce: true, heavy: true, zap: true };
+const BEAM_BLAST: HitSpec = { joint: "hip", r: 140, dmg: 10, kb: [600, -600], stun: 500, level: "mid", stop: 90, launch: true, heavy: true, zap: true };
+export interface Beam {
+  x: number;
+  y: number;
+  dir: number;
+  /** Real seconds since it went out. */
+  t: number;
+  dur: number;
+  full: boolean;
+  hit: Set<number>;
+}
 const BOOST_MS = 10000;
 
 export interface StageStats {
@@ -124,6 +146,10 @@ export class Game implements Host {
   player: Fighter;
   orbs: Orb[] = [];
   pickups: Pickup[] = [];
+  /** The blast being charged: the keys to type and how far along they are. */
+  charge: { seq: string[]; index: number; deadline: number } | null = null;
+  beam: Beam | null = null;
+  private typed: { k: string; at: number }[] = [];
   /** Real time the player's health was last restored, for the HUD to glow. */
   healAt = -9999;
   sparks: Spark[] = [];
@@ -250,6 +276,8 @@ export class Game implements Host {
     p.shieldUntil = p.boostUntil = -1;
     this.slowMeter = 1;
     this.cine.ms = 0;
+    this.charge = null;
+    this.beam = null;
     this.combo = 0;
   }
 
@@ -306,6 +334,142 @@ export class Game implements Host {
 
   get slowOn() {
     return this.cine.ms > 0;
+  }
+
+  /** A letter typed during play: starts, feeds or breaks the energy blast. */
+  beamKey(k: string) {
+    if (this.phase !== "fight" || !this.player.alive) return;
+    const c = this.charge;
+    if (c) {
+      if (k === c.seq[c.index]) {
+        c.index++;
+        c.deadline = this.now + BEAM_KEY_MS;
+        this.player.charge = c.index / BEAM_SEQ.length;
+        this.sound("beamTick");
+        const h = this.handsOf(this.player);
+        this.rings.push({ x: h.x, y: h.y, r: 6, grow: 260 + c.index * 40, life: 0.25, max: 0.25, color: "#e23b2e" });
+        if (c.index === BEAM_SEQ.length) this.resolveBeam(c.index);
+      } else this.resolveBeam(c.index);
+      return;
+    }
+    this.typed.push({ k, at: this.now });
+    this.typed = this.typed.filter((t) => this.now - t.at < 900).slice(-2);
+    const p = this.player;
+    const ready = this.typed.length === 2 && this.typed[0].k === BEAM_START[0] && this.typed[1].k === BEAM_START[1];
+    if (!ready) return;
+    this.typed = [];
+    if (this.slowMeter < 0.99) {
+      this.event("tired", p);
+      return;
+    }
+    if (!(p.state === "idle" || p.state === "walk" || p.state === "run" || p.state === "crouch") || !p.grounded) return;
+    // All three charges go into it.
+    this.slowMeter = 0;
+    p.startCharge();
+    this.charge = { seq: BEAM_SEQ, index: 2, deadline: this.now + BEAM_KEY_MS * 1.4 };
+    p.charge = 2 / BEAM_SEQ.length;
+    this.cineAt = this.now;
+    this.cine = { ms: 200, max: 200, name: "STACK OVERFLOW" };
+    this.cam.kick = 0.12;
+    this.sound("charge");
+  }
+
+  /** Where the hands are, between the two fists. */
+  handsOf(f: Fighter): Vec {
+    return { x: (f.joints.handF.x + f.joints.handB.x) / 2, y: (f.joints.handF.y + f.joints.handB.y) / 2 };
+  }
+
+  /**
+   * How many of the eight keys were right decides it: up to 3 the energy just
+   * slips away, 4 or 5 it blows up in the hands, 6 or 7 a weaker blast, all 8
+   * the full one, which takes out every regular enemy it touches.
+   */
+  private resolveBeam(correct: number) {
+    const p = this.player;
+    const h = this.handsOf(p);
+    this.charge = null;
+    if (correct <= 3) {
+      p.endCharge(this, "fizzle");
+      for (let i = 0; i < 16; i++) this.sparks.push({ x: h.x, y: h.y, vx: (this.rand() - 0.5) * 120, vy: -40 - this.rand() * 120, life: 0.7, max: 0.7, color: "#e23b2e", kind: "pixel", size: 3 + this.rand() * 4 });
+      this.float(p.x, p.joints.head.y - 40, this.lang === "pt" ? "SE DESFEZ..." : "IT FADED...", "#8d8a82");
+      this.sound("fizzle");
+    } else if (correct <= 5) {
+      p.endCharge(this, "explode");
+      this.rings.push({ x: h.x, y: h.y, r: 10, grow: 900, life: 0.4, max: 0.4, color: "#f4f2ec" });
+      this.rings.push({ x: h.x, y: h.y, r: 10, grow: 600, life: 0.5, max: 0.5, color: "#e23b2e" });
+      this.burst(h.x, h.y, "#e23b2e", 30, 800);
+      this.flashAt = this.now;
+      this.shake = Math.max(this.shake, 16);
+      p.hp = Math.max(1, p.hp - 14);
+      this.hurtAt = this.now;
+      p.toRag({ x: -p.facing * 750, y: -520 });
+      for (const t of this.enemies) {
+        if (!t.alive || !t.hittable || Math.hypot(t.joints.hip.x - h.x, t.joints.hip.y - h.y) > 170) continue;
+        this.applyHit(p, t, BEAM_BLAST, { x: t.joints.hip.x, y: t.joints.hip.y }, "orb");
+      }
+      this.float(p.x, p.joints.head.y - 40, this.lang === "pt" ? "ESTOUROU!" : "IT BLEW UP!", "#e23b2e", true);
+      this.sound("ko");
+      this.sound("wall");
+    } else {
+      p.endCharge(this, "fire");
+      const full = correct === BEAM_SEQ.length;
+      this.beam = { x: h.x, y: h.y, dir: p.facing, t: 0, dur: full ? 1.35 : 0.95, full, hit: new Set() };
+      this.impactAt = this.now;
+      this.flashAt = this.now;
+      this.hitstop = Math.max(this.hitstop, 120);
+      this.shake = Math.max(this.shake, full ? 18 : 12);
+      this.cam.kick = 0.16;
+      this.float(p.x, p.joints.head.y - 50, full ? (this.lang === "pt" ? "PERFEITO!" : "PERFECT!") : this.lang === "pt" ? "QUASE!" : "ALMOST!", full ? "#f4f2ec" : "#f3b14e", true);
+      this.sound("beam");
+    }
+  }
+
+  private updateBeam(realDt: number) {
+    const c = this.charge;
+    if (c) {
+      // Missing the window counts as a wrong key.
+      if (this.now > c.deadline || !this.player.alive || this.player.state !== "charge") {
+        if (this.player.state === "charge") this.resolveBeam(c.index);
+        else this.charge = null;
+      } else if (this.rand() < 0.8) {
+        // Sparks pulled in towards the hands, more as the charge grows.
+        const h = this.handsOf(this.player);
+        const a = this.rand() * Math.PI * 2;
+        const r = 90 + this.rand() * 80;
+        const k = this.player.charge;
+        this.sparks.push({ x: h.x + Math.cos(a) * r, y: h.y + Math.sin(a) * r, vx: -Math.cos(a) * r * 3, vy: -Math.sin(a) * r * 3, life: 0.3, max: 0.3, color: k > 0.7 ? "#f4f2ec" : "#e23b2e", kind: "spark", size: 1.5 + k * 2 });
+        if (this.rand() < 0.15 * k) this.zap(h, { x: h.x + Math.cos(a) * r * 0.8, y: h.y + Math.sin(a) * r * 0.8 });
+        this.shake = Math.max(this.shake, 2 + k * 5);
+      }
+    }
+    const b = this.beam;
+    if (!b) return;
+    b.t += realDt;
+    const p = this.player;
+    if (p.move === "beamFire") {
+      const h = this.handsOf(p);
+      b.x = h.x;
+      b.y = h.y;
+    }
+    const len = Math.min(2600, b.t * 4200);
+    const half = (b.full ? 52 : 32) + 40;
+    this.shake = Math.max(this.shake, b.full ? 9 : 6);
+    for (const t of this.enemies) {
+      if (!t.alive || b.hit.has(t.id)) continue;
+      const d = (t.joints.hip.x - b.x) * b.dir;
+      if (d < 0 || d > len || Math.abs(t.joints.hip.y - b.y) > half + 30) continue;
+      b.hit.add(t.id);
+      const boss = t.kind === "legacy";
+      // The full blast erases regular enemies; the boss takes a big chunk.
+      const dmg = b.full ? (boss ? t.maxHp * 0.4 : t.hp + 999) : boss ? t.maxHp * 0.15 : BEAM_WEAK.dmg;
+      t.invuln = 0;
+      this.applyHit(p, t, { ...BEAM_WEAK, dmg, kb: [b.full ? 1700 : 1300, b.full ? -650 : -520] }, { x: t.joints.hip.x, y: b.y }, "orb");
+    }
+    if (this.rand() < 0.9) {
+      const x = b.x + b.dir * this.rand() * len;
+      this.sparks.push({ x, y: b.y + (this.rand() - 0.5) * half * 1.4, vx: b.dir * (300 + this.rand() * 500), vy: (this.rand() - 0.5) * 200, life: 0.35, max: 0.35, color: this.rand() < 0.5 ? "#f4f2ec" : "#e23b2e", kind: "spark", size: 2 + this.rand() * 3 });
+    }
+    if (b.t > b.dur) this.beam = null;
   }
 
   spend(f: Fighter, cost: number) {
@@ -538,6 +702,7 @@ export class Game implements Host {
     this.separate();
     this.resolveHits();
     this.updateOrbs(STEP * world);
+    this.updateBeam(STEP);
     this.updatePickups(STEP * world);
     this.tokens();
     this.bossSummons();

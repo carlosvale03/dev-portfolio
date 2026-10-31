@@ -256,6 +256,17 @@ export const MOVES = {
     special: { pt: "RAIO", en: "BOLT" },
   },
 
+  /** The energy blast going out: a hold on the thrust while the beam runs. */
+  beamFire: {
+    frames: [["beamCharge", 40, "io"], ["beamFire", 120, "snap"], ["beamFire", 1250, "lin"], ["stance", 1500, "io"]],
+    total: 1500, active: [0, 0], invuln: [0, 1500], armor: true,
+  },
+  /** The blast falls apart in the hands. */
+  beamFizzle: {
+    frames: [["beamFizzle", 280, "io"], ["beamFizzle", 420, "lin"], ["stance", 680, "io"]],
+    total: 680, active: [0, 0],
+  },
+
   // --- Enemy-only heavy moves ----------------------------------------------------
   stomp: {
     frames: [["charge", 360, "io"], ["burst", 460, "snap"], ["burst", 640, "lin"], ["stance", 820, "io"]],

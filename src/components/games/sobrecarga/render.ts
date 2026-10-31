@@ -126,7 +126,9 @@ export function render(ctx: CanvasRenderingContext2D, g: Game, W: number, H: num
   }
 
   effects(ctx, g, S, k);
+  energy(ctx, g, S, k, W);
   for (const f of g.enemies) enemyBar(ctx, f, S, k, g);
+  keyPrompts(ctx, g, S, W, H);
   // Impact frame: two frames of white silhouettes on black.
   if (g.now - g.impactAt < 90) {
     ctx.fillStyle = "#000";
@@ -137,6 +139,91 @@ export function render(ctx: CanvasRenderingContext2D, g: Game, W: number, H: num
 
   overlays(ctx, g, W, H);
   hud(ctx, g, W, H, best);
+}
+
+/** The energy gathered in the hands, and the blast once it goes out. */
+function energy(ctx: CanvasRenderingContext2D, g: Game, S: (p: Vec) => Vec, k: number, W: number) {
+  const p = g.player;
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  if (g.charge && p.state === "charge") {
+    const h = S(g.handsOf(p));
+    const r = (7 + 24 * p.charge) * k * (1 + Math.sin(g.now / 40) * 0.08);
+    const glow = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, r * 3);
+    glow.addColorStop(0, "rgba(255,255,255,0.95)");
+    glow.addColorStop(0.25, "rgba(255,120,100,0.8)");
+    glow.addColorStop(1, "rgba(226,59,46,0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(h.x, h.y, r * 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const b = g.beam;
+  if (b) {
+    const s = S({ x: b.x, y: b.y });
+    const len = Math.min(2600, b.t * 4200) * k;
+    const fade = Math.min(1, (b.dur - b.t) / 0.25, b.t / 0.05);
+    const base = (b.full ? 52 : 32) * k;
+    const x1 = s.x + b.dir * Math.min(len, W * 2);
+    // Outer glow, body and white-hot core, each wobbling a little.
+    for (const [color, wk, alpha] of [
+      ["226,59,46", 2.2, 0.28],
+      ["255,90,70", 1.25, 0.75],
+      ["255,235,225", 0.5, 1],
+    ] as const) {
+      const w = base * wk * (1 + Math.sin(g.now / 26 + wk * 3) * 0.07) * fade;
+      const grad = ctx.createLinearGradient(0, s.y - w, 0, s.y + w);
+      grad.addColorStop(0, `rgba(${color},0)`);
+      grad.addColorStop(0.5, `rgba(${color},${alpha})`);
+      grad.addColorStop(1, `rgba(${color},0)`);
+      ctx.fillStyle = grad;
+      ctx.fillRect(Math.min(s.x, x1), s.y - w, Math.abs(x1 - s.x), w * 2);
+      // rounded ends: at the hands and at the head of the blast
+      ctx.beginPath();
+      ctx.ellipse(s.x, s.y, w * 0.9, w, 0, 0, Math.PI * 2);
+      ctx.ellipse(x1, s.y, w * 1.3, w * 1.15, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+/** While charging: the keys to type, the ones done lit in red, a timer under the next. */
+function keyPrompts(ctx: CanvasRenderingContext2D, g: Game, S: (p: Vec) => Vec, W: number, H: number) {
+  const c = g.charge;
+  if (!c) return;
+  const u = Math.min(W / 1280, H / 720);
+  const head = S(g.player.joints.head);
+  const size = 30 * u;
+  const gap = 6 * u;
+  const total = c.seq.length * size + (c.seq.length - 1) * gap;
+  const x0 = Math.max(12, Math.min(W - total - 12, head.x - total / 2));
+  const y = Math.max(90 * u, head.y - 90 * u);
+  ctx.save();
+  ctx.font = `900 ${Math.round(15 * u)}px ui-monospace, monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  c.seq.forEach((key, i) => {
+    const x = x0 + i * (size + gap);
+    const done = i < c.index;
+    const now = i === c.index;
+    ctx.fillStyle = done ? RED : "rgba(14,14,14,0.85)";
+    ctx.strokeStyle = done ? RED : now ? PAPER : "rgba(244,242,236,0.25)";
+    ctx.lineWidth = now ? 2.5 * u : 1.5 * u;
+    const lift = now ? Math.sin(g.now / 70) * 2 * u : 0;
+    ctx.beginPath();
+    ctx.roundRect(x, y - lift, size, size, 5 * u);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = done ? INK : now ? PAPER : "rgba(244,242,236,0.4)";
+    ctx.fillText(key, x + size / 2, y + size / 2 - lift);
+    if (now) {
+      const left = Math.max(0, (c.deadline - g.now) / 1150);
+      ctx.fillStyle = left < 0.35 ? RED : PAPER;
+      ctx.fillRect(x, y + size + 4 * u, size * Math.min(1, left), 3 * u);
+    }
+  });
+  ctx.restore();
 }
 
 /** A pickup: a glowing badge with its icon, bobbing; it blinks before it goes. */
@@ -442,7 +529,7 @@ function drawFigure(ctx: CanvasRenderingContext2D, f: Fighter, j: Joints, S: (p:
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
 
-  const glow = f.team === 0 && f.meter >= 99 && !reflection && !tint;
+  const glow = f.team === 0 && (f.meter >= 99 || f.state === "charge" || f.move === "beamFire") && !reflection && !tint;
   const line = (a: keyof Joints, b: keyof Joints, color: string, w: number) => {
     const A = P(a);
     const B = P(b);

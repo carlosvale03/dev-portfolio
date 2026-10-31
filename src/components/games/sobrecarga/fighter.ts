@@ -1,13 +1,13 @@
 import { CARRIES, CHAIN_K, CHAIN_P, SPECIAL_CHAIN, hitAt, moveOf, type Ease, type HitSpec, type MoveId } from "./moves";
 import { FLOOR, GRAVITY, Ragdoll } from "./ragdoll";
 import { ROSTER, type Archetype, type Head, type Kind } from "./roster";
-import { KICK_TRACKS, RUN_CYCLE, RUN_STRIDE } from "./mocap";
+import { KICK_TRACKS } from "./mocap";
 import { JOINTS, POSES, fk, footDrop, mixJoints, mixPose, place, poseOf, sampleTrack, splinePose, type Joints, type Pose, type PoseId, type Vec } from "./skeleton";
 
 // One fighter, player or enemy: the same state machine runs both, driven by
 // an Intent that comes from the keyboard or from the AI.
 
-export type State = "idle" | "walk" | "run" | "crouch" | "air" | "attack" | "block" | "roll" | "hit" | "rag" | "getup" | "grab" | "held" | "dead";
+export type State = "idle" | "walk" | "run" | "crouch" | "air" | "attack" | "block" | "roll" | "hit" | "rag" | "getup" | "grab" | "held" | "dead" | "charge";
 
 export interface Intent {
   dx: number;
@@ -154,7 +154,7 @@ export class Fighter {
     return this.y >= FLOOR - 0.5;
   }
   get busy() {
-    return this.state === "attack" || this.state === "hit" || this.state === "rag" || this.state === "getup" || this.state === "held" || this.state === "roll" || this.state === "dead";
+    return this.state === "attack" || this.state === "hit" || this.state === "rag" || this.state === "getup" || this.state === "held" || this.state === "roll" || this.state === "dead" || this.state === "charge";
   }
   /** Can be hit at all. */
   get hittable() {
@@ -300,6 +300,30 @@ export class Fighter {
     }
   }
 
+  /** 0..1 how much energy the blast has gathered (drives the trembling). */
+  charge = 0;
+
+  /** Plants the feet and starts gathering the energy blast. */
+  startCharge() {
+    this.move = null;
+    this.vx = 0;
+    this.charge = 0;
+    this.special = true;
+    this.invuln = 60000;
+    this.go("charge");
+  }
+
+  /** Ends the charge: the blast goes out, falls apart, or blows up in the hands. */
+  endCharge(host: Host, how: "fire" | "fizzle" | "explode") {
+    this.invuln = how === "fire" ? 1500 : 0;
+    this.charge = 0;
+    if (how === "fire") this.startMove("beamFire", host);
+    else if (how === "fizzle") {
+      this.startMove("beamFizzle", host);
+      this.special = false;
+    } else this.special = false;
+  }
+
   /** Dodge: a roll forward, or a backflip away. */
   roll(dir: number, host: Host) {
     if ((this.busy && this.state !== "block") || !this.grounded) return;
@@ -433,6 +457,9 @@ export class Fighter {
         if (this.stun <= 0) this.go("idle");
         break;
       }
+      case "charge":
+        this.vx *= Math.max(0, 1 - dt * 12);
+        break;
       case "getup": {
         this.vx = 0;
         if (this.t > 520) {
@@ -698,7 +725,8 @@ export class Fighter {
       }
       case "run": {
         // The captured cycle advances with the ground covered, so feet don't slide.
-        this.phase = (this.phase + (dt * Math.abs(this.vx) * RUN_SAMPLES.length) / (RUN_STRIDE * this.scale)) % RUN_SAMPLES.length;
+        // The cycle advances with the ground covered, so the planted foot stays put.
+        this.phase = (this.phase + (dt * Math.abs(this.vx) * RUN_RATE) / this.scale) % 1;
         p = runPose(this.phase, Math.min(1, Math.abs(this.vx) / RUN));
         break;
       }
@@ -735,6 +763,13 @@ export class Fighter {
       case "getup":
         p = mixPose(POSES.getup, POSES.stance, ease(Math.min(1, T / 520)));
         break;
+      case "charge": {
+        // Swing the hands back, sink into the stance, then shake with the power.
+        p = T < 260 ? mixPose(POSES.stance, POSES.beamWind, EASES.io(T / 260)) : mixPose(POSES.beamWind, POSES.beamCharge, EASES.io(Math.min(1, (T - 260) / 240)));
+        const q = this.charge * 0.035;
+        p = { ...p, lean: p.lean + Math.sin(host.now / 23) * q, neck: p.neck + Math.sin(host.now / 31) * q, thF: p.thF + Math.sin(host.now / 19) * q };
+        break;
+      }
       case "grab":
         p = POSES.hold;
         break;
@@ -775,10 +810,13 @@ export class Fighter {
       void rel;
     }
     const grounded = this.grounded && this.state !== "air" && this.state !== "held";
-    // Running uses the captured hip height (with its flight phase); other
-    // grounded poses plant the lowest foot.
+    // Grounded poses plant the lowest foot; running adds the flight between steps.
     const drop =
-      this.state === "run" ? runHip(this.phase) * this.scale : grounded || this.state === "roll" ? footDrop(rel) : 76 * this.scale;
+      this.state === "run"
+        ? footDrop(rel) + runLift(this.phase, Math.min(1, Math.abs(this.vx) / RUN)) * this.scale
+        : grounded || this.state === "roll"
+          ? footDrop(rel)
+          : 76 * this.scale;
     const m = this.state === "attack" && this.move ? moveOf(this.move) : null;
     const turned = m?.turn && this.moveT >= m.turn[0] && this.moveT < m.turn[1];
     let j = place(rel, this.x, this.y - drop, turned ? -this.facing : this.facing);
@@ -874,31 +912,82 @@ export class Fighter {
 }
 
 const D = Math.PI / 180;
-const RUN_SAMPLES = RUN_CYCLE.map(poseOf);
-const RUN_HIPS = RUN_CYCLE.map((r) => r[10]);
 const KICK_POSES = Object.fromEntries(Object.entries(KICK_TRACKS).map(([k, v]) => [k, v.poses.map(poseOf)])) as Record<string, Pose[]>;
 
 /**
- * The captured running cycle at phase `ph` (in samples). The capture is a
- * steady jog, so the body leans further into it at full speed: a sprint.
+ * One leg through a sprint, as [phase, thigh, shin] in degrees; phase 0 is
+ * the foot striking the ground. Contact, the knee giving under the weight,
+ * the push-off behind, the heel snapping up to the hip, the knee driving
+ * high, the shin reaching out for the next strike.
+ */
+const STRIDE: [number, number, number][] = [
+  [0, 26, -14],
+  [0.1, 8, -32],
+  [0.24, -26, -18],
+  [0.34, -36, -62],
+  [0.48, -14, -124],
+  [0.6, 40, -122],
+  [0.74, 70, -92],
+  [0.88, 48, -34],
+];
+/** The foot leaves the ground here; until the other foot lands, both are up. */
+const TOE_OFF = 0.34;
+
+function legAt(ph: number): [number, number] {
+  ph = ((ph % 1) + 1) % 1;
+  const n = STRIDE.length;
+  let i = n - 1;
+  while (i > 0 && STRIDE[i][0] > ph) i--;
+  const k = (o: number) => STRIDE[(((i + o) % n) + n) % n];
+  const t0 = k(0)[0];
+  const t1 = i + 1 < n ? k(1)[0] : 1;
+  const u = (ph - t0) / (t1 - t0);
+  const cr = (a: number, b: number, c: number, d: number) =>
+    0.5 * (2 * b + (-a + c) * u + (2 * a - 5 * b + 4 * c - d) * u * u + (-a + 3 * b - 3 * c + d) * u * u * u);
+  return [cr(k(-1)[1], k(0)[1], k(1)[1], k(2)[1]), cr(k(-1)[2], k(0)[2], k(1)[2], k(2)[2])];
+}
+
+/**
+ * Phase per world unit: while one foot is planted (phase 0 to toe-off) the
+ * body travels exactly as far as that foot moves back under the hip.
+ */
+const RUN_RATE = (() => {
+  const footX = (ph: number) => {
+    const [th, sh] = legAt(ph);
+    return Math.sin(th * D) * 38 + Math.sin((th + sh) * D) * 38;
+  };
+  return TOE_OFF / (footX(0) - footX(TOE_OFF));
+})();
+
+/**
+ * A sprinter at phase `ph` (0..1); `k` is how close to full speed. The body
+ * leans into the run, the arms pump opposite the legs with the elbows bent
+ * near 90 degrees, hands driving from the hip up to the chin.
  */
 function runPose(ph: number, k: number): Pose {
-  const p = sampleTrack(RUN_SAMPLES, ph, true);
+  const amp = 0.55 + 0.45 * k;
+  const [thF, shF] = legAt(ph);
+  const [thB, shB] = legAt(ph + 0.5);
+  // Each arm swings with the opposite leg: forward as that knee drives up.
+  const arm = (legPh: number) => Math.cos(2 * Math.PI * (legPh - 0.74));
+  const aF = arm(ph + 0.5) * amp;
+  const aB = arm(ph) * amp;
   return {
-    ...p,
-    lean: p.lean + 16 * k * D,
-    neck: p.neck - 10 * k * D,
-    uaF: p.uaF * (1 + 0.25 * k) + 6 * k * D,
-    uaB: p.uaB * (1 + 0.25 * k) + 6 * k * D,
-    thF: p.thF * (1 + 0.15 * k) + 6 * k * D,
-    thB: p.thB * (1 + 0.15 * k) + 6 * k * D,
+    lean: (10 + 14 * k + 2 * Math.sin(4 * Math.PI * ph)) * D,
+    neck: (-12 - 4 * k) * D,
+    uaF: (6 + 62 * aF) * D,
+    faF: (90 - 24 * aF) * D,
+    uaB: (6 + 62 * aB) * D,
+    faB: (90 - 24 * aB) * D,
+    thF: thF * amp * D,
+    shF: shF * D,
+    thB: thB * amp * D,
+    shB: shB * D,
   };
 }
 
-/** Hip height through the cycle (game units, before scaling). */
-function runHip(ph: number) {
-  const n = RUN_HIPS.length;
-  const i = Math.floor(ph);
-  const f = ph - i;
-  return RUN_HIPS[i % n] * (1 - f) + RUN_HIPS[(i + 1) % n] * f;
+/** Height gained in the flight between one foot leaving and the other landing. */
+function runLift(ph: number, k: number) {
+  const u = ((ph % 0.5) - TOE_OFF) / (0.5 - TOE_OFF);
+  return u > 0 && u < 1 ? Math.sin(Math.PI * u) * 9 * k : 0;
 }
