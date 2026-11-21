@@ -121,6 +121,8 @@ export interface Ui {
     lead: string;
     steps: { label: string; caption: string }[];
     hint: string;
+    /** How to play with the particles, by input type. */
+    interact: { pointer: string; touch: string };
   };
   projects: {
     title: string;
@@ -137,7 +139,9 @@ export interface Ui {
     panHint: string;
     columns: { project: string; stack: string; year: string; status: string };
   };
-  experience: { title: string; lead: string; current: string; viewProject: string };
+  experience: { title: string; lead: string; current: string; viewProject: string; more: string; less: string }; // "{n}" in more
+  /** The bottom action bar shown on phones. */
+  dock: { cv: string; talk: string };
   /** The serious-mode section that invites people into the creative mode. */
   teaser: { kicker: string; before: string; after: string; sub: string; cta: string; marquee: string[] };
   research: { title: string; lead: string; authors: string; venue: string; tech: string; read: string; more: string; less: string };

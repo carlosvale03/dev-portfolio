@@ -40,7 +40,17 @@ function Hero({ content }: { content: Content }) {
         <div className="grid gap-10 md:grid-cols-12 md:gap-8">
           <div className="flex flex-col md:col-span-7 lg:col-span-8">
             <Reveal>
-              <p className="font-mono text-xs uppercase tracking-wider text-muted">{ui.hero.kicker}</p>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <p className="font-mono text-xs uppercase tracking-wider text-muted">{ui.hero.kicker}</p>
+                {/* The top bar only shows the status on very wide screens. */}
+                <p className="inline-flex items-center gap-2 border border-line px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider 2xl:hidden">
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#1f8a4c] opacity-60" />
+                    <span className="relative inline-flex size-2 rounded-full bg-[#1f8a4c]" />
+                  </span>
+                  {profile.status}
+                </p>
+              </div>
             </Reveal>
             <HeroName />
             <Reveal delay={0.45}>
@@ -48,23 +58,24 @@ function Hero({ content }: { content: Content }) {
                 {profile.role}
               </p>
               <p className="mt-4 max-w-xl text-lg leading-relaxed text-muted">{profile.pitch}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Magnetic>
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+                <Magnetic className="w-full sm:w-auto">
                   <a
                     href="#projetos"
-                    className="group inline-flex h-12 items-center gap-2 bg-fg px-5 font-semibold text-bg transition-colors hover:bg-accent hover:text-ink"
+                    className="group inline-flex h-12 w-full items-center justify-center gap-2 bg-fg px-4 font-semibold text-bg transition-colors hover:bg-accent hover:text-ink sm:w-auto sm:px-5"
                   >
                     {ui.hero.ctaProjects}
                     <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                   </a>
                 </Magnetic>
-                <Magnetic>
+                <Magnetic className="w-full sm:w-auto">
                   <a
                     href={profile.cv}
                     download
-                    className="group inline-flex h-12 items-center gap-2 border border-fg px-5 font-semibold transition-colors hover:bg-fg hover:text-bg"
+                    className="group inline-flex h-12 w-full items-center justify-center gap-2 border border-fg px-4 font-semibold transition-colors hover:bg-fg hover:text-bg sm:w-auto sm:px-5"
                   >
-                    {ui.hero.ctaCv}
+                    <span className="sm:hidden">{ui.dock.cv}</span>
+                    <span className="hidden sm:inline">{ui.hero.ctaCv}</span>
                     <Download size={18} className="transition-transform group-hover:translate-y-0.5" />
                   </a>
                 </Magnetic>
@@ -265,17 +276,21 @@ function Stack({ content }: { content: Content }) {
             <Reveal
               key={group.id}
               delay={i * 0.06}
-              className="group bg-bg p-6 transition-colors duration-300 last:sm:col-span-2 hover:bg-surface lg:last:col-span-1"
+              className="group bg-bg p-5 transition-colors duration-300 last:sm:col-span-2 hover:bg-surface sm:p-6 lg:last:col-span-1"
             >
               <div className="flex items-baseline justify-between">
                 <p className="font-mono text-xs text-muted">06.{i + 1}</p>
                 <p className="font-tabular font-mono text-xs text-muted">{String(group.items.length).padStart(2, "0")}</p>
               </div>
               <h3 className="mt-1 text-lg font-extrabold tracking-tight">{group.label}</h3>
-              <ul className="mt-5 space-y-1.5">
+              {/* Chips on phones keep the five groups short; a list from sm up. */}
+              <ul className="mt-4 flex flex-wrap gap-1.5 sm:mt-5 sm:block sm:space-y-1.5">
                 {group.items.map((item) => (
-                  <li key={item} className="group/i flex items-center gap-2 text-[15px] transition-transform duration-300 hover:translate-x-1.5">
-                    <span aria-hidden="true" className="h-px w-3 bg-accent transition-[width] duration-300 group-hover/i:w-6" />
+                  <li
+                    key={item}
+                    className="group/i flex items-center gap-2 border border-line px-2.5 py-1 text-sm transition-transform duration-300 sm:border-0 sm:p-0 sm:text-[15px] sm:hover:translate-x-1.5"
+                  >
+                    <span aria-hidden="true" className="hidden h-px w-3 bg-accent transition-[width] duration-300 group-hover/i:w-6 sm:block" />
                     {item}
                   </li>
                 ))}

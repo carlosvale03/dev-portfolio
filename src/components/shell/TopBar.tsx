@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import { usePicosTime, useStoredFlag } from "@/lib/external";
-import { Close, Menu } from "../ui/icons";
+import { Close, Download, Menu } from "../ui/icons";
 import { loadCreative } from "../creative/load";
 import { useExperience } from "./ExperienceProvider";
 
@@ -153,7 +153,7 @@ function MobileMenu() {
       <dialog
         ref={ref}
         aria-label={content.ui.menu}
-        className="m-0 h-dvh max-h-none w-full max-w-none bg-bg p-0 text-fg backdrop:bg-ink/40"
+        className="m-0 h-dvh max-h-none w-full max-w-none flex-col bg-bg p-0 text-fg backdrop:bg-ink/40 open:flex"
         onClick={(e) => {
           if (e.target === e.currentTarget || (e.target as HTMLElement).closest("a")) ref.current?.close();
         }}
@@ -170,17 +170,32 @@ function MobileMenu() {
           </button>
         </div>
         <nav aria-label="Principal" className="flex flex-col px-5 py-6">
-          {nav.map((item) => (
+          {nav.map((item, i) => (
             <a
               key={item.id}
               href={`#${item.id}`}
-              className="flex items-baseline gap-4 border-b border-line py-4 text-4xl font-extrabold tracking-tight"
+              style={{ "--i": i } as CSSProperties}
+              className="menu-link flex items-baseline gap-4 border-b border-line py-4 text-4xl font-extrabold tracking-tight"
             >
               <span className="font-mono text-xs font-normal text-muted">{item.n}</span>
               {item.label}
             </a>
           ))}
         </nav>
+        <div className="menu-link mt-auto flex items-center justify-between gap-3 border-t border-line px-5 py-5" style={{ "--i": nav.length } as CSSProperties}>
+          <p className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
+            <span className="size-2 rounded-full bg-[#1f8a4c]" />
+            {content.profile.status}
+          </p>
+          <a
+            href={content.profile.cv}
+            download
+            className="inline-flex h-11 items-center gap-2 bg-fg px-4 text-sm font-semibold text-bg"
+          >
+            {content.ui.dock.cv}
+            <Download size={16} />
+          </a>
+        </div>
       </dialog>
     </>
   );

@@ -743,8 +743,8 @@ const ui: Bi<Ui> = {
     kicker: { pt: "fig. 1 · método", en: "fig. 1 · method" },
     title: { pt: "Do dado ao produto", en: "From data to product" },
     lead: {
-      pt: "O caminho que repito em pesquisa e em produto, desenhado com partículas. Passe o mouse para bagunçar, clique para explodir.",
-      en: "The path I repeat in research and in product, drawn with particles. Hover to stir them, click to burst.",
+      pt: "O caminho que repito em pesquisa e em produto, desenhado com partículas.",
+      en: "The path I repeat in research and in product, drawn with particles.",
     },
     steps: [
       { label: { pt: "Dados", en: "Data" }, caption: { pt: "Comentários, vídeos e logs: ruído de verdade.", en: "Comments, videos and logs: real-world noise." } },
@@ -754,6 +754,10 @@ const ui: Bi<Ui> = {
       { label: { pt: "Produto", en: "Product" }, caption: { pt: "Algo no ar, com o meu nome assinando.", en: "Something live, with my name on it." } },
     ],
     hint: { pt: "Escolha uma etapa", en: "Pick a step" },
+    interact: {
+      pointer: { pt: "Passe o mouse para bagunçar, clique para explodir.", en: "Hover to stir them, click to burst." },
+      touch: { pt: "Toque no desenho para explodir.", en: "Tap the drawing to burst it." },
+    },
   },
   projects: {
     title: { pt: "Projetos", en: "Projects" },
@@ -811,6 +815,12 @@ const ui: Bi<Ui> = {
     },
     current: { pt: "Atual", en: "Current" },
     viewProject: { pt: "Ver projeto", en: "See project" },
+    more: { pt: "Ver mais {n}", en: "Show {n} more" },
+    less: { pt: "Ver menos", en: "Show less" },
+  },
+  dock: {
+    cv: { pt: "Currículo", en: "Résumé" },
+    talk: { pt: "Vamos conversar", en: "Let's talk" },
   },
   research: {
     title: { pt: "Pesquisa", en: "Research" },

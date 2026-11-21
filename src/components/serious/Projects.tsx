@@ -38,7 +38,7 @@ function FeaturedCase({ project, index, content }: { project: Project; index: nu
   const primary = project.links[0];
 
   return (
-    <article className="grid items-center gap-8 lg:grid-cols-12 lg:gap-14">
+    <article className="grid grid-cols-[minmax(0,1fr)] items-center gap-8 lg:grid-cols-12 lg:gap-14 [&>*]:min-w-0">
       <div className={`lg:col-span-7 ${flip ? "lg:order-2" : ""}`}>
         <BrowserShot project={project} flip={flip} />
       </div>

@@ -7,6 +7,7 @@ import type { Content } from "@/content";
 import { ExperienceProvider, useExperience } from "./ExperienceProvider";
 import { TopBar } from "./TopBar";
 import { Footer } from "./Footer";
+import { MobileDock } from "./MobileDock";
 import { CutTransition } from "./CutTransition";
 import { Toaster } from "./Toaster";
 import { SecretKeys } from "../secrets/SecretKeys";
@@ -37,6 +38,7 @@ export function Experience({ content, children }: { content: Content; children: 
         <TopBar />
         <Stage serious={children} />
         <Footer />
+        <MobileDock />
         <Overlays />
         <CutTransition />
         <Gta />

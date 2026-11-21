@@ -29,7 +29,11 @@ export function ParticleFigure({ ui }: { ui: Ui }) {
               <SplitReveal text={ui.figure.title} inView />
               <span className="text-accent">.</span>
             </h2>
-            <p className="mt-4 max-w-md leading-relaxed text-muted">{ui.figure.lead}</p>
+            <p className="mt-4 max-w-md leading-relaxed text-muted">
+              {ui.figure.lead}{" "}
+              <span className="hidden [@media(hover:hover)]:inline">{ui.figure.interact.pointer}</span>
+              <span className="[@media(hover:hover)]:hidden">{ui.figure.interact.touch}</span>
+            </p>
 
             <ol className="mt-6 grid grid-cols-5 gap-1.5 lg:mt-8 lg:grid-cols-1" aria-label={ui.figure.hint}>
               {steps.map((step, i) => {
