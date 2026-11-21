@@ -26,18 +26,36 @@ export function useStoredFlag(key: string, serverValue = false) {
 export type MotionPref = "on" | "off";
 const prefListeners = new Set<() => void>();
 
-/** The visitor's animation choice, persisted; animations are on by default. */
+// The "animations off" choice lasts for the current visit only (sessionStorage),
+// so every new visit starts animated. Older builds kept it in localStorage
+// forever; that copy is dropped the first time it is read.
+const MOTION_KEY = "cv:motion";
+
+function readMotion(): MotionPref {
+  try {
+    window.localStorage.removeItem(MOTION_KEY);
+    return window.sessionStorage.getItem(MOTION_KEY) === "off" ? "off" : "on";
+  } catch {
+    return "on";
+  }
+}
+
+/** The visitor's animation choice for this visit; animations are on by default. */
 export function useMotionPref() {
   const value = useSyncExternalStore(
     (l) => {
       prefListeners.add(l);
       return () => prefListeners.delete(l);
     },
-    () => (readJSON<string>("cv:motion", "on") === "off" ? "off" : "on") as MotionPref,
+    readMotion,
     () => "on" as MotionPref,
   );
   const set = (next: MotionPref) => {
-    writeJSON("cv:motion", next);
+    try {
+      window.sessionStorage.setItem(MOTION_KEY, next);
+    } catch {
+      /* persistence is optional */
+    }
     prefListeners.forEach((l) => l());
   };
   return [value, set] as const;
