@@ -115,16 +115,16 @@ const experience: Bi<ExperienceItem>[] = [
     projectIds: ["gerencia-sst", "isesmt-checkout", "valida-sst"],
     bullets: [
       {
-        pt: "Gerencia SST, SaaS multi-tenant de Saúde e Segurança do Trabalho em produção: mais de 3,5 mil commits e mais de 500 cards entregues, da Medicina Ocupacional e do eSocial à assinatura digital com certificado A1.",
-        en: "Gerencia SST, a multi-tenant Occupational Health and Safety SaaS in production: more than 3,500 commits and more than 500 cards delivered, from occupational medicine and eSocial to A1 certificate digital signatures.",
+        pt: "Mais de 500 cards entregues e mais de 650 PRs meus integrados, a maior parte no Gerencia SST, SaaS multi-tenant de Saúde e Segurança do Trabalho em produção, onde passo de 3,5 mil commits.",
+        en: "More than 500 cards delivered and more than 650 of my PRs merged, most of them in Gerencia SST, a multi-tenant Occupational Health and Safety SaaS in production, where I have over 3,500 commits.",
       },
       {
         pt: "ISESMT Checkout: refiz em Next.js o sistema de pagamentos com Pagar.me (cartão, PIX, boleto e assinaturas), com mais de 500 commits e mais de 60 cards entregues.",
         en: "ISESMT Checkout: rebuilt the Pagar.me payment system in Next.js (card, PIX, boleto and subscriptions), with more than 500 commits and more than 60 cards delivered.",
       },
       {
-        pt: "Liderança técnica dos sistemas da empresa, do Gerencia ao Avalia NR-01 e NR-17, Treinamentos, Localiza SST e ISESMT Cloud: prioridade e distribuição do trabalho, decisões com os donos e mais de 300 PRs do time revisados.",
-        en: "Technical leadership of the company's systems, from Gerencia to Avalia NR-01 and NR-17, Training, Localiza SST and ISESMT Cloud: prioritizing and distributing work, decisions with the owners and more than 300 team PRs reviewed.",
+        pt: "Liderança técnica dos sistemas da empresa, do Gerencia ao Avalia NR-01 e NR-17, Treinamentos, Localiza SST e ISESMT Cloud: prioridade e distribuição do trabalho, decisões com os donos, mais de 900 cards escritos e mais de 350 PRs de colegas revisados.",
+        en: "Technical leadership of the company's systems, from Gerencia to Avalia NR-01 and NR-17, Training, Localiza SST and ISESMT Cloud: prioritizing and distributing work, decisions with the owners, more than 900 cards written and more than 350 teammates' PRs reviewed.",
       },
       {
         pt: "Segurança do Gerencia: corrigi mais de 30 falhas apontadas numa auditoria, de isolamento entre tenants e permissão por módulo a sessões, uploads e geração de PDF.",
@@ -258,7 +258,7 @@ const projects: Bi<Project>[] = [
     ],
     metrics: [
       { value: { pt: "3,5 mil+", en: "3.5k+" }, label: { pt: "commits meus", en: "of my commits" } },
-      { value: "500+", label: { pt: "cards entregues", en: "cards delivered" } },
+      { value: "400+", label: { pt: "cards entregues", en: "cards delivered" } },
       { value: "~250", label: { pt: "tabelas", en: "tables" } },
       { value: "~50", label: { pt: "módulos", en: "modules" } },
     ],
