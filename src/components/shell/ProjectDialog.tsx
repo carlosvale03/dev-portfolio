@@ -34,7 +34,7 @@ export default function ProjectDialog() {
   return (
     <Modal label={project.title} closeLabel={ui.close} onClose={closeProject} className="w-[min(94vw,1120px)]">
       <article className="grid md:grid-cols-[1.15fr_1fr]">
-        <div className="relative h-64 border-b border-line bg-ink sm:h-80 md:h-auto md:min-h-[32rem] md:border-b-0 md:border-r">
+        <div className="relative h-[46dvh] border-b border-line bg-ink sm:h-80 md:h-auto md:min-h-[32rem] md:border-b-0 md:border-r">
           {project.image && src ? (
             <Shot image={project.image} src={src} hint={ui.projects.panHint} />
           ) : (
@@ -59,14 +59,18 @@ export default function ProjectDialog() {
 
       {zoomed && project.image && src && (
         <Modal label={project.image.alt} closeLabel={ui.close} onClose={() => setZoomed(false)} tone="ink" className="w-[min(96vw,1400px)]">
-          <Image
-            src={src}
-            alt={project.image.alt}
-            width={project.image.width}
-            height={project.image.height}
-            sizes="96vw"
-            className="h-auto w-full"
-          />
+          {/* Full screen on phones: tall shots scroll down; wide ones are shown
+              larger and scroll sideways, or their text would be unreadable. */}
+          <div className="flex min-h-full items-center overflow-x-auto overscroll-x-contain">
+            <Image
+              src={src}
+              alt={project.image.alt}
+              width={project.image.width}
+              height={project.image.height}
+              sizes="(max-width: 639px) 220vw, 96vw"
+              className={`h-auto w-full ${project.image.width / project.image.height > 0.8 ? "max-sm:w-[220%] max-sm:max-w-none" : ""}`}
+            />
+          </div>
         </Modal>
       )}
     </Modal>
