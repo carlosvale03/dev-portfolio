@@ -138,6 +138,8 @@ export interface Ui {
     columns: { project: string; stack: string; year: string; status: string };
   };
   experience: { title: string; lead: string; current: string; viewProject: string };
+  /** The serious-mode section that invites people into the creative mode. */
+  teaser: { kicker: string; before: string; after: string; sub: string; cta: string; marquee: string[] };
   research: { title: string; lead: string; authors: string; venue: string; tech: string; read: string; more: string; less: string };
   about: { title: string; timeline: string };
   stack: { title: string; lead: string };

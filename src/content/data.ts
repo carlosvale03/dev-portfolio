@@ -793,6 +793,16 @@ const ui: Bi<Ui> = {
       status: "Status",
     },
   },
+  teaser: {
+    kicker: { pt: "Modo criativo", en: "Creative mode" },
+    before: { pt: "Até aqui, o currículo.", en: "So far, the résumé." },
+    after: { pt: "No modo criativo, a prática.", en: "In creative mode, the practice." },
+    sub: { pt: "Jogos, partículas e segredos, feitos do zero.", en: "Games, particles and secrets, built from scratch." },
+    cta: { pt: "Ver na prática", en: "See it in practice" },
+    marquee: [
+      { pt: "PARTÍCULAS ✦ JOGOS ✦ SEGREDOS ✦ TERMINAL ✦ ESCALAÇÃO ✦", en: "PARTICLES ✦ GAMES ✦ SECRETS ✦ TERMINAL ✦ LINEUP ✦" },
+    ],
+  },
   experience: {
     title: { pt: "Experiência", en: "Experience" },
     lead: {

@@ -5,6 +5,7 @@ import { CountUp, Magnetic, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
 import { Container, Reveal, SectionHeader } from "./primitives";
 import { ContactForm } from "./ContactForm";
+import { CreativeTeaser } from "./CreativeTeaser";
 import { ExperienceList } from "./Experience";
 import { ParticleFigure } from "./ParticleFigure";
 import { ProjectsShowcase } from "./Projects";
@@ -25,6 +26,7 @@ export function SeriousMain({ content }: { content: Content }) {
       <Research content={content} />
       <About content={content} />
       <Stack content={content} />
+      <CreativeTeaser ui={content.ui} />
       <Contact content={content} />
     </>
   );

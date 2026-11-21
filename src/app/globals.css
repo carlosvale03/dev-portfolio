@@ -109,6 +109,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Light sweeping across the creative-mode call to action. */
+@keyframes teaser-glint {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
 /* Kinetic marquee used by the creative mode. */
 @keyframes marquee-left {
   to {

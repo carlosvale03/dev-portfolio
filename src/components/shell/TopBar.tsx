@@ -64,7 +64,7 @@ export function TopBar() {
           >
             {other}
           </Link>
-          <ModeSwitch />
+          {mode === "criativo" && <ModeSwitch />}
           <MobileMenu />
         </div>
       </div>
@@ -122,8 +122,8 @@ export function ModeSwitch({ className = "" }: { className?: string }) {
           }`}
         />
       </span>
-      <span className="hidden sm:inline">{content.ui.mode.toCreative}</span>
-      <span className="sm:hidden">{content.lang === "pt" ? "Criativo" : "Creative"}</span>
+      <span className="hidden sm:inline">{on ? content.ui.mode.toSerious : content.ui.mode.toCreative}</span>
+      <span className="sm:hidden">{on ? (content.lang === "pt" ? "Sério" : "Serious") : content.lang === "pt" ? "Criativo" : "Creative"}</span>
       {!seen && (
         <span aria-hidden="true" className="absolute -right-1 -top-1 flex size-2.5">
           <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75" />
