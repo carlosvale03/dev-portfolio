@@ -8,6 +8,7 @@ import { ArrowRight, ArrowUpRight } from "../ui/icons";
 import { StatusBadge } from "../ui/StatusBadge";
 import { FloatingPreview, Magnetic } from "../motion/kit";
 import { useExperience } from "../shell/ExperienceProvider";
+import { IsesmtSystems } from "./IsesmtSystems";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const preloadDialog = () => void import("../shell/ProjectDialog");
@@ -16,7 +17,8 @@ const preloadDialog = () => void import("../shell/ProjectDialog");
 // then an editorial index for everything else.
 export function ProjectsShowcase({ content }: { content: Content }) {
   const featured = content.projects.filter((p) => p.featured);
-  const others = content.projects.filter((p) => !p.featured);
+  const others = content.projects.filter((p) => !p.featured && !p.group);
+  const isesmt = content.projects.filter((p) => p.group === "isesmt");
 
   return (
     <>
@@ -27,6 +29,7 @@ export function ProjectsShowcase({ content }: { content: Content }) {
         ))}
       </div>
       <ProjectIndex projects={others} offset={featured.length} content={content} />
+      <IsesmtSystems projects={isesmt} content={content} />
     </>
   );
 }

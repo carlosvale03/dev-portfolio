@@ -7,6 +7,7 @@ import type { LinkKind, Project, ProjectImage } from "@/content";
 import { Modal } from "../ui/Modal";
 import { ArrowUpRight } from "../ui/icons";
 import { StatusBadge } from "../ui/StatusBadge";
+import { BADGE_ICONS } from "../serious/IsesmtSystems";
 import { useExperience } from "./ExperienceProvider";
 
 // Without one of these the code is private, and the dialog says so.
@@ -38,7 +39,7 @@ export default function ProjectDialog() {
           {project.image && src ? (
             <Shot image={project.image} src={src} hint={ui.projects.panHint} />
           ) : (
-            <Placeholder title={project.title} />
+            <Placeholder title={project.title} badge={project.badge} />
           )}
           <span className="pointer-events-none absolute left-3 top-3 z-10 bg-fg px-2 py-1 font-mono text-[11px] text-bg">
             fig. 02.{index + 1}
@@ -204,9 +205,15 @@ function ProjectInfo({ project }: { project: Project }) {
   );
 }
 
-export function Placeholder({ title }: { title: string }) {
+export function Placeholder({ title, badge }: { title: string; badge?: Project["badge"] }) {
+  const Glyph = badge ? BADGE_ICONS[badge] : null;
   return (
-    <div className="absolute inset-0 grid place-items-center overflow-hidden bg-ink p-6">
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 overflow-hidden bg-ink p-6">
+      {Glyph && (
+        <span className="icon-duo grid size-20 place-items-center border-2 border-paper bg-ink text-paper shadow-[5px_5px_0_var(--accent)]">
+          <Glyph size={44} weight="duotone" aria-hidden="true" />
+        </span>
+      )}
       <p className="text-center text-[clamp(2rem,6vw,4rem)] font-black uppercase leading-[0.85] tracking-[-0.04em] text-paper/90">
         {title}
         <span className="text-accent">.</span>

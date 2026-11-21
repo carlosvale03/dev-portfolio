@@ -32,6 +32,10 @@ export interface Project {
   /** Replaces the default private-code note in the project dialog. */
   codeNote?: string;
   metrics?: { value: string; label: string }[];
+  /** "isesmt": the company systems shown in their own block, not the main list. */
+  group?: "isesmt";
+  /** Icon for projects without a screenshot. */
+  badge?: "assessment" | "training" | "map" | "cloud";
 }
 
 export interface ExperienceItem {
@@ -136,6 +140,7 @@ export interface Ui {
     highlights: string;
     featured: string;
     others: string;
+    isesmt: { title: string; lead: string; role: string };
     metrics: string;
     zoom: string;
     panHint: string;
