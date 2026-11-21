@@ -46,7 +46,7 @@ export function CreativeTeaser({ ui }: { ui: Ui }) {
         style={{ x: drift }}
         className="pointer-events-none absolute -right-10 top-6 select-none text-[clamp(7rem,30vw,22rem)] font-black leading-none tracking-[-0.06em] text-paper/[0.04]"
       >
-        C.
+        CH
       </m.span>
 
       <div className="relative mx-auto grid max-w-[1320px] gap-8 px-5 py-14 md:px-8 md:py-24 lg:grid-cols-12 lg:items-center lg:gap-10">
