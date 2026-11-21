@@ -199,7 +199,7 @@ export function Formation({ content }: { content: Content }) {
           >
             <span
               aria-hidden="true"
-              className="absolute -right-4 -top-8 text-[9rem] font-black leading-none tracking-[-0.06em] text-transparent [-webkit-text-stroke:1.5px_var(--line-strong)]"
+              className="absolute -right-4 -top-8 text-[9rem] font-black leading-none tracking-[-0.06em] text-outline [--outline-fill:var(--surface)] [--outline:var(--line-strong)]"
             >
               {player?.n ?? "—"}
             </span>

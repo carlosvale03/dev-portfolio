@@ -146,6 +146,18 @@ dialog[open] .menu-link {
 }
 }
 
+/* Outlined display type. A transparent fill shows the font's overlapping
+   contours as stray lines inside the glyphs (the bar of the 4, the joins of
+   the S); painting the stroke first and filling with the background hides them.
+   The stroke is twice the visible width because the fill covers its inner half. */
+@layer components {
+  .text-outline {
+    color: var(--outline-fill, var(--bg));
+    -webkit-text-stroke: 3px var(--outline, var(--fg));
+    paint-order: stroke fill;
+  }
+}
+
 /* Light sweeping across the creative-mode call to action. */
 @keyframes teaser-glint {
   0%,

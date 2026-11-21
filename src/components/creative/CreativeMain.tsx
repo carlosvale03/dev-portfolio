@@ -204,7 +204,7 @@ function ExperienceSection({ content }: { content: Content }) {
                   </span>
                 )}
               </p>
-              <h3 className="mt-3 break-words text-[clamp(2.5rem,6vw,5.5rem)] font-black uppercase leading-[0.85] tracking-[-0.05em] text-transparent transition-colors duration-500 [-webkit-text-stroke:1.5px_var(--fg)] group-hover:text-fg">
+              <h3 className="mt-3 break-words text-[clamp(2.5rem,6vw,5.5rem)] font-black uppercase leading-[0.85] tracking-[-0.05em] text-outline transition-colors duration-500 group-hover:text-fg">
                 {job.company}
               </h3>
             </div>
@@ -265,7 +265,7 @@ function Research({ content }: { content: Content }) {
               viewport={{ once: true, margin: "0px 0px -15% 0px" }}
               transition={{ duration: 0.8, ease: EASE, delay: i * 0.08 }}
             >
-              <p className="text-[clamp(4.5rem,10vw,8.5rem)] font-black leading-[0.8] tracking-[-0.06em] text-transparent transition-colors duration-500 [-webkit-text-stroke:1.5px_var(--accent)] group-hover:text-accent">
+              <p className="text-[clamp(4.5rem,10vw,8.5rem)] font-black leading-[0.8] tracking-[-0.06em] text-outline transition-colors duration-500 [--outline:var(--accent)] group-hover:text-accent">
                 {pub.year}
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-2">

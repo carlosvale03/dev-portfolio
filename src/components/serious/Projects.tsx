@@ -50,7 +50,7 @@ function FeaturedCase({ project, index, content }: { project: Project; index: nu
         transition={{ duration: 0.8, ease: EASE }}
       >
         <div className="flex items-end justify-between gap-4">
-          <span className="text-[clamp(4rem,9vw,7.5rem)] font-black leading-[0.8] tracking-[-0.06em] text-transparent [-webkit-text-stroke:1.5px_var(--fg)]">
+          <span className="text-[clamp(4rem,9vw,7.5rem)] font-black leading-[0.8] tracking-[-0.06em] text-outline">
             {String(index + 1).padStart(2, "0")}
           </span>
           <div className="flex flex-col items-end gap-1 pb-1">

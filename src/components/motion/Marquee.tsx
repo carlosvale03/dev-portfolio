@@ -56,7 +56,7 @@ export function Marquee({
                 <span
                   key={copy}
                   className={`${size} pr-[0.3em] font-black uppercase leading-[0.95] tracking-[-0.045em] ${
-                    r.outline ? "text-transparent [-webkit-text-stroke:1.5px_var(--accent)]" : "text-fg"
+                    r.outline ? "text-outline [--outline:var(--accent)]" : "text-fg"
                   }`}
                 >
                   {r.text} {r.text}
