@@ -29,7 +29,7 @@ const text = (label: string, scale: number): Draw => (c, cx, cy, s, font) => {
 };
 
 export const SHAPES = {
-  cv: text("CV", 0.66),
+  mark: text("C.", 0.72),
   code: text("</>", 0.5),
   database: (c, cx, cy, s) => {
     // The classic stacked-disk database: three bands, each with a status light.

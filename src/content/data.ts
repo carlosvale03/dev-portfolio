@@ -870,11 +870,11 @@ const ui: Bi<Ui> = {
     play: { pt: "Retomar animação", en: "Resume animation" },
     scroll: { pt: "role para descer", en: "scroll down" },
     particlesLabel: {
-      pt: "Partículas que viram as iniciais CV, uma rede neural, uma bola, um controle, uma esfera de quatro estrelas, uma shuriken e um chapéu de palha",
-      en: "Particles turning into the initials CV, a neural network, a ball, a gamepad, a four-star orb, a shuriken and a straw hat",
+      pt: "Partículas que viram a letra C, uma rede neural, uma bola, um controle, uma esfera de quatro estrelas, uma shuriken e um chapéu de palha",
+      en: "Particles turning into the letter C, a neural network, a ball, a gamepad, a four-star orb, a shuriken and a straw hat",
     },
     shapes: [
-      "CV",
+      "C.",
       { pt: "Rede neural", en: "Neural net" },
       { pt: "Bola", en: "Ball" },
       { pt: "Controle", en: "Gamepad" },

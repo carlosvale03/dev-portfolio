@@ -15,7 +15,7 @@ import { Formation } from "./Formation";
 import { Hobbies, NimbusCameo } from "./Hobbies";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const HERO_SHAPES: ShapeId[] = ["cv", "network", "ball", "gamepad", "orb", "shuriken", "hat"];
+const HERO_SHAPES: ShapeId[] = ["mark", "network", "ball", "gamepad", "orb", "shuriken", "hat"];
 
 // Creative mode: the same content as the serious mode, told with kinetic type,
 // red cut-in curtains and particles, plus the hobbies the serious mode leaves out.
