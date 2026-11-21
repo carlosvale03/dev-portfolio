@@ -1,7 +1,20 @@
 import type { CSSProperties } from "react";
 import type { Content } from "@/content";
-import { BrainCircuit, ChevronDown, Code2, Database, Mail, MessageCircle, ShieldCheck, Workflow, type LucideIcon } from "lucide-react";
-import { ArrowRight, ArrowUpRight, Download, Github, Linkedin } from "../ui/icons";
+import {
+  Brain,
+  CaretDown,
+  Code,
+  Database,
+  EnvelopeSimple,
+  FlowArrow,
+  GithubLogo,
+  LinkedinLogo,
+  ShieldCheck,
+  WhatsappLogo,
+} from "@phosphor-icons/react/dist/ssr";
+import type { Icon } from "@phosphor-icons/react";
+import { IconBadge } from "../ui/IconBadge";
+import { ArrowRight, ArrowUpRight, Download } from "../ui/icons";
 import { CountUp, Magnetic, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
 import { Container, Reveal, SectionHeader } from "./primitives";
@@ -191,7 +204,7 @@ function Research({ content }: { content: Content }) {
                       <summary className="inline-flex list-none items-center gap-2 text-sm font-semibold underline decoration-line-strong underline-offset-4 hover:decoration-accent [&::-webkit-details-marker]:hidden">
                         <span className="group-open/d:hidden">{ui.research.more}</span>
                         <span className="hidden group-open/d:inline">{ui.research.less}</span>
-                        <ChevronDown size={16} aria-hidden="true" className="transition-transform duration-300 group-open/d:rotate-180" />
+                        <CaretDown size={16} weight="bold" aria-hidden="true" className="transition-transform duration-300 group-open/d:rotate-180" />
                       </summary>
                       <p className="mt-3 max-w-2xl leading-relaxed">{pub.summary}</p>
                     </details>
@@ -277,7 +290,7 @@ function Stack({ content }: { content: Content }) {
                 <p className="font-tabular font-mono text-xs text-muted">{String(group.items.length).padStart(2, "0")}</p>
               </div>
               <h3 className="mt-3 flex items-center gap-2.5 text-lg font-extrabold tracking-tight">
-                <StackIcon id={group.id} />
+                {STACK_ICONS[group.id] && <IconBadge icon={STACK_ICONS[group.id]} />}
                 {group.label}
               </h3>
               {/* Chips on phones keep the five groups short; a list from sm up. */}
@@ -334,12 +347,7 @@ function Contact({ content }: { content: Content }) {
                       className="absolute inset-0 origin-bottom scale-y-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-y-100"
                     />
                     <span className="relative flex min-w-0 items-center gap-4">
-                      <span
-                        aria-hidden="true"
-                        className="grid size-11 shrink-0 place-items-center border border-line transition-[border-color,rotate] duration-300 group-hover:-rotate-6 group-hover:border-ink group-hover:text-ink"
-                      >
-                        <ContactIcon id={c.id} />
-                      </span>
+                      <IconBadge icon={CONTACT_ICONS[c.id]} />
                       <span className="min-w-0">
                       <span className="block font-mono text-[11px] uppercase tracking-wider text-muted group-hover:text-ink">
                         {c.label}
@@ -377,28 +385,17 @@ function Contact({ content }: { content: Content }) {
   );
 }
 
-function ContactIcon({ id }: { id: Content["profile"]["contacts"][number]["id"] }) {
-  const props = { size: 20, strokeWidth: 1.75 };
-  if (id === "email") return <Mail {...props} />;
-  if (id === "linkedin") return <Linkedin {...props} />;
-  if (id === "github") return <Github {...props} />;
-  return <MessageCircle {...props} />;
-}
-
-const STACK_ICONS: Record<string, LucideIcon> = {
-  web: Code2,
-  backend: Database,
-  infra: ShieldCheck,
-  ai: BrainCircuit,
-  product: Workflow,
+const CONTACT_ICONS: Record<Content["profile"]["contacts"][number]["id"], Icon> = {
+  email: EnvelopeSimple,
+  linkedin: LinkedinLogo,
+  github: GithubLogo,
+  whatsapp: WhatsappLogo,
 };
 
-function StackIcon({ id }: { id: string }) {
-  const Icon = STACK_ICONS[id];
-  if (!Icon) return null;
-  return (
-    <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center bg-fg text-bg transition-[background-color,rotate] duration-300 group-hover:-rotate-6 group-hover:bg-accent group-hover:text-ink">
-      <Icon size={17} strokeWidth={1.9} />
-    </span>
-  );
-}
+const STACK_ICONS: Record<string, Icon> = {
+  web: Code,
+  backend: Database,
+  infra: ShieldCheck,
+  ai: Brain,
+  product: FlowArrow,
+};

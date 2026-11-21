@@ -2,10 +2,11 @@
 
 import { m, useScroll, useSpring } from "motion/react";
 import { useRef } from "react";
-import { Briefcase, FlaskConical, GraduationCap } from "lucide-react";
+import { Briefcase, Flask, GraduationCap } from "@phosphor-icons/react/dist/ssr";
+import { IconBadge } from "../ui/IconBadge";
 import type { TimelineItem } from "@/content";
 
-const ICONS = { study: GraduationCap, work: Briefcase, research: FlaskConical };
+const ICONS = { study: GraduationCap, work: Briefcase, research: Flask };
 
 // The rail fills in red as the timeline scrolls through the viewport.
 export function Timeline({ items, title }: { items: TimelineItem[]; title: string }) {
@@ -29,9 +30,7 @@ export function Timeline({ items, title }: { items: TimelineItem[]; title: strin
             viewport={{ once: true, margin: "0px 0px -15% 0px" }}
             transition={{ duration: 0.5, delay: i * 0.08 }}
           >
-            <span aria-hidden="true" className="absolute -left-[14px] top-0 grid size-[26px] place-items-center border-2 border-bg bg-fg text-bg">
-              <Icon size={14} strokeWidth={2} />
-            </span>
+            <IconBadge icon={Icon} size="sm" className="absolute -left-[17px] top-0" />
             <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{t.when}</p>
             <p className="font-semibold leading-snug">{t.title}</p>
             <p className="text-sm text-muted">{t.place}</p>

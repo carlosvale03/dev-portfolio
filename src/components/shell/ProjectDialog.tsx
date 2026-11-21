@@ -1,23 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type ComponentType, type CSSProperties } from "react";
-import { Globe, Lock, MonitorPlay, PenTool } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { GithubLogo, Globe, Lock, MonitorPlay, PenNib, type Icon } from "@phosphor-icons/react";
 import type { LinkKind, Project, ProjectImage } from "@/content";
 import { Modal } from "../ui/Modal";
-import { ArrowUpRight, Github } from "../ui/icons";
+import { ArrowUpRight } from "../ui/icons";
 import { StatusBadge } from "../ui/StatusBadge";
 import { useExperience } from "./ExperienceProvider";
 
 // Without one of these the code is private, and the dialog says so.
 const CODE_LINKS = new Set(["code", "front", "back"]);
 
-const LINK_ICONS: Record<LinkKind, ComponentType<{ size?: number; strokeWidth?: number; "aria-hidden"?: boolean | "true" }>> = {
-  code: Github,
-  front: Github,
-  back: Github,
+const LINK_ICONS: Record<LinkKind, Icon> = {
+  code: GithubLogo,
+  front: GithubLogo,
+  back: GithubLogo,
   demo: MonitorPlay,
-  design: PenTool,
+  design: PenNib,
   site: Globe,
 };
 
@@ -187,7 +187,7 @@ function ProjectInfo({ project }: { project: Project }) {
             >
               {(() => {
                 const Icon = LINK_ICONS[l.kind];
-                return <Icon size={16} strokeWidth={1.9} aria-hidden="true" />;
+                return <Icon size={18} weight="duotone" aria-hidden="true" className="icon-duo" />;
               })()}
               {ui.projects.links[l.kind]}
               <ArrowUpRight size={16} />
@@ -195,7 +195,7 @@ function ProjectInfo({ project }: { project: Project }) {
           ))}
         {!project.links.some((l) => CODE_LINKS.has(l.kind)) && (
           <p className="inline-flex items-center gap-1.5 text-sm text-muted">
-            <Lock size={14} aria-hidden="true" />
+            <Lock size={16} weight="duotone" aria-hidden="true" className="icon-duo" />
             {project.codeNote ?? ui.projects.privateNote}
           </p>
         )}

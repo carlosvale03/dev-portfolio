@@ -2,7 +2,7 @@
 
 import { m, useScroll, useTransform } from "motion/react";
 import { useRef, type CSSProperties } from "react";
-import { Gamepad2, KeyRound, Shirt, Sparkles, SquareTerminal } from "lucide-react";
+import { GameController, Key, Sparkle, SoccerBall, TerminalWindow } from "@phosphor-icons/react/dist/ssr";
 import { SECRETS, type Ui } from "@/content";
 import { fill } from "@/lib/storage";
 import { ArrowRight } from "../ui/icons";
@@ -13,7 +13,7 @@ import type { ShapeId } from "../particles/shapes";
 import { loadCreative } from "../creative/load";
 import { useExperience } from "../shell/ExperienceProvider";
 
-const FEATURE_ICONS = [Sparkles, Shirt, SquareTerminal, Gamepad2, KeyRound];
+const FEATURE_ICONS = [Sparkle, SoccerBall, TerminalWindow, GameController, Key];
 const SHAPES: ShapeId[] = ["mark", "gamepad", "ball", "shuriken", "hat", "orb"];
 // Position of each shape in ui.creative.shapes, which follows the creative hero order.
 const HERO_ORDER: ShapeId[] = ["mark", "network", "ball", "gamepad", "orb", "shuriken", "hat"];
@@ -80,9 +80,9 @@ export function CreativeTeaser({ ui }: { ui: Ui }) {
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.5 + i * 0.07, type: "spring", stiffness: 380, damping: 22 }}
-                  className="inline-flex items-center gap-1.5 border border-paper/25 px-2.5 py-1 font-mono text-xs text-paper/85"
+                  className="icon-duo inline-flex items-center gap-1.5 border border-paper/25 px-2.5 py-1 font-mono text-xs text-paper/85"
                 >
-                  <Icon size={14} aria-hidden="true" className="text-accent" />
+                  <Icon size={16} weight="duotone" aria-hidden="true" className="text-paper" />
                   {fill(label, { n: SECRETS.length })}
                 </m.li>
               );
