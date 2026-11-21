@@ -291,7 +291,7 @@ const projects: Bi<Project>[] = [
     },
     year: "2026",
     status: "live",
-    featured: true,
+    featured: false,,
     image: {
       src: "/img/projetos/isesmt-checkout.webp",
       alt: {
