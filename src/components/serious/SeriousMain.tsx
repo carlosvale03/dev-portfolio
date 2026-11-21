@@ -41,17 +41,7 @@ function Hero({ content }: { content: Content }) {
         <div className="grid gap-10 md:grid-cols-12 md:gap-8">
           <div className="flex flex-col md:col-span-7 lg:col-span-8">
             <Reveal>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <p className="font-mono text-xs uppercase tracking-wider text-muted">{ui.hero.kicker}</p>
-                {/* The top bar only shows the status on very wide screens. */}
-                <p className="inline-flex items-center gap-2 border border-line px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider 2xl:hidden">
-                  <span className="relative flex size-2">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#1f8a4c] opacity-60" />
-                    <span className="relative inline-flex size-2 rounded-full bg-[#1f8a4c]" />
-                  </span>
-                  {profile.status}
-                </p>
-              </div>
+              <p className="font-mono text-xs uppercase tracking-wider text-muted">{ui.hero.kicker}</p>
             </Reveal>
             <HeroName />
             <Reveal delay={0.45}>

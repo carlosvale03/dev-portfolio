@@ -55,6 +55,7 @@ export function TopBar() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <Clock />
+          <StatusPill />
           <Link
             href={`/${other}${mode === "criativo" ? "?modo=criativo" : ""}`}
             hrefLang={other === "pt" ? "pt-BR" : "en"}
@@ -69,6 +70,21 @@ export function TopBar() {
         </div>
       </div>
     </header>
+  );
+}
+
+// Below 2xl the clock (which carries the status) is hidden, so the status gets
+// its own small pill: recruiters see it on every screen, phones included.
+function StatusPill() {
+  const { profile } = useExperience().content;
+  return (
+    <p className="inline-flex h-8 items-center gap-1.5 whitespace-nowrap border border-line px-2 font-mono text-[10px] uppercase tracking-wider sm:px-2.5 sm:text-[11px] 2xl:hidden">
+      <span className="relative flex size-2">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#1f8a4c] opacity-60" />
+        <span className="relative inline-flex size-2 rounded-full bg-[#1f8a4c]" />
+      </span>
+      {profile.status}
+    </p>
   );
 }
 
