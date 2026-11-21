@@ -56,7 +56,7 @@ export function PhotoFrame({ alt, caption, status }: { alt: string; caption: str
             loading="eager"
             fetchPriority="high"
             sizes="(min-width: 1320px) 400px, (min-width: 768px) 40vw, 22rem"
-            className="object-cover object-[50%_18%]"
+            className="object-cover object-[50%_42%] sm:object-[50%_18%]"
           />
         </m.div>
         <Stamp text={status} />
@@ -73,7 +73,7 @@ function Stamp({ text }: { text: string }) {
   return (
     <m.div
       aria-hidden="true"
-      className="absolute -bottom-6 -left-2 grid size-24 place-items-center rounded-full bg-bg sm:-left-6 sm:size-28"
+      className="absolute -right-2 -top-6 grid size-20 place-items-center rounded-full bg-bg sm:-bottom-6 sm:-left-6 sm:right-auto sm:top-auto sm:size-28"
       initial={{ scale: 0, rotate: -120 }}
       animate={{ scale: 1, rotate: 0 }}
       transition={{ type: "spring", stiffness: 260, damping: 16, delay: 1 }}
