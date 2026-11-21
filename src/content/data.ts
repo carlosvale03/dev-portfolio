@@ -63,10 +63,6 @@ const profile: Bi<Content["profile"]> = {
       pt: "Meu jeito de trabalhar: especificação antes do código, testes automatizados, revisão em todo PR e IA como ferramenta do dia a dia. Fora do trabalho, construo produtos próprios, como o Azimute e o Carrinho Inteligente.",
       en: "How I work: spec before code, automated tests, review on every PR and AI as an everyday tool. Outside work, I build my own products, like Azimute and Carrinho Inteligente.",
     },
-    {
-      pt: "Quando desligo o computador, é futebol, games retrô e anime. É por isso que este site tem um modo criativo.",
-      en: "When the computer goes off, it's football, retro games and anime. That's why this site has a creative mode.",
-    },
   ],
   timeline: [
     {
@@ -940,8 +936,8 @@ const ui: Bi<Ui> = {
     hobbies: {
       title: { pt: "Fora do código", en: "Off the clock" },
       lead: {
-        pt: "O que não entra no modo sério: anime, games antigos e futebol de fim de semana.",
-        en: "What doesn't make it into serious mode: anime, old games and weekend football.",
+        pt: "Quando o computador desliga: anime, games retrô e futebol de fim de semana. Foi daí que saiu a ideia deste modo.",
+        en: "When the computer goes off: anime, retro games and weekend football. That is where the idea for this mode came from.",
       },
       swap: { pt: "Trocar personagem", en: "Swap character" },
       power: { pt: "Nível de poder", en: "Power level" },
