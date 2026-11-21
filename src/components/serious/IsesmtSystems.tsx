@@ -75,7 +75,7 @@ export function IsesmtSystems({ projects, content }: { projects: Project[]; cont
           </dl>
         </div>
 
-        <ul className="mt-10 grid gap-px border border-paper/20 bg-paper/20 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-10 grid grid-cols-2 gap-px border border-paper/20 bg-paper/20 lg:grid-cols-4">
           {t.method.map((step, i) => {
             const Glyph = METHOD_ICONS[i];
             return (
@@ -85,7 +85,7 @@ export function IsesmtSystems({ projects, content }: { projects: Project[]; cont
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, ease: EASE, delay: i * 0.07 }}
-                className="flex items-start gap-3 bg-ink p-4"
+                className="flex flex-col items-start gap-3 bg-ink p-4 sm:flex-row"
               >
                 <span className={`${DUO} grid size-10 shrink-0 place-items-center border-2 border-paper text-paper`}>
                   <Glyph size={22} weight="duotone" aria-hidden="true" />
