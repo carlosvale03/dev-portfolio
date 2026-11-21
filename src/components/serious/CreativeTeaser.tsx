@@ -61,7 +61,7 @@ export function CreativeTeaser({ ui }: { ui: Ui }) {
           <h2 id="teaser-title" className="mt-5 text-[clamp(2.4rem,7vw,5rem)] font-extrabold leading-[0.95] tracking-[-0.045em]">
             <span className="block text-paper/45">
               <SplitReveal text={t.before} inView stagger={0.025} />
-            </span>
+            </span>{" "}
             <span className="mt-1 block">
               <SplitReveal text={t.after} inView delay={0.35} stagger={0.03} />
             </span>
