@@ -34,15 +34,15 @@ const profile: Bi<Content["profile"]> = {
   location: "Picos, PI",
   status: { pt: "Disponível para vagas", en: "Open to work" },
   pitch: {
-    pt: "Construo sistemas web escaláveis e aplico NLP e machine learning a problemas reais, do product discovery ao deploy.",
-    en: "I build scalable web systems and apply NLP and machine learning to real problems, from product discovery to deploy.",
+    pt: "Construo e coordeno sistemas web em produção e aplico NLP e machine learning a problemas reais, do product discovery ao deploy.",
+    en: "I build and coordinate web systems in production and apply NLP and machine learning to real problems, from product discovery to deploy.",
   },
   photoAlt: {
     pt: "Retrato de Carlos Vale de camisa preta e gravata azul",
     en: "Portrait of Carlos Vale in a black shirt and blue tie",
   },
   stats: [
-    { value: "08", label: { pt: "projetos", en: "projects" } },
+    { value: "10+", label: { pt: "sistemas em produção", en: "systems in production" } },
     { value: "03", label: { pt: "artigos publicados", en: "published papers" } },
     { value: "MSc", label: { pt: "em andamento, UFPI", en: "in progress, UFPI" } },
   ],
@@ -52,8 +52,8 @@ const profile: Bi<Content["profile"]> = {
       en: "I'm Carlos Henrique do Vale e Silva, a developer driven by the intersection of software engineering and applied artificial intelligence. I like taking complex problems and turning them into products that are simple to use.",
     },
     {
-      pt: "Hoje desenvolvo o Gerencia SST e o Valida SST na ISESMT, produtos de Saúde e Segurança do Trabalho em produção. O Valida SST eu comecei como freelancer pela Overzone, e foi ele que me levou à ISESMT. Fora do trabalho, construo produtos próprios como o Azimute e o Carrinho Inteligente. Em paralelo, pesquiso aprendizado de máquina e PLN, com foco em extrair conhecimento de dados ruidosos de redes sociais.",
-      en: "Today I build Gerencia SST and Valida SST at ISESMT, occupational health and safety products in production. I started Valida SST as a freelancer through Overzone, and it is what brought me to ISESMT. Outside work, I build my own products, like Azimute and Carrinho Inteligente. In parallel, I research machine learning and NLP, focused on extracting knowledge from noisy social media data.",
+      pt: "Na ISESMT, desenvolvo o Gerencia SST e o Valida SST e conduzo a parte técnica dos outros sistemas da empresa, de pagamentos a treinamentos. Fora do trabalho, construo produtos próprios como o Azimute e o Carrinho Inteligente. Em paralelo, faço mestrado e pesquiso aprendizado de máquina e PLN, com foco em extrair conhecimento de dados ruidosos de redes sociais.",
+      en: "At ISESMT, I build Gerencia SST and Valida SST and lead the technical side of the company's other systems, from payments to training. Outside work, I build my own products, like Azimute and Carrinho Inteligente. In parallel, I'm doing a master's degree and researching machine learning and NLP, focused on extracting knowledge from noisy social media data.",
     },
     {
       pt: "Essa combinação de rigor acadêmico com ritmo de mercado me deu uma visão crítica de arquitetura e muita vontade de resolver problemas que importam.",
@@ -62,22 +62,22 @@ const profile: Bi<Content["profile"]> = {
   ],
   timeline: [
     {
-      when: { pt: "Atual", en: "Now" },
+      when: { pt: "mar/2026 – atual", en: "Mar 2026 – present" },
       title: { pt: "Mestrado em Ciência da Computação", en: "MSc in Computer Science" },
       place: "UFPI",
     },
     {
-      when: { pt: "Atual", en: "Now" },
+      when: { pt: "ago/2026 – atual", en: "Aug 2026 – present" },
       title: { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
-      place: "ISESMT · Gerencia SST e Valida SST",
+      place: "ISESMT",
     },
     {
-      when: "2024 — 2026",
-      title: { pt: "Pesquisador em PLN e machine learning", en: "NLP and machine learning researcher" },
-      place: "BraSNAM · WebMedia · ACM WebSci",
+      when: { pt: "2022 – atual", en: "2022 – present" },
+      title: { pt: "Desenvolvedor e pesquisador em PLN", en: "NLP developer and researcher" },
+      place: "UFPI (PAAD · BraSNAM · WebMedia · ACM WebSci)",
     },
     {
-      when: { pt: "Graduação", en: "Undergrad" },
+      when: { pt: "dez/2025", en: "Dec 2025" },
       title: { pt: "Bacharel em Sistemas de Informação", en: "BSc in Information Systems" },
       place: "UFPI",
     },
@@ -103,32 +103,35 @@ const experience: Bi<ExperienceItem>[] = [
     company: "ISESMT",
     period: { pt: "ago/2026 – atual", en: "Aug 2026 – present" },
     current: true,
-    product: "Gerencia SST · Valida SST",
-    projectIds: ["gerencia-sst", "valida-sst"],
+    product: {
+      pt: "Gerencia SST · Valida SST · Checkout · Avalia NR-01 e NR-17 · Plataforma de Treinamentos · Localiza SST · ISESMT Cloud",
+      en: "Gerencia SST · Valida SST · Checkout · Avalia NR-01 and NR-17 · Training Platform · Localiza SST · ISESMT Cloud",
+    },
+    projectIds: ["gerencia-sst", "valida-sst", "ecossistema-isesmt"],
     bullets: [
       {
-        pt: "Desenvolvimento e manutenção do Gerencia SST, um SaaS multi-tenant de Saúde e Segurança do Trabalho em produção.",
-        en: "Development and maintenance of Gerencia SST, a multi-tenant Occupational Health and Safety SaaS in production.",
+        pt: "Desenvolvimento do Gerencia SST, SaaS multi-tenant de Saúde e Segurança do Trabalho em produção, com mais de 3,5 mil commits e mais de 400 cards entregues.",
+        en: "Building Gerencia SST, a multi-tenant Occupational Health and Safety SaaS in production, with more than 3,500 commits and more than 400 cards delivered.",
       },
       {
-        pt: "Evolução do Valida SST, que comecei como freelancer: créditos por plano com expiração, auditoria e vários registros de CRM/CREA por estado.",
-        en: "Evolving Valida SST, which I started as a freelancer: plan-based credits with expiry, auditing and multiple CRM/CREA registrations per state.",
+        pt: "Liderança técnica dos sistemas da empresa: prioridade e distribuição do trabalho do time, decisões técnicas e de produto, e a ponte com os donos.",
+        en: "Technical leadership of the company's systems: prioritizing and distributing the team's work, technical and product decisions, and the bridge with the owners.",
       },
       {
-        pt: "Ciclo completo das entregas: levantamento com o cliente, especificação, design técnico, implementação, testes, documentação (Confluence) e deploy.",
-        en: "End-to-end delivery: gathering requirements with the client, specification, technical design, implementation, testing, documentation (Confluence) and deploy.",
+        pt: "Processo do time: revisão por pares em todo PR (mais de 300 PRs revisados), regra de prioridade, prazo e tamanho dos cards, painel de planejamento com dados do Jira e onboarding de devs novos.",
+        en: "Team process: peer review on every PR (more than 300 PRs reviewed), rules for card priority, deadlines and size, a planning dashboard with Jira data and onboarding for new devs.",
       },
       {
-        pt: "Infraestrutura e entrega: VPS Linux, Kubernetes (k3s), AWS e otimização da esteira de deploy.",
-        en: "Infrastructure and delivery: Linux VPS, Kubernetes (k3s), AWS and deploy pipeline optimization.",
+        pt: "Migração do ISESMT Checkout para Next.js, com Pagar.me (cartão, PIX, boleto e assinaturas).",
+        en: "Migrated ISESMT Checkout to Next.js, with Pagar.me (card, PIX, boleto and subscriptions).",
       },
       {
-        pt: "Segurança: auditorias de segurança, isolamento de dados entre tenants e controle de acesso por permissão.",
-        en: "Security: security audits, data isolation between tenants and permission-based access control.",
+        pt: "Valida SST: créditos por plano com expiração, auditoria e vários registros de CRM/CREA por estado.",
+        en: "Valida SST: plan-based credits with expiry, auditing and multiple CRM/CREA registrations per state.",
       },
       {
-        pt: "Gestão das demandas no Jira, com estimativas e relatório semanal de entregas.",
-        en: "Managing work in Jira, with estimates and a weekly delivery report.",
+        pt: "Infraestrutura e segurança: AWS (ECS, S3, CloudFront e Amplify), VPS Linux, Kubernetes (k3s), isolamento de dados entre tenants e controle de acesso por permissão.",
+        en: "Infrastructure and security: AWS (ECS, S3, CloudFront and Amplify), Linux VPS, Kubernetes (k3s), data isolation between tenants and permission-based access control.",
       },
     ],
   },
@@ -141,8 +144,8 @@ const experience: Bi<ExperienceItem>[] = [
     projectIds: ["valida-sst"],
     bullets: [
       {
-        pt: "Iniciei o Valida SST para a ISESMT: plataforma que recebe laudos de SST, distribui para médicos e engenheiros e coleta a assinatura digital.",
-        en: "I started Valida SST for ISESMT: a platform that takes in health and safety reports, assigns them to doctors and engineers and collects their digital signature.",
+        pt: "Fiz parte do time que construiu o Valida SST para a ISESMT: plataforma que recebe laudos de SST, distribui para médicos e engenheiros e coleta a assinatura digital.",
+        en: "I was part of the team that built Valida SST for ISESMT: a platform that takes in health and safety reports, assigns them to doctors and engineers and collects their digital signature.",
       },
       {
         pt: "Assinatura digital com certificado A1, armazenamento de arquivos na AWS S3 e cache com Upstash Redis.",
@@ -159,31 +162,42 @@ const experience: Bi<ExperienceItem>[] = [
     ],
   },
   {
-    id: "ingresso-express",
-    role: { pt: "Desenvolvedor Front-end", en: "Front-end Developer" },
-    company: "Ingresso Express",
-    period: { pt: "ago/2023 – dez/2023", en: "Aug 2023 – Dec 2023" },
-    projectIds: ["ingresso-express"],
+    id: "ufpi",
+    role: { pt: "Desenvolvedor e Pesquisador", en: "Developer and Researcher" },
+    company: "UFPI",
+    period: { pt: "set/2022 – atual", en: "Sep 2022 – present" },
+    current: true,
+    projectIds: ["paad", "crimes-monitor"],
     bullets: [
       {
-        pt: "Construção de interfaces e APIs para uma aplicação de compra de cupons de desconto.",
-        en: "Built interfaces and APIs for a discount coupon app.",
+        pt: "Desenvolvi o portal do Laboratório PAAD, do product discovery e protótipo no Figma ao full-stack com Next.js, Express, Prisma, PostgreSQL e autenticação com JWT e MFA, em Docker.",
+        en: "Built the PAAD Lab portal, from product discovery and a Figma prototype to the full-stack build with Next.js, Express, Prisma, PostgreSQL and JWT and MFA authentication, in Docker.",
       },
       {
-        pt: "Primeira vivência com métodos ágeis em equipe, com foco em experiência do usuário e boas práticas de código.",
-        en: "First hands-on experience with agile teamwork, focused on user experience and good coding practices.",
+        pt: "Construí o Crimes Monitor (Angular 20, Chart.js), que aplica modelos BERT a comentários do YouTube; na pesquisa, os modelos passaram de 87% de acurácia e as heurísticas de agrupamento chegaram a 0,90, superando o GPT-4.",
+        en: "Built Crimes Monitor (Angular 20, Chart.js), which applies BERT models to YouTube comments; in the research, the models went above 87% accuracy and the clustering heuristics reached 0.90, outperforming GPT-4.",
+      },
+      {
+        pt: "Monitor de Banco de Dados II (2023): apoio aos alunos em PostgreSQL e otimização de consultas.",
+        en: "Database Systems II teaching assistant (2023): supported students with PostgreSQL and query optimization.",
       },
     ],
   },
   {
-    id: "monitoria-bd2",
-    role: { pt: "Monitor de Banco de Dados II", en: "Database Systems II Teaching Assistant" },
-    company: "UFPI",
-    period: { pt: "2023 · 4 meses", en: "2023 · 4 months" },
+    id: "ingresso-express",
+    role: { pt: "Desenvolvedor Front-end", en: "Front-end Developer" },
+    company: "Weber Technologies",
+    period: { pt: "ago/2023 – dez/2023", en: "Aug 2023 – Dec 2023" },
+    product: "Ingresso Express",
+    projectIds: ["ingresso-express"],
     bullets: [
       {
-        pt: "Apoio aos alunos da disciplina, aprofundando PostgreSQL e otimização de dados.",
-        en: "Supported students in the course, deepening PostgreSQL and data optimization.",
+        pt: "Interfaces e APIs para o Ingresso Express, app de cupons de desconto, com React, TypeScript, Node.js e PostgreSQL.",
+        en: "Interfaces and APIs for Ingresso Express, a discount coupon app, with React, TypeScript, Node.js and PostgreSQL.",
+      },
+      {
+        pt: "Time ágil com Git, Gitflow e revisão de código.",
+        en: "Agile team with Git, Gitflow and code review.",
       },
     ],
   },
@@ -232,8 +246,8 @@ const projects: Bi<Project>[] = [
       },
     ],
     metrics: [
-      { value: { pt: "~3 mil", en: "~3k" }, label: { pt: "commits meus", en: "of my commits" } },
-      { value: "160+", label: { pt: "cards entregues", en: "cards delivered" } },
+      { value: { pt: "3,5 mil+", en: "3.5k+" }, label: { pt: "commits meus", en: "of my commits" } },
+      { value: "400+", label: { pt: "cards entregues", en: "cards delivered" } },
       { value: "~250", label: { pt: "tabelas", en: "tables" } },
       { value: "~50", label: { pt: "módulos", en: "modules" } },
     ],
@@ -394,8 +408,8 @@ const projects: Bi<Project>[] = [
       en: "ISESMT's platform for health and safety reports: PDF upload, assignment to doctors and engineers, digital signing with A1 certificates and expiry tracking.",
     },
     overview: {
-      pt: "Comecei o Valida SST como freelancer pela Overzone e hoje sigo com ele na ISESMT. A plataforma recebe laudos PGR, PCMSO, LTCAT, LI e LP, distribui cada um para um profissional habilitado (CRM ou CREA), coleta a assinatura PAdES com certificado A1 e acompanha a validade. O consumo é cobrado em créditos, por plano recorrente ou compra avulsa.",
-      en: "I started Valida SST as a freelancer through Overzone and keep building it at ISESMT. The platform takes in PGR, PCMSO, LTCAT, LI and LP reports, assigns each one to a licensed professional (CRM or CREA), collects a PAdES signature with an A1 certificate and tracks expiry. Usage is billed in credits, through recurring plans or one-off purchases.",
+      pt: "Fiz parte do time que construiu o Valida SST, como freelancer pela Overzone, e hoje sigo com ele na ISESMT. A plataforma recebe laudos PGR, PCMSO, LTCAT, LI e LP, distribui cada um para um profissional habilitado (CRM ou CREA), coleta a assinatura PAdES com certificado A1 e acompanha a validade. O consumo é cobrado em créditos, por plano recorrente ou compra avulsa.",
+      en: "I was part of the team that built Valida SST, as a freelancer through Overzone, and I keep working on it at ISESMT. The platform takes in PGR, PCMSO, LTCAT, LI and LP reports, assigns each one to a licensed professional (CRM or CREA), collects a PAdES signature with an A1 certificate and tracks expiry. Usage is billed in credits, through recurring plans or one-off purchases.",
     },
     highlights: [
       {
@@ -417,6 +431,65 @@ const projects: Bi<Project>[] = [
     ],
     stack: ["Next.js 15", "React 19", "TypeScript", "Tailwind v4", "Radix UI", "Clerk", "PostgreSQL", "Drizzle", "AWS S3", "Redis", "pdf-lib", "node-forge", "Recharts", "Jest"],
     links: [{ kind: "site", href: "https://validasst.com.br/" }],
+    codeNote: { pt: "Código proprietário da ISESMT.", en: "Proprietary ISESMT code." },
+  },
+  {
+    id: "ecossistema-isesmt",
+    title: { pt: "Ecossistema ISESMT", en: "ISESMT Ecosystem" },
+    kicker: {
+      pt: "Os outros sistemas da empresa, além do Gerencia e do Valida",
+      en: "The company's other systems, beyond Gerencia and Valida",
+    },
+    year: "2026",
+    status: "live",
+    featured: false,
+    summary: {
+      pt: "Além do Gerencia e do Valida, conduzi a parte técnica dos outros sistemas da empresa: escopo, prioridade, revisão de PR e decisões com os donos.",
+      en: "Beyond Gerencia and Valida, I led the technical side of the company's other systems: scope, priorities, PR review and decisions with the owners.",
+    },
+    overview: {
+      pt: "Além do Gerencia e do Valida, conduzi a parte técnica dos outros sistemas da empresa: escopo, prioridade, revisão de PR e decisões com os donos.",
+      en: "Beyond Gerencia and Valida, I led the technical side of the company's other systems: scope, priorities, PR review and decisions with the owners.",
+    },
+    highlights: [
+      {
+        label: "ISESMT Checkout",
+        text: {
+          pt: "Checkout transparente (cartão, PIX e boleto), assinaturas e painel de vendas com Pagar.me. Conduzi a migração do sistema antigo, em Node puro, para Next.js e Prisma, e reorganizei com o time a revisão dos PRs pendentes.",
+          en: "Embedded checkout (card, PIX and boleto), subscriptions and a sales dashboard with Pagar.me. I led the migration of the old plain-Node system to Next.js and Prisma, and reorganized the review of pending PRs with the team.",
+        },
+      },
+      {
+        label: "ISESMT Cloud",
+        text: {
+          pt: "Observatório da AWS e das VPS: o que existe, quanto usa, quanto custa e o que mudou. Coletor em Python, painel em Next.js e deploy no k3s pelo GitHub Actions. Também hospeda o painel de planejamento do time, com dados do Jira.",
+          en: "An observatory for AWS and the VPSs: what exists, how much it uses, what it costs and what changed. Python collector, Next.js dashboard and deploy to k3s through GitHub Actions. It also hosts the team's planning dashboard, with Jira data.",
+        },
+      },
+      {
+        label: { pt: "Avalia NR-01 e NR-17", en: "Avalia NR-01 and NR-17" },
+        text: {
+          pt: "Avaliações de risco e ergonômicas com relatórios. Defini escopo e regras dos planos e da integração de pagamento, revisei os PRs e tirei do ar um webhook sem autenticação.",
+          en: "Risk and ergonomic assessments with reports. I defined the scope and rules for the plans and the payment integration, reviewed the PRs and took down an unauthenticated webhook.",
+        },
+      },
+      {
+        label: { pt: "Plataforma de Treinamentos", en: "Training Platform" },
+        text: {
+          pt: "Cursos de NR com vitrine, certificado e app. Fechei o escopo dos jogos interativos da aula (NR-11) e transformei em cards os problemas de certificado levantados pelo time.",
+          en: "NR courses with a storefront, certificates and an app. I closed the scope of the interactive lesson games (NR-11) and turned the certificate issues raised by the team into cards.",
+        },
+      },
+      {
+        label: "Localiza SST",
+        text: {
+          pt: "Diretório público de profissionais e empresas de SST, integrado ao Gerencia. Defini o contrato de API entre os dois sistemas e a regra para mudanças que afetam o Gerencia.",
+          en: "A public directory of health and safety professionals and companies, integrated with Gerencia. I defined the API contract between the two systems and the rule for changes that affect Gerencia.",
+        },
+      },
+    ],
+    stack: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Django", "Python", "AWS", "k3s", "GitHub Actions", "Pagar.me"],
+    links: [],
     codeNote: { pt: "Código proprietário da ISESMT.", en: "Proprietary ISESMT code." },
   },
   {
@@ -575,14 +648,20 @@ const publications: Bi<Publication>[] = [
 ];
 
 const stack: Bi<StackGroup>[] = [
-  { id: "web", label: "Web full-stack", items: ["Next.js", "React", "TypeScript", "Angular", "Tailwind", "Radix UI", "Zod"] },
+  {
+    id: "web",
+    label: "Web full-stack",
+    items: ["Next.js", "React", "TypeScript", "Angular", "Tailwind", "Radix UI", "shadcn/ui", "Zod"],
+  },
   {
     id: "backend",
     label: { pt: "Back-end e dados", en: "Back-end and data" },
     items: [
       "Node.js",
+      "Express",
       "Python",
       "Django",
+      "Django REST",
       "FastAPI",
       "PostgreSQL",
       "Prisma",
@@ -591,6 +670,7 @@ const stack: Bi<StackGroup>[] = [
       { pt: "pg-boss (filas)", en: "pg-boss (queues)" },
       "Puppeteer",
       "ExcelJS",
+      { pt: "Pagamentos (Pagar.me, PIX, boleto)", en: "Payments (Pagar.me, PIX, boleto)" },
     ],
   },
   {
@@ -599,7 +679,7 @@ const stack: Bi<StackGroup>[] = [
     items: [
       "Docker",
       "Kubernetes (k3s)",
-      "AWS",
+      "AWS (ECS, S3, CloudFront, Amplify)",
       "Linux / VPS",
       "GitHub Actions",
       "Multi-tenancy",
@@ -608,10 +688,14 @@ const stack: Bi<StackGroup>[] = [
       { pt: "Integração com o eSocial", en: "eSocial integration" },
     ],
   },
-  { id: "ai", label: { pt: "IA e pesquisa", en: "AI and research" }, items: ["NLP", "BERT", "Transformers", "LLMs", "scikit-learn", "Chart.js"] },
+  {
+    id: "ai",
+    label: { pt: "IA e pesquisa", en: "AI and research" },
+    items: ["NLP", "BERT", "BERTimbau", "Transformers", "LLMs", "scikit-learn", "pandas", "Chart.js"],
+  },
   {
     id: "product",
-    label: { pt: "Produto e processo", en: "Product and process" },
+    label: { pt: "Produto, processo e liderança", en: "Product, process and leadership" },
     items: [
       "Figma",
       "UI/UX",
@@ -619,7 +703,10 @@ const stack: Bi<StackGroup>[] = [
       { pt: "Requisitos", en: "Requirements" },
       "MVP",
       { pt: "Desenvolvimento orientado a especificação", en: "Spec-driven development" },
-      { pt: "Testes ponta a ponta", en: "End-to-end testing" },
+      { pt: "Testes (Jest, Vitest, ponta a ponta)", en: "Testing (Jest, Vitest, end-to-end)" },
+      "Code review",
+      { pt: "Priorização e planejamento", en: "Prioritization and planning" },
+      { pt: "Onboarding de devs", en: "Developer onboarding" },
       "Jira",
       "Confluence",
     ],
@@ -671,8 +758,8 @@ const ui: Bi<Ui> = {
   projects: {
     title: { pt: "Projetos", en: "Projects" },
     lead: {
-      pt: "Produtos que levei do problema ao deploy, entre laboratório, startup e pesquisa.",
-      en: "Products I took from problem to deploy, across lab, startup and research work.",
+      pt: "Produtos que levei do problema ao deploy, entre empresa, laboratório e projetos próprios.",
+      en: "Products I took from problem to deploy, across company, lab and personal projects.",
     },
     details: { pt: "Ver detalhes", en: "See details" },
     status: {
@@ -709,8 +796,8 @@ const ui: Bi<Ui> = {
   experience: {
     title: { pt: "Experiência", en: "Experience" },
     lead: {
-      pt: "Onde transformo especificação em produto: do SaaS em produção à sala de aula.",
-      en: "Where I turn specs into product: from a SaaS in production to the classroom.",
+      pt: "Onde transformo especificação em produto: do SaaS em produção ao laboratório de pesquisa.",
+      en: "Where I turn specs into product: from a SaaS in production to the research lab.",
     },
     current: { pt: "Atual", en: "Current" },
     viewProject: { pt: "Ver projeto", en: "See project" },
