@@ -8,6 +8,7 @@ import { Modal } from "../ui/Modal";
 import { ArrowUpRight } from "../ui/icons";
 import { StatusBadge } from "../ui/StatusBadge";
 import { BADGE_ICONS } from "../serious/IsesmtSystems";
+import { DUO } from "../ui/IconBadge";
 import { useExperience } from "./ExperienceProvider";
 
 // Without one of these the code is private, and the dialog says so.
@@ -188,7 +189,7 @@ function ProjectInfo({ project }: { project: Project }) {
             >
               {(() => {
                 const Icon = LINK_ICONS[l.kind];
-                return <Icon size={18} weight="duotone" aria-hidden="true" className="icon-duo" />;
+                return <Icon size={18} weight="duotone" aria-hidden="true" className={DUO} />;
               })()}
               {ui.projects.links[l.kind]}
               <ArrowUpRight size={16} />
@@ -196,7 +197,7 @@ function ProjectInfo({ project }: { project: Project }) {
           ))}
         {!project.links.some((l) => CODE_LINKS.has(l.kind)) && (
           <p className="inline-flex items-center gap-1.5 text-sm text-muted">
-            <Lock size={16} weight="duotone" aria-hidden="true" className="icon-duo" />
+            <Lock size={16} weight="duotone" aria-hidden="true" className={DUO} />
             {project.codeNote ?? ui.projects.privateNote}
           </p>
         )}
@@ -210,7 +211,7 @@ export function Placeholder({ title, badge }: { title: string; badge?: Project["
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 overflow-hidden bg-ink p-6">
       {Glyph && (
-        <span className="icon-duo grid size-20 place-items-center border-2 border-paper bg-ink text-paper shadow-[5px_5px_0_var(--accent)]">
+        <span className={`${DUO} grid size-20 place-items-center border-2 border-paper bg-ink text-paper shadow-[5px_5px_0_var(--accent)]`}>
           <Glyph size={44} weight="duotone" aria-hidden="true" />
         </span>
       )}

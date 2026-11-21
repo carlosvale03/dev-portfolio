@@ -5,6 +5,7 @@ import { useRef, type CSSProperties } from "react";
 import { GameController, Key, Sparkle, SoccerBall, TerminalWindow } from "@phosphor-icons/react/dist/ssr";
 import { SECRETS, type Ui } from "@/content";
 import { fill } from "@/lib/storage";
+import { DUO } from "../ui/IconBadge";
 import { ArrowRight } from "../ui/icons";
 import { Magnetic, Scramble, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
@@ -80,7 +81,7 @@ export function CreativeTeaser({ ui }: { ui: Ui }) {
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.5 + i * 0.07, type: "spring", stiffness: 380, damping: 22 }}
-                  className="icon-duo inline-flex items-center gap-1.5 border border-paper/25 px-2.5 py-1 font-mono text-xs text-paper/85"
+                  className={`${DUO} inline-flex items-center gap-1.5 border border-paper/25 px-2.5 py-1 font-mono text-xs text-paper/85`}
                 >
                   <Icon size={16} weight="duotone" aria-hidden="true" className="text-paper" />
                   {fill(label, { n: SECRETS.length })}

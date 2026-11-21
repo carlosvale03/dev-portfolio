@@ -158,12 +158,6 @@ dialog[open] .menu-link {
   }
 }
 
-/* Phosphor duotone icons: the secondary layer becomes solid accent red. */
-.icon-duo [opacity="0.2"] {
-  fill: var(--accent);
-  opacity: 1;
-}
-
 /* Light sweeping across the creative-mode call to action. */
 @keyframes teaser-glint {
   0%,
