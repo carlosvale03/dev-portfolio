@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Pause, Play } from "../ui/icons";
 
 export interface MarqueeRow {
@@ -26,9 +26,19 @@ export function Marquee({
   size?: string;
 }) {
   const [paused, setPaused] = useState(false);
+  // Off screen the tracks stop, so phones do not keep moving huge text layers.
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { rootMargin: "100px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <div className={`relative ${className}`} data-paused={paused}>
+    <div ref={ref} className={`relative ${className}`} data-paused={paused || !visible}>
       <ul className="sr-only">
         {rows.map((r) => (
           <li key={r.text}>{r.text}</li>

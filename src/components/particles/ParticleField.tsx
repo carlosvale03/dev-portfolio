@@ -110,7 +110,8 @@ export function ParticleField({
       w = rect.width;
       h = rect.height;
       if (!w || !h) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Phones draw at 1.5x: the dots are 2px squares, sharper buys nothing.
+      const dpr = Math.min(window.devicePixelRatio || 1, w < 640 ? 1.5 : 2);
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

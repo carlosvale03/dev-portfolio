@@ -100,7 +100,9 @@ function Hero({ content }: { content: Content }) {
 }
 
 function StackTicker({ content }: { content: Content }) {
-  const items = content.stack.flatMap((g) => g.items);
+  // The headline tools of each group, not all fifty: a shorter track is far
+  // cheaper to animate on phones.
+  const items = content.stack.flatMap((g) => g.items.slice(0, 5));
   const half = Math.ceil(items.length / 2);
   return (
     <div
