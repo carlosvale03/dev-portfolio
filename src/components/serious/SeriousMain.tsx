@@ -298,9 +298,9 @@ function Stack({ content }: { content: Content }) {
                 {group.items.map((item) => (
                   <li
                     key={item}
-                    className="group/i flex items-center gap-2 border border-line px-2.5 py-1 text-sm transition-transform duration-300 sm:border-0 sm:p-0 sm:text-[15px] sm:hover:translate-x-1.5"
+                    className="group/i flex items-center gap-2 border border-line px-2.5 py-1 text-sm transition-transform duration-300 sm:items-start sm:border-0 sm:p-0 sm:text-[15px] sm:hover:translate-x-1.5"
                   >
-                    <span aria-hidden="true" className="hidden h-px w-3 bg-accent transition-[width] duration-300 group-hover/i:w-6 sm:block" />
+                    <span aria-hidden="true" className="hidden h-px w-3 shrink-0 bg-accent transition-[width] duration-300 group-hover/i:w-6 sm:mt-[0.7em] sm:block" />
                     {item}
                   </li>
                 ))}
