@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Content } from "@/content";
-import { BrainCircuit, Code2, Database, Mail, MessageCircle, ShieldCheck, Workflow, type LucideIcon } from "lucide-react";
+import { BrainCircuit, ChevronDown, Code2, Database, Mail, MessageCircle, ShieldCheck, Workflow, type LucideIcon } from "lucide-react";
 import { ArrowRight, ArrowUpRight, Download, Github, Linkedin } from "../ui/icons";
 import { CountUp, Magnetic, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
@@ -199,6 +199,7 @@ function Research({ content }: { content: Content }) {
                       <summary className="inline-flex list-none items-center gap-2 text-sm font-semibold underline decoration-line-strong underline-offset-4 hover:decoration-accent [&::-webkit-details-marker]:hidden">
                         <span className="group-open/d:hidden">{ui.research.more}</span>
                         <span className="hidden group-open/d:inline">{ui.research.less}</span>
+                        <ChevronDown size={16} aria-hidden="true" className="transition-transform duration-300 group-open/d:rotate-180" />
                       </summary>
                       <p className="mt-3 max-w-2xl leading-relaxed">{pub.summary}</p>
                     </details>
