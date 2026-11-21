@@ -107,6 +107,8 @@ export interface Content {
   ui: Ui;
 }
 
+type Step = { label: string; text: string };
+
 export interface Ui {
   skip: string;
   nav: { about: string; experience: string; projects: string; research: string; stack: string; contact: string };
@@ -140,7 +142,14 @@ export interface Ui {
     highlights: string;
     featured: string;
     others: string;
-    isesmt: { title: string; lead: string; role: string };
+    isesmt: {
+      kicker: string;
+      title: string;
+      lead: string;
+      stats: { value: string; label: string }[];
+      /** Cards, review, decisions, code: the icons follow this order. */
+      method: [Step, Step, Step, Step];
+    };
     metrics: string;
     zoom: string;
     panHint: string;

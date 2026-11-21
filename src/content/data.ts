@@ -509,17 +509,26 @@ const projects: Bi<Project>[] = [
     group: "isesmt",
     badge: "assessment",
     summary: {
-      pt: "Defini escopo e regras dos planos e do pagamento, revisei os PRs do time e tirei do ar um webhook sem autenticação.",
-      en: "I set the scope and rules for plans and payments, reviewed the team's PRs and took down an unauthenticated webhook.",
+      pt: "Conduzi escopo, regras dos planos e pagamento, revisei os PRs e programei planos, ciclos e reativação de contas.",
+      en: "I led scope, plan rules and payments, reviewed the PRs and built plans, billing cycles and account reactivation.",
     },
     overview: {
-      pt: "Duas plataformas para as empresas atenderem a NR-01 (riscos psicossociais) e a NR-17 (ergonomia), com questionários, análise e relatórios. Aqui meu papel foi a condução técnica: defini o escopo e as regras dos planos e da integração de pagamento, revisei os PRs do time e tirei do ar um webhook que aceitava chamadas sem autenticação.",
-      en: "Two platforms that help companies meet NR-01 (psychosocial risks) and NR-17 (ergonomics), with questionnaires, analysis and reports. My role here was technical lead: I set the scope and rules for plans and the payment integration, reviewed the team's PRs and took down a webhook that accepted unauthenticated calls.",
+      pt: "Duas plataformas para as empresas atenderem a NR-01 (riscos psicossociais) e a NR-17 (ergonomia), com questionários, análise e relatórios. Conduzi a parte técnica: escopo e regras dos planos e da integração de pagamento, revisão dos PRs do time e a retirada de um webhook que aceitava chamadas sem autenticação. No código, fiz os planos e ofertas dos parceiros, os ciclos de assinatura e a reativação de contas no NR-17, e a consulta de CNPJ com cinco serviços de reserva no NR-01.",
+      en: "Two platforms that help companies meet NR-01 (psychosocial risks) and NR-17 (ergonomics), with questionnaires, analysis and reports. I led the technical side: scope and rules for plans and the payment integration, reviews of the team's PRs and taking down a webhook that accepted unauthenticated calls. In the code, I built partner plans and offers, billing cycles and account reactivation in NR-17, and a CNPJ lookup with five fallback services in NR-01.",
     },
     highlights: [
-      { label: { pt: "Escopo", en: "Scope" }, text: { pt: "Regras dos planos e da integração de pagamento.", en: "Rules for plans and the payment integration." } },
-      { label: { pt: "Revisão", en: "Review" }, text: { pt: "Revisão dos PRs do time antes de ir ao ar.", en: "Reviewing the team's PRs before they ship." } },
-      { label: { pt: "Segurança", en: "Security" }, text: { pt: "Webhook sem autenticação retirado do ar.", en: "Unauthenticated webhook taken down." } },
+      {
+        label: { pt: "Liderança", en: "Leadership" },
+        text: { pt: "Escopo e regras dos planos e do pagamento, revisão dos PRs e um webhook sem autenticação tirado do ar.", en: "Scope and rules for plans and payments, PR reviews and an unauthenticated webhook taken down." },
+      },
+      {
+        label: { pt: "Código", en: "Code" },
+        text: { pt: "Planos dos parceiros, ciclos de assinatura e reativação de contas; consulta de CNPJ com reserva.", en: "Partner plans, billing cycles and account reactivation; CNPJ lookup with fallbacks." },
+      },
+    ],
+    metrics: [
+      { value: "75+", label: { pt: "commits meus", en: "of my commits" } },
+      { value: "30+", label: { pt: "cards escritos", en: "cards written" } },
     ],
     stack: ["React 19", "TypeScript", "Tailwind v4", "Recharts", "Zod", "Vitest", "Pagar.me"],
     links: [],
@@ -535,16 +544,26 @@ const projects: Bi<Project>[] = [
     group: "isesmt",
     badge: "training",
     summary: {
-      pt: "Fechei o escopo dos jogos interativos da aula de NR-11 e transformei em cards os problemas de certificado levantados pelo time.",
-      en: "I closed the scope of the interactive NR-11 lesson games and turned the certificate issues raised by the team into cards.",
+      pt: "Fechei o escopo dos jogos da aula de NR-11, priorizei os problemas de certificado e programei o financeiro com o Checkout.",
+      en: "I closed the scope of the NR-11 lesson games, prioritized the certificate issues and built the billing on top of Checkout.",
     },
     overview: {
-      pt: "A plataforma de cursos de Normas Regulamentadoras da ISESMT: vitrine, aulas, provas, certificado e app do aluno. Conduzi a parte técnica com o time: fechei o escopo dos jogos interativos da aula de NR-11 e organizei em cards os problemas de certificado que o time levantou.",
-      en: "ISESMT's course platform for Brazilian safety standards (NRs): storefront, lessons, exams, certificates and a student app. I led the technical side with the team: closed the scope of the interactive NR-11 lesson games and organized the certificate issues the team raised into cards.",
+      pt: "A plataforma de cursos de Normas Regulamentadoras da ISESMT: vitrine, aulas, provas, certificado e app do aluno. Na liderança, fechei o escopo dos jogos interativos da aula de NR-11, transformei em cards priorizados os problemas de certificado levantados pelo time e revisei os PRs. No código, levei as cobranças de taxas e licenças para o ISESMT Checkout, com o webhook conferindo a assinatura de cada cobrança, a baixa de estornos e a permissão para editar matrículas.",
+      en: "ISESMT's course platform for Brazilian safety standards (NRs): storefront, lessons, exams, certificates and a student app. As lead, I closed the scope of the interactive NR-11 lesson games, turned the certificate issues raised by the team into prioritized cards and reviewed the PRs. In the code, I moved fee and license billing to ISESMT Checkout, with the webhook checking each charge's signature, refund settlement and permissions to edit enrollments.",
     },
     highlights: [
-      { label: { pt: "Aula", en: "Lessons" }, text: { pt: "Escopo dos jogos interativos da aula de NR-11.", en: "Scope of the interactive NR-11 lesson games." } },
-      { label: { pt: "Certificado", en: "Certificates" }, text: { pt: "Problemas levantados pelo time viraram cards priorizados.", en: "Issues raised by the team became prioritized cards." } },
+      {
+        label: { pt: "Liderança", en: "Leadership" },
+        text: { pt: "Escopo dos jogos da aula de NR-11, cards de certificado priorizados e revisão dos PRs.", en: "Scope of the NR-11 lesson games, prioritized certificate cards and PR reviews." },
+      },
+      {
+        label: { pt: "Código", en: "Code" },
+        text: { pt: "Cobranças pelo Checkout, webhook com assinatura conferida e estornos, em Django.", en: "Billing through Checkout, signature-checked webhooks and refunds, in Django." },
+      },
+    ],
+    metrics: [
+      { value: "40+", label: { pt: "commits meus", en: "of my commits" } },
+      { value: "30", label: { pt: "cards escritos", en: "cards written" } },
     ],
     stack: ["Django 5", "Django REST", "Celery", "Next.js 14", "React Native", "AWS S3"],
     links: [],
@@ -560,18 +579,25 @@ const projects: Bi<Project>[] = [
     group: "isesmt",
     badge: "map",
     summary: {
-      pt: "Defini o contrato de API com o Gerencia SST e a regra para qualquer mudança que afete o Gerencia.",
-      en: "I defined the API contract with Gerencia SST and the rule for any change that affects Gerencia.",
+      pt: "Defini o contrato de API com o Gerencia e a regra para mudanças que o afetam, e programei a busca e os perfis.",
+      en: "I defined the API contract with Gerencia and the rule for changes that affect it, and built the search and profiles.",
     },
     overview: {
-      pt: "Diretório público onde empresas e consultorias de Saúde e Segurança do Trabalho aparecem no mapa, com serviços, contato e as cidades que atendem, integrado ao Gerencia SST. Defini o contrato de API entre os dois sistemas e a regra para mudanças que afetam o Gerencia.",
-      en: "A public directory where occupational health and safety companies and consultancies show up on a map, with services, contacts and the cities they cover, integrated with Gerencia SST. I defined the API contract between the two systems and the rule for changes that affect Gerencia.",
+      pt: "Diretório público onde empresas e consultorias de Saúde e Segurança do Trabalho aparecem no mapa, com serviços, contato e as cidades que atendem, integrado ao Gerencia SST. Defini o contrato de API entre os dois sistemas e a regra para mudanças que afetam o Gerencia. No código, fiz a busca com o mapa do Brasil e os perfis do profissional e da empresa dentro do Gerencia.",
+      en: "A public directory where occupational health and safety companies and consultancies show up on a map, with services, contacts and the cities they cover, integrated with Gerencia SST. I defined the API contract between the two systems and the rule for changes that affect Gerencia. In the code, I built the search with the map of Brazil and the professional and company profiles inside Gerencia.",
     },
     highlights: [
-      { label: { pt: "Integração", en: "Integration" }, text: { pt: "Contrato de API entre o Localiza e o Gerencia SST.", en: "API contract between Localiza and Gerencia SST." } },
-      { label: { pt: "Regra", en: "Rule" }, text: { pt: "Processo para mudanças que afetam o Gerencia.", en: "Process for changes that affect Gerencia." } },
+      {
+        label: { pt: "Liderança", en: "Leadership" },
+        text: { pt: "Contrato de API com o Gerencia e a regra para mudanças que o afetam.", en: "API contract with Gerencia and the rule for changes that affect it." },
+      },
+      {
+        label: { pt: "Código", en: "Code" },
+        text: { pt: "Busca com o mapa do Brasil e perfis do profissional e da empresa.", en: "Search with the map of Brazil and professional and company profiles." },
+      },
     ],
-    stack: ["API REST", { pt: "Integração com o Gerencia SST", en: "Gerencia SST integration" }, "Pagar.me"],
+    metrics: [{ value: "20+", label: { pt: "cards escritos", en: "cards written" } }],
+    stack: ["Next.js 16", "TypeScript", "Prisma", "PostgreSQL", { pt: "Integração com o Gerencia SST", en: "Gerencia SST integration" }],
     links: [],
     codeNote: { pt: "Código proprietário da ISESMT.", en: "Proprietary ISESMT code." },
   },
@@ -585,18 +611,28 @@ const projects: Bi<Project>[] = [
     group: "isesmt",
     badge: "cloud",
     summary: {
-      pt: "Conduzi o escopo do observatório da infraestrutura e do painel de planejamento do time, com dados do Jira.",
-      en: "I led the scope of the infrastructure observatory and of the team's planning dashboard, with Jira data.",
+      pt: "Conduzi o escopo do observatório e programei a infraestrutura do Checkout e o painel de planejamento do time.",
+      en: "I led the observatory's scope and built the Checkout infrastructure and the team's planning dashboard.",
     },
     overview: {
-      pt: "Mostra o que existe na AWS e nas VPS, quanto cada serviço usa, quanto custa e o que mudou desde a última coleta. Coletor em Python, banco PostgreSQL, painel em Next.js e deploy automatizado pelo GitHub Actions. Também hospeda o painel de planejamento do time, com os dados do Jira.",
-      en: "It shows what exists on AWS and the VPSs, how much each service uses, what it costs and what changed since the last collection. Python collector, PostgreSQL database, Next.js dashboard and automated deploys through GitHub Actions. It also hosts the team's planning dashboard, with Jira data.",
+      pt: "Mostra o que existe na AWS e nas VPS, quanto cada serviço usa, quanto custa e o que mudou desde a última coleta. Coletor em Python, banco PostgreSQL, painel em Next.js e deploy automatizado pelo GitHub Actions. Conduzi o escopo e escrevi os cards; no código, fiz a infraestrutura do ISESMT Checkout em Terraform (e-mail pelo SES com DKIM, worker dos jobs e rotação da chave mestra) e o painel de planejamento do time, com os dados do Jira e a revisão cruzada com os PRs do GitHub.",
+      en: "It shows what exists on AWS and the VPSs, how much each service uses, what it costs and what changed since the last collection. Python collector, PostgreSQL database, Next.js dashboard and automated deploys through GitHub Actions. I led the scope and wrote the cards; in the code, I built ISESMT Checkout's infrastructure in Terraform (SES email with DKIM, the jobs worker and master key rotation) and the team's planning dashboard, with Jira data cross-checked against GitHub PRs.",
     },
     highlights: [
-      { label: { pt: "Inventário", en: "Inventory" }, text: { pt: "O que existe, de qual sistema é, quanto usa e quanto custa.", en: "What exists, which system it belongs to, usage and cost." } },
-      { label: { pt: "Planejamento", en: "Planning" }, text: { pt: "Painel do time com os dados do Jira.", en: "The team's dashboard with Jira data." } },
+      {
+        label: { pt: "Liderança", en: "Leadership" },
+        text: { pt: "Escopo do observatório e os cards do time para cada sistema.", en: "The observatory's scope and the team's cards for each system." },
+      },
+      {
+        label: { pt: "Código", en: "Code" },
+        text: { pt: "Infraestrutura do Checkout em Terraform e painel de planejamento com Jira e GitHub.", en: "Checkout infrastructure in Terraform and a planning dashboard with Jira and GitHub." },
+      },
     ],
-    stack: ["Python", "PostgreSQL", "Next.js", "Docker", "GitHub Actions", "AWS"],
+    metrics: [
+      { value: "50+", label: { pt: "cards escritos", en: "cards written" } },
+      { value: "40+", label: { pt: "commits meus", en: "of my commits" } },
+    ],
+    stack: ["Python", "PostgreSQL", "Next.js", "Terraform", "Docker", "GitHub Actions", "AWS"],
     links: [],
     codeNote: { pt: "Código proprietário da ISESMT.", en: "Proprietary ISESMT code." },
   },
@@ -877,12 +913,22 @@ const ui: Bi<Ui> = {
     featured: { pt: "Casos em destaque", en: "Featured cases" },
     others: { pt: "Outros projetos", en: "More projects" },
     isesmt: {
-      title: { pt: "Também na ISESMT", en: "Also at ISESMT" },
+      kicker: { pt: "ISESMT · liderança técnica", en: "ISESMT · technical leadership" },
+      title: { pt: "Também conduzo os outros sistemas", en: "I also lead the other systems" },
       lead: {
-        pt: "Os outros sistemas da empresa, em que cuido da parte técnica com o time.",
-        en: "The company's other systems, where I lead the technical side with the team.",
+        pt: "Além do Gerencia, do Valida e do Checkout, sou quem conduz a parte técnica dos outros sistemas da empresa, e programo neles também.",
+        en: "Beyond Gerencia, Valida and Checkout, I lead the technical side of the company's other systems, and I code in them too.",
       },
-      role: { pt: "Meu papel", en: "My role" },
+      stats: [
+        { value: "140+", label: { pt: "cards escritos nesses sistemas", en: "cards written for these systems" } },
+        { value: "160+", label: { pt: "commits meus nesses sistemas", en: "of my commits in these systems" } },
+      ],
+      method: [
+        { label: "Cards", text: { pt: "Escrevo e priorizo o trabalho do time no Jira.", en: "I write and prioritize the team's work in Jira." } },
+        { label: { pt: "Revisão", en: "Review" }, text: { pt: "Reviso os PRs antes de irem ao ar.", en: "I review PRs before they ship." } },
+        { label: { pt: "Decisões", en: "Decisions" }, text: { pt: "Fecho escopo, regras e integrações com os donos.", en: "I settle scope, rules and integrations with the owners." } },
+        { label: { pt: "Código", en: "Code" }, text: { pt: "Entro no código onde o sistema mais precisa.", en: "I step into the code where the system needs it most." } },
+      ],
     },
     metrics: { pt: "Em números", en: "By the numbers" },
     zoom: { pt: "Ampliar imagem", en: "Expand image" },
