@@ -46,7 +46,7 @@ export function Modal({
       onClick={(e) => {
         if (e.target === e.currentTarget) ref.current?.close();
       }}
-      className={`m-auto max-h-[92dvh] w-[min(94vw,980px)] overflow-visible p-0 backdrop:bg-ink/55 backdrop:backdrop-blur-[2px] open:animate-[dialog-in_0.32s_var(--ease-out)] ${
+      className={`m-auto max-h-[92dvh] w-[min(94vw,980px)] overflow-visible p-0 max-sm:m-0 max-sm:h-dvh max-sm:max-h-none max-sm:w-full max-sm:max-w-none backdrop:bg-ink/55 backdrop:backdrop-blur-[2px] open:animate-[dialog-in_0.32s_var(--ease-out)] ${
         tone === "ink" ? "bg-ink text-paper" : "bg-bg text-fg"
       } ${className}`}
     >
@@ -54,11 +54,11 @@ export function Modal({
         type="button"
         onClick={() => ref.current?.close()}
         aria-label={closeLabel}
-        className="absolute -top-3 right-3 z-10 grid size-11 place-items-center border border-fg bg-bg text-fg transition-colors hover:bg-accent sm:-right-3"
+        className="absolute right-3 top-3 z-10 grid size-11 place-items-center border border-fg bg-bg text-fg transition-colors hover:bg-accent sm:-right-3 sm:-top-3"
       >
         <Close size={20} />
       </button>
-      <div className="max-h-[92dvh] overflow-y-auto [scrollbar-gutter:stable]">{children}</div>
+      <div className="max-h-[92dvh] overflow-y-auto overscroll-contain [scrollbar-gutter:stable] max-sm:h-full max-sm:max-h-none">{children}</div>
     </dialog>
   );
 }

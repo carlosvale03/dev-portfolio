@@ -34,7 +34,7 @@ export function HeroName() {
 // the cursor and a stamp spins in the corner.
 export function PhotoFrame({ alt, caption, status }: { alt: string; caption: string; status: string }) {
   return (
-    <figure className="mx-auto w-full max-w-[22rem] md:max-w-none">
+    <figure className="mx-auto w-full sm:max-w-[22rem] md:max-w-none">
       <Tilt className="relative mb-3 mr-3" max={6}>
         <m.div
           aria-hidden="true"
@@ -44,7 +44,7 @@ export function PhotoFrame({ alt, caption, status }: { alt: string; caption: str
           transition={{ duration: 0.9, ease: [0.77, 0, 0.18, 1], delay: 0.5 }}
         />
         <m.div
-          className="relative aspect-[4/5] overflow-hidden border-2 border-fg bg-surface md:aspect-[3/4]"
+          className="relative aspect-[4/3] overflow-hidden border-2 border-fg bg-surface sm:aspect-[4/5] md:aspect-[3/4]"
           initial={{ clipPath: "inset(100% 0 0 0)" }}
           animate={{ clipPath: "inset(0% 0 0 0)" }}
           transition={{ duration: 1, ease: [0.77, 0, 0.18, 1], delay: 0.2 }}
@@ -56,7 +56,7 @@ export function PhotoFrame({ alt, caption, status }: { alt: string; caption: str
             loading="eager"
             fetchPriority="high"
             sizes="(min-width: 1320px) 400px, (min-width: 768px) 40vw, 22rem"
-            className="object-cover object-[50%_18%]"
+            className="object-cover object-[50%_42%] sm:object-[50%_18%]"
           />
         </m.div>
         <Stamp text={status} />
@@ -73,7 +73,7 @@ function Stamp({ text }: { text: string }) {
   return (
     <m.div
       aria-hidden="true"
-      className="absolute -bottom-6 -left-6 grid size-24 place-items-center rounded-full bg-bg sm:size-28"
+      className="absolute -right-2 -top-6 grid size-20 place-items-center rounded-full bg-bg sm:-bottom-6 sm:-left-6 sm:right-auto sm:top-auto sm:size-28"
       initial={{ scale: 0, rotate: -120 }}
       animate={{ scale: 1, rotate: 0 }}
       transition={{ type: "spring", stiffness: 260, damping: 16, delay: 1 }}

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import { usePicosTime, useStoredFlag } from "@/lib/external";
-import { Close, Menu } from "../ui/icons";
+import { Close, Download, Menu } from "../ui/icons";
 import { loadCreative } from "../creative/load";
 import { useExperience } from "./ExperienceProvider";
 
@@ -28,10 +28,12 @@ export function TopBar() {
   const other = content.lang === "pt" ? "en" : "pt";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md supports-[backdrop-filter]:bg-bg/75">
+    <header className="sticky top-0 z-40 border-b border-line bg-bg/95 md:bg-bg/90 md:backdrop-blur-md md:supports-[backdrop-filter]:bg-bg/75">
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-5 md:px-8">
         <a href="#inicio" className="flex items-center gap-3 font-extrabold tracking-tight" aria-label="Carlos Vale">
-          <span className="grid size-9 place-items-center bg-fg text-[13px] text-bg">CV</span>
+          <span aria-hidden="true" className="grid size-9 place-items-center bg-fg text-[13px] leading-none text-bg">
+            <span>CH</span>
+          </span>
           <span className="hidden whitespace-nowrap text-lg sm:inline">
             Carlos Vale<span className="text-accent">.</span>
           </span>
@@ -53,6 +55,7 @@ export function TopBar() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           <Clock />
+          <StatusPill />
           <Link
             href={`/${other}${mode === "criativo" ? "?modo=criativo" : ""}`}
             hrefLang={other === "pt" ? "pt-BR" : "en"}
@@ -62,11 +65,26 @@ export function TopBar() {
           >
             {other}
           </Link>
-          <ModeSwitch />
+          {mode === "criativo" && <ModeSwitch />}
           <MobileMenu />
         </div>
       </div>
     </header>
+  );
+}
+
+// Below 2xl the clock (which carries the status) is hidden, so the status gets
+// its own small pill: recruiters see it on every screen, phones included.
+function StatusPill() {
+  const { profile } = useExperience().content;
+  return (
+    <p className="inline-flex h-8 items-center gap-1.5 whitespace-nowrap border border-line px-2 font-mono text-[10px] uppercase tracking-wider sm:px-2.5 sm:text-[11px] 2xl:hidden">
+      <span className="relative flex size-2">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#1f8a4c] opacity-60" />
+        <span className="relative inline-flex size-2 rounded-full bg-[#1f8a4c]" />
+      </span>
+      {profile.status}
+    </p>
   );
 }
 
@@ -120,8 +138,8 @@ export function ModeSwitch({ className = "" }: { className?: string }) {
           }`}
         />
       </span>
-      <span className="hidden sm:inline">{content.ui.mode.toCreative}</span>
-      <span className="sm:hidden">{content.lang === "pt" ? "Criativo" : "Creative"}</span>
+      <span className="hidden sm:inline">{on ? content.ui.mode.toSerious : content.ui.mode.toCreative}</span>
+      <span className="sm:hidden">{on ? (content.lang === "pt" ? "Sério" : "Serious") : content.lang === "pt" ? "Criativo" : "Creative"}</span>
       {!seen && (
         <span aria-hidden="true" className="absolute -right-1 -top-1 flex size-2.5">
           <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75" />
@@ -151,7 +169,7 @@ function MobileMenu() {
       <dialog
         ref={ref}
         aria-label={content.ui.menu}
-        className="m-0 h-dvh max-h-none w-full max-w-none bg-bg p-0 text-fg backdrop:bg-ink/40"
+        className="m-0 h-dvh max-h-none w-full max-w-none flex-col bg-bg p-0 text-fg backdrop:bg-ink/40 open:flex"
         onClick={(e) => {
           if (e.target === e.currentTarget || (e.target as HTMLElement).closest("a")) ref.current?.close();
         }}
@@ -168,17 +186,32 @@ function MobileMenu() {
           </button>
         </div>
         <nav aria-label="Principal" className="flex flex-col px-5 py-6">
-          {nav.map((item) => (
+          {nav.map((item, i) => (
             <a
               key={item.id}
               href={`#${item.id}`}
-              className="flex items-baseline gap-4 border-b border-line py-4 text-4xl font-extrabold tracking-tight"
+              style={{ "--i": i } as CSSProperties}
+              className="menu-link flex items-baseline gap-4 border-b border-line py-4 text-4xl font-extrabold tracking-tight"
             >
               <span className="font-mono text-xs font-normal text-muted">{item.n}</span>
               {item.label}
             </a>
           ))}
         </nav>
+        <div className="menu-link mt-auto flex items-center justify-between gap-3 border-t border-line px-5 py-5" style={{ "--i": nav.length } as CSSProperties}>
+          <p className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
+            <span className="size-2 rounded-full bg-[#1f8a4c]" />
+            {content.profile.status}
+          </p>
+          <a
+            href={content.profile.cv}
+            download
+            className="inline-flex h-11 items-center gap-2 bg-fg px-4 text-sm font-semibold text-bg"
+          >
+            {content.ui.dock.cv}
+            <Download size={16} />
+          </a>
+        </div>
       </dialog>
     </>
   );

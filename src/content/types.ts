@@ -32,6 +32,10 @@ export interface Project {
   /** Replaces the default private-code note in the project dialog. */
   codeNote?: string;
   metrics?: { value: string; label: string }[];
+  /** "isesmt": the company systems shown in their own block, not the main list. */
+  group?: "isesmt";
+  /** Icon for projects without a screenshot. */
+  badge?: "assessment" | "training" | "map" | "cloud";
 }
 
 export interface ExperienceItem {
@@ -69,6 +73,8 @@ export interface TimelineItem {
   when: string;
   title: string;
   place: string;
+  /** Picks the icon on the rail. */
+  kind: "study" | "work" | "research";
 }
 
 export interface ContactLink {
@@ -101,6 +107,8 @@ export interface Content {
   ui: Ui;
 }
 
+type Step = { label: string; text: string };
+
 export interface Ui {
   skip: string;
   nav: { about: string; experience: string; projects: string; research: string; stack: string; contact: string };
@@ -121,6 +129,8 @@ export interface Ui {
     lead: string;
     steps: { label: string; caption: string }[];
     hint: string;
+    /** How to play with the particles, by input type. */
+    interact: { pointer: string; touch: string };
   };
   projects: {
     title: string;
@@ -132,12 +142,33 @@ export interface Ui {
     highlights: string;
     featured: string;
     others: string;
+    isesmt: {
+      kicker: string;
+      title: string;
+      lead: string;
+      stats: { value: string; label: string }[];
+      /** Cards, review, decisions, code: the icons follow this order. */
+      method: [Step, Step, Step, Step];
+    };
     metrics: string;
     zoom: string;
     panHint: string;
     columns: { project: string; stack: string; year: string; status: string };
   };
-  experience: { title: string; lead: string; current: string; viewProject: string };
+  experience: { title: string; lead: string; current: string; viewProject: string; more: string; less: string }; // "{n}" in more
+  /** The bottom action bar shown on phones. */
+  dock: { cv: string; talk: string };
+  /** The serious-mode section that invites people into the creative mode. */
+  teaser: {
+    kicker: string;
+    before: string;
+    after: string;
+    sub: string;
+    /** Particles, lineup, terminal, games, secrets: the icons follow this order. */
+    features: [string, string, string, string, string];
+    cta: string;
+    marquee: string[];
+  };
   research: { title: string; lead: string; authors: string; venue: string; tech: string; read: string; more: string; less: string };
   about: { title: string; timeline: string };
   stack: { title: string; lead: string };

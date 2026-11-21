@@ -109,6 +109,66 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Mobile menu: the links cascade in every time the dialog opens. */
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+dialog[open] .menu-link {
+  animation: menu-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 60ms);
+}
+
+/* The arrow in the phone action bar nudges toward the contact section. */
+@keyframes dock-nudge {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 4px 0;
+  }
+}
+
+/* Touch screens have no hover, so links and buttons answer the tap instead. */
+@layer base {
+@media (hover: none) {
+  :is(a, button, summary) {
+    -webkit-tap-highlight-color: transparent;
+    transition-property: scale, color, background-color, border-color, opacity;
+    transition-duration: 150ms;
+  }
+  :is(a, button, summary):active {
+    scale: 0.97;
+  }
+}
+}
+
+/* Outlined display type. A transparent fill shows the font's overlapping
+   contours as stray lines inside the glyphs (the bar of the 4, the joins of
+   the S); painting the stroke first and filling with the background hides them.
+   The stroke is twice the visible width because the fill covers its inner half. */
+@layer components {
+  .text-outline {
+    color: var(--outline-fill, var(--bg));
+    -webkit-text-stroke: 3px var(--outline, var(--fg));
+    paint-order: stroke fill;
+  }
+}
+
+/* Light sweeping across the creative-mode call to action. */
+@keyframes teaser-glint {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
 /* Kinetic marquee used by the creative mode. */
 @keyframes marquee-left {
   to {

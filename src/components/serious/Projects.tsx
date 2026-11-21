@@ -8,6 +8,7 @@ import { ArrowRight, ArrowUpRight } from "../ui/icons";
 import { StatusBadge } from "../ui/StatusBadge";
 import { FloatingPreview, Magnetic } from "../motion/kit";
 import { useExperience } from "../shell/ExperienceProvider";
+import { IsesmtSystems } from "./IsesmtSystems";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const preloadDialog = () => void import("../shell/ProjectDialog");
@@ -16,7 +17,8 @@ const preloadDialog = () => void import("../shell/ProjectDialog");
 // then an editorial index for everything else.
 export function ProjectsShowcase({ content }: { content: Content }) {
   const featured = content.projects.filter((p) => p.featured);
-  const others = content.projects.filter((p) => !p.featured);
+  const others = content.projects.filter((p) => !p.featured && !p.group);
+  const isesmt = content.projects.filter((p) => p.group === "isesmt");
 
   return (
     <>
@@ -27,6 +29,7 @@ export function ProjectsShowcase({ content }: { content: Content }) {
         ))}
       </div>
       <ProjectIndex projects={others} offset={featured.length} content={content} />
+      <IsesmtSystems projects={isesmt} content={content} />
     </>
   );
 }
@@ -38,7 +41,7 @@ function FeaturedCase({ project, index, content }: { project: Project; index: nu
   const primary = project.links[0];
 
   return (
-    <article className="grid items-center gap-8 lg:grid-cols-12 lg:gap-14">
+    <article className="grid grid-cols-[minmax(0,1fr)] items-center gap-8 lg:grid-cols-12 lg:gap-14 [&>*]:min-w-0">
       <div className={`lg:col-span-7 ${flip ? "lg:order-2" : ""}`}>
         <BrowserShot project={project} flip={flip} />
       </div>
@@ -50,7 +53,7 @@ function FeaturedCase({ project, index, content }: { project: Project; index: nu
         transition={{ duration: 0.8, ease: EASE }}
       >
         <div className="flex items-end justify-between gap-4">
-          <span className="text-[clamp(4rem,9vw,7.5rem)] font-black leading-[0.8] tracking-[-0.06em] text-transparent [-webkit-text-stroke:1.5px_var(--fg)]">
+          <span className="text-[clamp(4rem,9vw,7.5rem)] font-black leading-[0.8] tracking-[-0.06em] text-outline">
             {String(index + 1).padStart(2, "0")}
           </span>
           <div className="flex flex-col items-end gap-1 pb-1">

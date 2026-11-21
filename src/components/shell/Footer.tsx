@@ -13,7 +13,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-[1320px] gap-8 px-5 py-10 md:grid-cols-[1fr_auto] md:items-end md:px-8">
         <div>
           <p className="text-[clamp(3rem,9vw,6rem)] font-black leading-none tracking-[-0.05em]">
-            CV<span className="text-accent">.</span>
+            Carlos Vale<span className="text-accent">.</span>
           </p>
           <p className="mt-3 text-sm text-muted">
             © 2026 {profile.fullName}. {ui.footer.rights} {ui.footer.built}.

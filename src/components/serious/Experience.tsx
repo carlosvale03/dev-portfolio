@@ -1,12 +1,16 @@
 "use client";
 
 import { m } from "motion/react";
+import { useState } from "react";
 import type { Content } from "@/content";
+import { fill } from "@/lib/storage";
 import { ArrowRight } from "../ui/icons";
 import { useExperience } from "../shell/ExperienceProvider";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const preloadDialog = () => void import("../shell/ProjectDialog");
+// On phones each role shows its first bullets and folds the rest.
+const FOLD = 3;
 
 // One linked project reads "See project"; several are told apart by title.
 export function projectLabel(content: Content, ids: string[], id: string) {
@@ -19,6 +23,7 @@ export function projectLabel(content: Content, ids: string[], id: string) {
 export function ExperienceList({ content }: { content: Content }) {
   const { experience, ui } = content;
   const { openProject } = useExperience();
+  const [open, setOpen] = useState<Record<string, boolean>>({});
 
   return (
     <ol className="mt-12 border-t border-line">
@@ -54,13 +59,23 @@ export function ExperienceList({ content }: { content: Content }) {
                 {job.product && <span className="font-normal text-muted"> · {job.product}</span>}
               </p>
               <ul className="mt-4 space-y-2">
-                {job.bullets.map((b) => (
-                  <li key={b} className="flex gap-3 leading-relaxed">
+                {job.bullets.map((b, k) => (
+                  <li key={b} className={`flex gap-3 leading-relaxed ${k >= FOLD && !open[job.id] ? "max-md:hidden" : ""}`}>
                     <span aria-hidden="true" className="mt-[0.7em] h-px w-3 shrink-0 bg-accent" />
                     <span>{b}</span>
                   </li>
                 ))}
               </ul>
+              {job.bullets.length > FOLD && (
+                <button
+                  type="button"
+                  aria-expanded={!!open[job.id]}
+                  onClick={() => setOpen((o) => ({ ...o, [job.id]: !o[job.id] }))}
+                  className="mt-3 inline-flex h-10 items-center gap-1.5 font-mono text-xs uppercase tracking-wider underline decoration-accent decoration-2 underline-offset-4 md:hidden"
+                >
+                  {open[job.id] ? ui.experience.less : fill(ui.experience.more, { n: job.bullets.length - FOLD })}
+                </button>
+              )}
             </div>
 
             <div className="flex flex-wrap items-start gap-2 md:col-span-2 md:flex-col md:items-end">

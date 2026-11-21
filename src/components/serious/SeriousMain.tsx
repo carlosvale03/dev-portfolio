@@ -1,10 +1,25 @@
 import type { CSSProperties } from "react";
 import type { Content } from "@/content";
+import {
+  Brain,
+  CaretDown,
+  Code,
+  Database,
+  EnvelopeSimple,
+  FlowArrow,
+  GithubLogo,
+  LinkedinLogo,
+  ShieldCheck,
+  WhatsappLogo,
+} from "@phosphor-icons/react/dist/ssr";
+import type { Icon } from "@phosphor-icons/react";
+import { IconBadge } from "../ui/IconBadge";
 import { ArrowRight, ArrowUpRight, Download } from "../ui/icons";
 import { CountUp, Magnetic, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
 import { Container, Reveal, SectionHeader } from "./primitives";
 import { ContactForm } from "./ContactForm";
+import { CreativeTeaser } from "./CreativeTeaser";
 import { ExperienceList } from "./Experience";
 import { ParticleFigure } from "./ParticleFigure";
 import { ProjectsShowcase } from "./Projects";
@@ -25,6 +40,7 @@ export function SeriousMain({ content }: { content: Content }) {
       <Research content={content} />
       <About content={content} />
       <Stack content={content} />
+      <CreativeTeaser ui={content.ui} />
       <Contact content={content} />
     </>
   );
@@ -46,23 +62,24 @@ function Hero({ content }: { content: Content }) {
                 {profile.role}
               </p>
               <p className="mt-4 max-w-xl text-lg leading-relaxed text-muted">{profile.pitch}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Magnetic>
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+                <Magnetic className="w-full sm:w-auto">
                   <a
                     href="#projetos"
-                    className="group inline-flex h-12 items-center gap-2 bg-fg px-5 font-semibold text-bg transition-colors hover:bg-accent hover:text-ink"
+                    className="group inline-flex h-12 w-full items-center justify-center gap-2 bg-fg px-4 font-semibold text-bg transition-colors hover:bg-accent hover:text-ink sm:w-auto sm:px-5"
                   >
                     {ui.hero.ctaProjects}
                     <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                   </a>
                 </Magnetic>
-                <Magnetic>
+                <Magnetic className="w-full sm:w-auto">
                   <a
                     href={profile.cv}
                     download
-                    className="group inline-flex h-12 items-center gap-2 border border-fg px-5 font-semibold transition-colors hover:bg-fg hover:text-bg"
+                    className="group inline-flex h-12 w-full items-center justify-center gap-2 border border-fg px-4 font-semibold transition-colors hover:bg-fg hover:text-bg sm:w-auto sm:px-5"
                   >
-                    {ui.hero.ctaCv}
+                    <span className="sm:hidden">{ui.dock.cv}</span>
+                    <span className="hidden sm:inline">{ui.hero.ctaCv}</span>
                     <Download size={18} className="transition-transform group-hover:translate-y-0.5" />
                   </a>
                 </Magnetic>
@@ -96,7 +113,9 @@ function Hero({ content }: { content: Content }) {
 }
 
 function StackTicker({ content }: { content: Content }) {
-  const items = content.stack.flatMap((g) => g.items);
+  // The headline tools of each group, not all fifty: a shorter track is far
+  // cheaper to animate on phones.
+  const items = content.stack.flatMap((g) => g.items.slice(0, 5));
   const half = Math.ceil(items.length / 2);
   return (
     <div
@@ -185,6 +204,7 @@ function Research({ content }: { content: Content }) {
                       <summary className="inline-flex list-none items-center gap-2 text-sm font-semibold underline decoration-line-strong underline-offset-4 hover:decoration-accent [&::-webkit-details-marker]:hidden">
                         <span className="group-open/d:hidden">{ui.research.more}</span>
                         <span className="hidden group-open/d:inline">{ui.research.less}</span>
+                        <CaretDown size={16} weight="bold" aria-hidden="true" className="transition-transform duration-300 group-open/d:rotate-180" />
                       </summary>
                       <p className="mt-3 max-w-2xl leading-relaxed">{pub.summary}</p>
                     </details>
@@ -263,17 +283,24 @@ function Stack({ content }: { content: Content }) {
             <Reveal
               key={group.id}
               delay={i * 0.06}
-              className="group bg-bg p-6 transition-colors duration-300 last:sm:col-span-2 hover:bg-surface lg:last:col-span-1"
+              className="group bg-bg p-5 transition-colors duration-300 last:sm:col-span-2 hover:bg-surface sm:p-6 lg:last:col-span-1"
             >
               <div className="flex items-baseline justify-between">
                 <p className="font-mono text-xs text-muted">06.{i + 1}</p>
                 <p className="font-tabular font-mono text-xs text-muted">{String(group.items.length).padStart(2, "0")}</p>
               </div>
-              <h3 className="mt-1 text-lg font-extrabold tracking-tight">{group.label}</h3>
-              <ul className="mt-5 space-y-1.5">
+              <h3 className="mt-3 flex items-center gap-2.5 text-lg font-extrabold tracking-tight">
+                {STACK_ICONS[group.id] && <IconBadge icon={STACK_ICONS[group.id]} />}
+                {group.label}
+              </h3>
+              {/* Chips on phones keep the five groups short; a list from sm up. */}
+              <ul className="mt-4 flex flex-wrap gap-1.5 sm:mt-5 sm:block sm:space-y-1.5">
                 {group.items.map((item) => (
-                  <li key={item} className="group/i flex items-center gap-2 text-[15px] transition-transform duration-300 hover:translate-x-1.5">
-                    <span aria-hidden="true" className="h-px w-3 bg-accent transition-[width] duration-300 group-hover/i:w-6" />
+                  <li
+                    key={item}
+                    className="group/i flex items-center gap-2 border border-line px-2.5 py-1 text-sm transition-transform duration-300 sm:items-start sm:border-0 sm:p-0 sm:text-[15px] sm:hover:translate-x-1.5"
+                  >
+                    <span aria-hidden="true" className="hidden h-px w-3 shrink-0 bg-accent transition-[width] duration-300 group-hover/i:w-6 sm:mt-[0.7em] sm:block" />
                     {item}
                   </li>
                 ))}
@@ -319,12 +346,15 @@ function Contact({ content }: { content: Content }) {
                       aria-hidden="true"
                       className="absolute inset-0 origin-bottom scale-y-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-y-100"
                     />
-                    <span className="relative min-w-0">
+                    <span className="relative flex min-w-0 items-center gap-4">
+                      <IconBadge icon={CONTACT_ICONS[c.id]} />
+                      <span className="min-w-0">
                       <span className="block font-mono text-[11px] uppercase tracking-wider text-muted group-hover:text-ink">
                         {c.label}
                       </span>
                       <span className="block truncate text-lg font-semibold tracking-tight group-hover:text-ink md:text-xl">
                         {c.value}
+                      </span>
                       </span>
                     </span>
                     <ArrowUpRight
@@ -355,3 +385,17 @@ function Contact({ content }: { content: Content }) {
   );
 }
 
+const CONTACT_ICONS: Record<Content["profile"]["contacts"][number]["id"], Icon> = {
+  email: EnvelopeSimple,
+  linkedin: LinkedinLogo,
+  github: GithubLogo,
+  whatsapp: WhatsappLogo,
+};
+
+const STACK_ICONS: Record<string, Icon> = {
+  web: Code,
+  backend: Database,
+  infra: ShieldCheck,
+  ai: Brain,
+  product: FlowArrow,
+};

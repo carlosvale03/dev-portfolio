@@ -2,14 +2,26 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import type { Project, ProjectImage } from "@/content";
+import { GithubLogo, Globe, Lock, MonitorPlay, PenNib, type Icon } from "@phosphor-icons/react";
+import type { LinkKind, Project, ProjectImage } from "@/content";
 import { Modal } from "../ui/Modal";
 import { ArrowUpRight } from "../ui/icons";
 import { StatusBadge } from "../ui/StatusBadge";
+import { BADGE_ICONS } from "../serious/IsesmtSystems";
+import { DUO } from "../ui/IconBadge";
 import { useExperience } from "./ExperienceProvider";
 
 // Without one of these the code is private, and the dialog says so.
 const CODE_LINKS = new Set(["code", "front", "back"]);
+
+const LINK_ICONS: Record<LinkKind, Icon> = {
+  code: GithubLogo,
+  front: GithubLogo,
+  back: GithubLogo,
+  demo: MonitorPlay,
+  design: PenNib,
+  site: Globe,
+};
 
 export default function ProjectDialog() {
   const { content, projectId, closeProject, mode } = useExperience();
@@ -24,11 +36,11 @@ export default function ProjectDialog() {
   return (
     <Modal label={project.title} closeLabel={ui.close} onClose={closeProject} className="w-[min(94vw,1120px)]">
       <article className="grid md:grid-cols-[1.15fr_1fr]">
-        <div className="relative h-64 border-b border-line bg-ink sm:h-80 md:h-auto md:min-h-[32rem] md:border-b-0 md:border-r">
+        <div className="relative h-[46dvh] border-b border-line bg-ink sm:h-80 md:h-auto md:min-h-[32rem] md:border-b-0 md:border-r">
           {project.image && src ? (
             <Shot image={project.image} src={src} hint={ui.projects.panHint} />
           ) : (
-            <Placeholder title={project.title} />
+            <Placeholder title={project.title} badge={project.badge} />
           )}
           <span className="pointer-events-none absolute left-3 top-3 z-10 bg-fg px-2 py-1 font-mono text-[11px] text-bg">
             fig. 02.{index + 1}
@@ -49,14 +61,18 @@ export default function ProjectDialog() {
 
       {zoomed && project.image && src && (
         <Modal label={project.image.alt} closeLabel={ui.close} onClose={() => setZoomed(false)} tone="ink" className="w-[min(96vw,1400px)]">
-          <Image
-            src={src}
-            alt={project.image.alt}
-            width={project.image.width}
-            height={project.image.height}
-            sizes="96vw"
-            className="h-auto w-full"
-          />
+          {/* Full screen on phones: tall shots scroll down; wide ones are shown
+              larger and scroll sideways, or their text would be unreadable. */}
+          <div className="flex min-h-full items-center overflow-x-auto overscroll-x-contain">
+            <Image
+              src={src}
+              alt={project.image.alt}
+              width={project.image.width}
+              height={project.image.height}
+              sizes="(max-width: 639px) 220vw, 96vw"
+              className={`h-auto w-full ${project.image.width / project.image.height > 0.8 ? "max-sm:w-[220%] max-sm:max-w-none" : ""}`}
+            />
+          </div>
         </Modal>
       )}
     </Modal>
@@ -171,19 +187,34 @@ function ProjectInfo({ project }: { project: Project }) {
                 i === 0 ? "bg-fg text-bg hover:bg-accent hover:text-ink" : "border border-fg hover:bg-fg hover:text-bg"
               }`}
             >
+              {(() => {
+                const Icon = LINK_ICONS[l.kind];
+                return <Icon size={18} weight="duotone" aria-hidden="true" className={DUO} />;
+              })()}
               {ui.projects.links[l.kind]}
               <ArrowUpRight size={16} />
             </a>
           ))}
-        {!project.links.some((l) => CODE_LINKS.has(l.kind)) && <p className="text-sm text-muted">{project.codeNote ?? ui.projects.privateNote}</p>}
+        {!project.links.some((l) => CODE_LINKS.has(l.kind)) && (
+          <p className="inline-flex items-center gap-1.5 text-sm text-muted">
+            <Lock size={16} weight="duotone" aria-hidden="true" className={DUO} />
+            {project.codeNote ?? ui.projects.privateNote}
+          </p>
+        )}
       </div>
     </div>
   );
 }
 
-export function Placeholder({ title }: { title: string }) {
+export function Placeholder({ title, badge }: { title: string; badge?: Project["badge"] }) {
+  const Glyph = badge ? BADGE_ICONS[badge] : null;
   return (
-    <div className="absolute inset-0 grid place-items-center overflow-hidden bg-ink p-6">
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 overflow-hidden bg-ink p-6">
+      {Glyph && (
+        <span className={`${DUO} grid size-20 place-items-center border-2 border-paper bg-ink text-paper shadow-[5px_5px_0_var(--accent)]`}>
+          <Glyph size={44} weight="duotone" aria-hidden="true" />
+        </span>
+      )}
       <p className="text-center text-[clamp(2rem,6vw,4rem)] font-black uppercase leading-[0.85] tracking-[-0.04em] text-paper/90">
         {title}
         <span className="text-accent">.</span>

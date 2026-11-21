@@ -62,7 +62,10 @@ export function SplitReveal({
   );
 }
 
-/** Counts up to a number when visible; non-numeric values get scrambled in. */
+/**
+ * Counts up to a number when visible, keeping any prefix or suffix fixed
+ * ("10+", "~50"); non-numeric values get scrambled in.
+ */
 export function CountUp({ value, className = "" }: { value: string; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const seen = useInView(ref, { once: true });
@@ -71,13 +74,14 @@ export function CountUp({ value, className = "" }: { value: string; className?: 
   useEffect(() => {
     const el = ref.current;
     if (!el || !seen || reduced) return;
-    const target = Number(value);
-    if (Number.isFinite(target)) {
-      const pad = value.length;
-      const controls = animate(0, target, {
+    const parts = /^(\D*)(\d+)(\D*)$/.exec(value);
+    if (parts) {
+      const [, prefix, digits, suffix] = parts;
+      const pad = digits.length;
+      const controls = animate(0, Number(digits), {
         duration: 1.4,
         ease: EASE,
-        onUpdate: (v) => (el.textContent = String(Math.round(v)).padStart(pad, "0")),
+        onUpdate: (v) => (el.textContent = prefix + String(Math.round(v)).padStart(pad, "0") + suffix),
       });
       return () => controls.stop();
     }

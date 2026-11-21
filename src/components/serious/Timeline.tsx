@@ -2,7 +2,11 @@
 
 import { m, useScroll, useSpring } from "motion/react";
 import { useRef } from "react";
+import { Briefcase, Flask, GraduationCap } from "@phosphor-icons/react/dist/ssr";
+import { IconBadge } from "../ui/IconBadge";
 import type { TimelineItem } from "@/content";
+
+const ICONS = { study: GraduationCap, work: Briefcase, research: Flask };
 
 // The rail fills in red as the timeline scrolls through the viewport.
 export function Timeline({ items, title }: { items: TimelineItem[]; title: string }) {
@@ -15,21 +19,24 @@ export function Timeline({ items, title }: { items: TimelineItem[]; title: strin
       <h3 className="font-mono text-xs uppercase tracking-wider text-muted">{title}</h3>
       <ol ref={ref} className="relative mt-4 border-l-2 border-line">
         <m.span aria-hidden="true" className="absolute -left-0.5 top-0 h-full w-0.5 origin-top bg-accent" style={{ scaleY }} />
-        {items.map((t, i) => (
+        {items.map((t, i) => {
+          const Icon = ICONS[t.kind];
+          return (
           <m.li
             key={t.title}
-            className="relative pb-6 pl-6 last:pb-0"
+            className="relative pb-6 pl-8 last:pb-0"
             initial={{ opacity: 0, x: 16 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "0px 0px -15% 0px" }}
             transition={{ duration: 0.5, delay: i * 0.08 }}
           >
-            <span aria-hidden="true" className="absolute -left-[7px] top-1.5 size-3 border-2 border-bg bg-fg" />
+            <IconBadge icon={Icon} size="sm" className="absolute -left-[17px] top-0" />
             <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{t.when}</p>
             <p className="font-semibold leading-snug">{t.title}</p>
             <p className="text-sm text-muted">{t.place}</p>
           </m.li>
-        ))}
+          );
+        })}
       </ol>
     </div>
   );
