@@ -1,15 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import type { Project, ProjectImage } from "@/content";
+import { useEffect, useRef, useState, type ComponentType, type CSSProperties } from "react";
+import { Globe, Lock, MonitorPlay, PenTool } from "lucide-react";
+import type { LinkKind, Project, ProjectImage } from "@/content";
 import { Modal } from "../ui/Modal";
-import { ArrowUpRight } from "../ui/icons";
+import { ArrowUpRight, Github } from "../ui/icons";
 import { StatusBadge } from "../ui/StatusBadge";
 import { useExperience } from "./ExperienceProvider";
 
 // Without one of these the code is private, and the dialog says so.
 const CODE_LINKS = new Set(["code", "front", "back"]);
+
+const LINK_ICONS: Record<LinkKind, ComponentType<{ size?: number; strokeWidth?: number; "aria-hidden"?: boolean | "true" }>> = {
+  code: Github,
+  front: Github,
+  back: Github,
+  demo: MonitorPlay,
+  design: PenTool,
+  site: Globe,
+};
 
 export default function ProjectDialog() {
   const { content, projectId, closeProject, mode } = useExperience();
@@ -171,11 +181,20 @@ function ProjectInfo({ project }: { project: Project }) {
                 i === 0 ? "bg-fg text-bg hover:bg-accent hover:text-ink" : "border border-fg hover:bg-fg hover:text-bg"
               }`}
             >
+              {(() => {
+                const Icon = LINK_ICONS[l.kind];
+                return <Icon size={16} strokeWidth={1.9} aria-hidden="true" />;
+              })()}
               {ui.projects.links[l.kind]}
               <ArrowUpRight size={16} />
             </a>
           ))}
-        {!project.links.some((l) => CODE_LINKS.has(l.kind)) && <p className="text-sm text-muted">{project.codeNote ?? ui.projects.privateNote}</p>}
+        {!project.links.some((l) => CODE_LINKS.has(l.kind)) && (
+          <p className="inline-flex items-center gap-1.5 text-sm text-muted">
+            <Lock size={14} aria-hidden="true" />
+            {project.codeNote ?? ui.projects.privateNote}
+          </p>
+        )}
       </div>
     </div>
   );
