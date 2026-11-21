@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Content } from "@/content";
-import { Mail, MessageCircle } from "lucide-react";
+import { BrainCircuit, Code2, Database, Mail, MessageCircle, ShieldCheck, Workflow, type LucideIcon } from "lucide-react";
 import { ArrowRight, ArrowUpRight, Download, Github, Linkedin } from "../ui/icons";
 import { CountUp, Magnetic, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
@@ -283,7 +283,10 @@ function Stack({ content }: { content: Content }) {
                 <p className="font-mono text-xs text-muted">06.{i + 1}</p>
                 <p className="font-tabular font-mono text-xs text-muted">{String(group.items.length).padStart(2, "0")}</p>
               </div>
-              <h3 className="mt-1 text-lg font-extrabold tracking-tight">{group.label}</h3>
+              <h3 className="mt-3 flex items-center gap-2.5 text-lg font-extrabold tracking-tight">
+                <StackIcon id={group.id} />
+                {group.label}
+              </h3>
               {/* Chips on phones keep the five groups short; a list from sm up. */}
               <ul className="mt-4 flex flex-wrap gap-1.5 sm:mt-5 sm:block sm:space-y-1.5">
                 {group.items.map((item) => (
@@ -387,4 +390,22 @@ function ContactIcon({ id }: { id: Content["profile"]["contacts"][number]["id"] 
   if (id === "linkedin") return <Linkedin {...props} />;
   if (id === "github") return <Github {...props} />;
   return <MessageCircle {...props} />;
+}
+
+const STACK_ICONS: Record<string, LucideIcon> = {
+  web: Code2,
+  backend: Database,
+  infra: ShieldCheck,
+  ai: BrainCircuit,
+  product: Workflow,
+};
+
+function StackIcon({ id }: { id: string }) {
+  const Icon = STACK_ICONS[id];
+  if (!Icon) return null;
+  return (
+    <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center bg-fg text-bg transition-[background-color,rotate] duration-300 group-hover:-rotate-6 group-hover:bg-accent group-hover:text-ink">
+      <Icon size={17} strokeWidth={1.9} />
+    </span>
+  );
 }
