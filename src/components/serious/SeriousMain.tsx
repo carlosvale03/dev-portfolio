@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Content } from "@/content";
-import { ArrowRight, ArrowUpRight, Download } from "../ui/icons";
+import { Mail, MessageCircle } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Download, Github, Linkedin } from "../ui/icons";
 import { CountUp, Magnetic, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
 import { Container, Reveal, SectionHeader } from "./primitives";
@@ -336,12 +337,20 @@ function Contact({ content }: { content: Content }) {
                       aria-hidden="true"
                       className="absolute inset-0 origin-bottom scale-y-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-y-100"
                     />
-                    <span className="relative min-w-0">
+                    <span className="relative flex min-w-0 items-center gap-4">
+                      <span
+                        aria-hidden="true"
+                        className="grid size-11 shrink-0 place-items-center border border-line transition-[border-color,rotate] duration-300 group-hover:-rotate-6 group-hover:border-ink group-hover:text-ink"
+                      >
+                        <ContactIcon id={c.id} />
+                      </span>
+                      <span className="min-w-0">
                       <span className="block font-mono text-[11px] uppercase tracking-wider text-muted group-hover:text-ink">
                         {c.label}
                       </span>
                       <span className="block truncate text-lg font-semibold tracking-tight group-hover:text-ink md:text-xl">
                         {c.value}
+                      </span>
                       </span>
                     </span>
                     <ArrowUpRight
@@ -372,3 +381,10 @@ function Contact({ content }: { content: Content }) {
   );
 }
 
+function ContactIcon({ id }: { id: Content["profile"]["contacts"][number]["id"] }) {
+  const props = { size: 20, strokeWidth: 1.75 };
+  if (id === "email") return <Mail {...props} />;
+  if (id === "linkedin") return <Linkedin {...props} />;
+  if (id === "github") return <Github {...props} />;
+  return <MessageCircle {...props} />;
+}
