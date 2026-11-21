@@ -69,6 +69,8 @@ export interface TimelineItem {
   when: string;
   title: string;
   place: string;
+  /** Picks the icon on the rail. */
+  kind: "study" | "work" | "research";
 }
 
 export interface ContactLink {

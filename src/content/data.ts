@@ -73,21 +73,25 @@ const profile: Bi<Content["profile"]> = {
       when: { pt: "mar/2026 – atual", en: "Mar 2026 – present" },
       title: { pt: "Mestrado em Ciência da Computação", en: "MSc in Computer Science" },
       place: "UFPI",
+      kind: "study",
     },
     {
       when: { pt: "ago/2026 – atual", en: "Aug 2026 – present" },
       title: { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
       place: "ISESMT",
+      kind: "work",
     },
     {
       when: { pt: "2022 – atual", en: "2022 – present" },
       title: { pt: "Desenvolvedor e pesquisador em PLN", en: "NLP developer and researcher" },
       place: "UFPI (PAAD · BraSNAM · WebMedia · ACM WebSci)",
+      kind: "research",
     },
     {
       when: { pt: "dez/2025", en: "Dec 2025" },
       title: { pt: "Bacharel em Sistemas de Informação", en: "BSc in Information Systems" },
       place: "UFPI",
+      kind: "study",
     },
   ],
   contacts: [
