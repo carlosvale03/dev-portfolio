@@ -793,7 +793,17 @@ const ui: Bi<Ui> = {
     kicker: { pt: "Modo criativo", en: "Creative mode" },
     before: { pt: "Até aqui, o currículo.", en: "So far, the résumé." },
     after: { pt: "No modo criativo, a prática.", en: "In creative mode, the practice." },
-    sub: { pt: "Jogos, partículas e segredos, feitos do zero.", en: "Games, particles and secrets, built from scratch." },
+    sub: {
+      pt: "O mesmo conteúdo, em outra experiência: partículas que reagem ao toque, a stack escalada como um time de futebol, um terminal de comandos e jogos escondidos pelo site. Tudo feito do zero.",
+      en: "The same content, as another experience: particles that react to your touch, the stack lined up as a football team, a command terminal and games hidden across the site. All built from scratch.",
+    },
+    features: [
+      { pt: "Partículas", en: "Particles" },
+      { pt: "Escalação", en: "Lineup" },
+      "Terminal",
+      { pt: "Jogos", en: "Games" },
+      { pt: "{n} segredos", en: "{n} secrets" },
+    ],
     cta: { pt: "Ver na prática", en: "See it in practice" },
     marquee: [
       { pt: "PARTÍCULAS ✦ JOGOS ✦ SEGREDOS ✦ TERMINAL ✦ ESCALAÇÃO ✦", en: "PARTICLES ✦ GAMES ✦ SECRETS ✦ TERMINAL ✦ LINEUP ✦" },

@@ -2,7 +2,9 @@
 
 import { m, useScroll, useTransform } from "motion/react";
 import { useRef, type CSSProperties } from "react";
-import type { Ui } from "@/content";
+import { Gamepad2, KeyRound, Shirt, Sparkles, SquareTerminal } from "lucide-react";
+import { SECRETS, type Ui } from "@/content";
+import { fill } from "@/lib/storage";
 import { ArrowRight } from "../ui/icons";
 import { Magnetic, Scramble, SplitReveal } from "../motion/kit";
 import { Marquee } from "../motion/Marquee";
@@ -11,6 +13,7 @@ import type { ShapeId } from "../particles/shapes";
 import { loadCreative } from "../creative/load";
 import { useExperience } from "../shell/ExperienceProvider";
 
+const FEATURE_ICONS = [Sparkles, Shirt, SquareTerminal, Gamepad2, KeyRound];
 const SHAPES: ShapeId[] = ["mark", "gamepad", "ball", "shuriken", "hat", "orb"];
 // Position of each shape in ui.creative.shapes, which follows the creative hero order.
 const HERO_ORDER: ShapeId[] = ["mark", "network", "ball", "gamepad", "orb", "shuriken", "hat"];
@@ -66,7 +69,25 @@ export function CreativeTeaser({ ui }: { ui: Ui }) {
               <SplitReveal text={t.after} inView delay={0.35} stagger={0.03} />
             </span>
           </h2>
-          <p className="mt-5 max-w-md font-mono text-sm text-paper/70">{t.sub}</p>
+          <p className="mt-5 max-w-lg leading-relaxed text-paper/75">{t.sub}</p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {t.features.map((label, i) => {
+              const Icon = FEATURE_ICONS[i];
+              return (
+                <m.li
+                  key={label}
+                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5 + i * 0.07, type: "spring", stiffness: 380, damping: 22 }}
+                  className="inline-flex items-center gap-1.5 border border-paper/25 px-2.5 py-1 font-mono text-xs text-paper/85"
+                >
+                  <Icon size={14} aria-hidden="true" className="text-accent" />
+                  {fill(label, { n: SECRETS.length })}
+                </m.li>
+              );
+            })}
+          </ul>
 
           <Magnetic strength={0.35} className="mt-8">
             <button

@@ -145,7 +145,16 @@ export interface Ui {
   /** The bottom action bar shown on phones. */
   dock: { cv: string; talk: string };
   /** The serious-mode section that invites people into the creative mode. */
-  teaser: { kicker: string; before: string; after: string; sub: string; cta: string; marquee: string[] };
+  teaser: {
+    kicker: string;
+    before: string;
+    after: string;
+    sub: string;
+    /** Particles, lineup, terminal, games, secrets: the icons follow this order. */
+    features: [string, string, string, string, string];
+    cta: string;
+    marquee: string[];
+  };
   research: { title: string; lead: string; authors: string; venue: string; tech: string; read: string; more: string; less: string };
   about: { title: string; timeline: string };
   stack: { title: string; lead: string };
