@@ -141,6 +141,25 @@ const experience: Bi<ExperienceItem>[] = [
     ],
   },
   {
+    id: "rnp",
+    role: { pt: "Bolsista de Pesquisa, Desenvolvimento e Inovação", en: "Research, Development and Innovation Fellow" },
+    company: "RNP",
+    period: { pt: "ago/2026 – atual", en: "Aug 2026 – present" },
+    current: true,
+    product: { pt: "Panorama de Comunidades Acadêmicas em Cibersegurança", en: "Panorama of Academic Communities in Cybersecurity" },
+    projectIds: ["coleta-studio"],
+    bullets: [
+      {
+        pt: "Desenvolvo, em Python e Django, a ferramenta que coleta registros de quatro bases (CAPES, OpenAlex, SBC OpenLib e INPI), padroniza tudo em CSV e faz a curadoria com um LLM local (Ollama), registrando o motivo de cada decisão.",
+        en: "I build, in Python and Django, the tool that collects records from four sources (CAPES, OpenAlex, SBC OpenLib and INPI), standardizes them as CSV and curates them with a local LLM (Ollama), recording the reason for each decision.",
+      },
+      {
+        pt: "Coletas em segundo plano com fila de tarefas, progresso em tempo real e retomada a partir de checkpoints; tratei falhas reais de dados, como CSV lido com o separador errado e o limite de paginação da API do OpenAlex.",
+        en: "Background collections with a task queue, live progress and checkpoint-based resume; I handled real data issues, such as CSV files read with the wrong separator and the OpenAlex API pagination limit.",
+      },
+    ],
+  },
+  {
     id: "overzone",
     role: { pt: "Desenvolvedor Full-Stack · Freelancer", en: "Full-Stack Developer · Freelance" },
     company: "Overzone",
