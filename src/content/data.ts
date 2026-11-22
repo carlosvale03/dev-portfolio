@@ -163,8 +163,7 @@ const experience: Bi<ExperienceItem>[] = [
     id: "ufpi",
     role: { pt: "Desenvolvedor e Pesquisador", en: "Developer and Researcher" },
     company: "UFPI",
-    period: { pt: "set/2022 – atual", en: "Sep 2022 – present" },
-    current: true,
+    period: { pt: "set/2022 – jul/2026", en: "Sep 2022 – Jul 2026" },
     projectIds: ["paad", "crimes-monitor"],
     bullets: [
       {
