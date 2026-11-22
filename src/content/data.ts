@@ -338,6 +338,55 @@ const projects: Bi<Project>[] = [
     codeNote: { pt: "Código proprietário da ISESMT.", en: "Proprietary ISESMT code." },
   },
   {
+    id: "coleta-studio",
+    title: "Coleta Studio",
+    kicker: {
+      pt: "Coleta e curadoria de produção científica e patentes, na RNP",
+      en: "Collecting and curating scientific output and patents, at RNP",
+    },
+    year: "2026",
+    status: "building",
+    featured: false,
+    image: {
+      src: "/img/projetos/coleta-studio-rnp.webp",
+      alt: {
+        pt: "Detalhe de uma execução de exemplo no Coleta Studio: coleta, homogeneização e curadoria semântica, com os arquivos gerados",
+        en: "A sample run in Coleta Studio: collection, standardization and semantic curation, with the generated files",
+      },
+      width: 1600,
+      height: 1654,
+    },
+    summary: {
+      pt: "Ferramenta do projeto Panorama de Comunidades Acadêmicas em Cibersegurança, da RNP: coleta registros de quatro bases, padroniza tudo e faz a curadoria com um LLM local.",
+      en: "The tool behind RNP's Panorama of Academic Communities in Cybersecurity: it collects records from four sources, standardizes them and curates them with a local LLM.",
+    },
+    overview: {
+      pt: "Desenvolvo, como bolsista de PD&I da RNP, a aplicação web que monta e executa coletas de produções científicas e patentes na CAPES, no OpenAlex, na SBC OpenLib e no INPI. Os registros saem padronizados em CSV, separados entre produção científica e patentes, e passam por uma curadoria semântica com um LLM local (Ollama), que decide incluir, excluir ou revisar e guarda a evidência de cada decisão. As coletas rodam em segundo plano, com progresso em tempo real e retomada de onde pararam.",
+      en: "As an RNP research and development fellow, I build the web app that sets up and runs collections of scientific output and patents from CAPES, OpenAlex, SBC OpenLib and INPI. Records come out standardized as CSV, split between scientific output and patents, and go through semantic curation with a local LLM (Ollama), which decides to include, exclude or review and keeps the evidence for each decision. Collections run in the background, with live progress and resuming where they stopped.",
+    },
+    highlights: [
+      {
+        label: { pt: "Coleta", en: "Collection" },
+        text: { pt: "Recorte por tema, período e termos em quatro bases, com limite de registros por fonte.", en: "Slices by topic, period and terms across four sources, with a per-source record limit." },
+      },
+      {
+        label: { pt: "Curadoria", en: "Curation" },
+        text: { pt: "LLM local classifica cada documento e registra o motivo da decisão.", en: "A local LLM classifies each document and records the reason for the decision." },
+      },
+      {
+        label: { pt: "Resiliência", en: "Resilience" },
+        text: { pt: "Fila em segundo plano, progresso em tempo real e retomada por checkpoints.", en: "Background queue, live progress and checkpoint-based resume." },
+      },
+      {
+        label: { pt: "Qualidade", en: "Quality" },
+        text: { pt: "Testes automatizados e decisões técnicas registradas em ADRs.", en: "Automated tests and technical decisions recorded as ADRs." },
+      },
+    ],
+    stack: ["Python", "Django", "HTMX", "Alpine.js", "Ollama", "pandas", "Docker", "pytest"],
+    links: [],
+    codeNote: { pt: "Código em repositório interno da RNP.", en: "Code in an internal RNP repository." },
+  },
+  {
     id: "azimute",
     title: "Azimute",
     kicker: { pt: "Finanças pessoais, antigo Fluxar", en: "Personal finance, formerly Fluxar" },
