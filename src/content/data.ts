@@ -175,8 +175,8 @@ const experience: Bi<ExperienceItem>[] = [
         en: "Built Crimes Monitor (Angular 20, Chart.js), which applies BERT models to YouTube comments; in the research, the models went above 87% accuracy and the clustering heuristics reached 0.90, outperforming GPT-4.",
       },
       {
-        pt: "Monitor de Banco de Dados II (2023): apoio aos alunos em PostgreSQL e otimização de consultas.",
-        en: "Database Systems II teaching assistant (2023): supported students with PostgreSQL and query optimization.",
+        pt: "Monitor de Banco de Dados II (2023, 4 meses): apoio aos alunos nas dúvidas e atividades práticas da disciplina, com SQL, PostgreSQL e otimização de consultas.",
+        en: "Database Systems II teaching assistant (2023, 4 months): helped students with questions and hands-on work in the course, covering SQL, PostgreSQL and query optimization.",
       },
     ],
   },
