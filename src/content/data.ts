@@ -454,10 +454,7 @@ const projects: Bi<Project>[] = [
       { value: "8", label: { pt: "módulos da API", en: "API modules" } },
     ],
     stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind v4", "Radix UI", "Recharts", "Django 5", "Django REST", "PostgreSQL", "pandas", "Docker"],
-    links: [
-      { kind: "front", href: "https://github.com/carlosvale03/fluxar-frontend" },
-      { kind: "back", href: "https://github.com/carlosvale03/fluxar-backend" },
-    ],
+    links: [],
   },
   {
     id: "crimes-monitor",
@@ -494,7 +491,6 @@ const projects: Bi<Project>[] = [
     stack: ["Angular 20", "BERT", "NLP", "Chart.js", "PrimeNG", "Tailwind", "GitHub Actions"],
     links: [
       { kind: "demo", href: "https://c-monanalys.github.io/crimes_monitor/" },
-      { kind: "code", href: "https://github.com/C-MonAnalys/crimes_monitor" },
     ],
   },
   {
@@ -527,12 +523,7 @@ const projects: Bi<Project>[] = [
       { label: "Infra", text: { pt: "Ambiente todo containerizado com Docker Compose.", en: "Fully containerized with Docker Compose." } },
     ],
     stack: ["Next.js 16", "React 19", "Tailwind v4", "Prisma", "PostgreSQL", "Express 5", "Docker", "JWT", "MFA"],
-    links: [
-      { kind: "design", href: "https://www.figma.com/design/w0QxVuTvprO13JugtS0nrm/PAAD---site?node-id=26-915" },
-      { kind: "code", href: "https://github.com/carlosvale03/site-paad-production" },
-      { kind: "front", href: "https://github.com/LABPAAD/site_paad_frontend" },
-      { kind: "back", href: "https://github.com/LABPAAD/site_paad_backend" },
-    ],
+    links: [],
   },
   {
     id: "valida-sst",
