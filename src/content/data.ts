@@ -894,7 +894,7 @@ const stack: Bi<StackGroup>[] = [
   {
     id: "ai",
     label: { pt: "IA e pesquisa", en: "AI and research" },
-    items: ["NLP", "BERT", "BERTimbau", "Transformers", "LLMs", "scikit-learn", "pandas", "Chart.js"],
+    items: ["NLP", "BERT", "BERTimbau", "Transformers", "LLMs", "Ollama (LLM local)", "scikit-learn", "pandas", "Chart.js"],
   },
   {
     id: "product",
