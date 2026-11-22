@@ -483,7 +483,7 @@ const projects: Bi<Project>[] = [
     metrics: [
       { value: { pt: "1 mi+", en: "1M+" }, label: { pt: "opiniões analisadas", en: "opinions analyzed" } },
       { value: "87%+", label: { pt: "acurácia dos modelos", en: "model accuracy" } },
-      { value: "0,90", label: { pt: "acurácia no agrupamento", en: "clustering accuracy" } },
+      { value: { pt: "0,90", en: "0.90" }, label: { pt: "acurácia no agrupamento", en: "clustering accuracy" } },
     ],
     stack: ["Angular 20", "BERT", "NLP", "Chart.js", "PrimeNG", "Tailwind", "GitHub Actions"],
     links: [
