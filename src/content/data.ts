@@ -160,6 +160,28 @@ const experience: Bi<ExperienceItem>[] = [
     ],
   },
   {
+    id: "ufpi",
+    role: { pt: "Desenvolvedor e Pesquisador", en: "Developer and Researcher" },
+    company: "UFPI",
+    period: { pt: "set/2022 – atual", en: "Sep 2022 – present" },
+    current: true,
+    projectIds: ["paad", "crimes-monitor"],
+    bullets: [
+      {
+        pt: "Desenvolvi o portal do Laboratório PAAD, do product discovery e protótipo no Figma ao full-stack com Next.js, Express, Prisma, PostgreSQL e autenticação com JWT e MFA, em Docker.",
+        en: "Built the PAAD Lab portal, from product discovery and a Figma prototype to the full-stack build with Next.js, Express, Prisma, PostgreSQL and JWT and MFA authentication, in Docker.",
+      },
+      {
+        pt: "Construí o Crimes Monitor (Angular 20, Chart.js), que aplica modelos BERT a comentários do YouTube; na pesquisa, os modelos passaram de 87% de acurácia e as heurísticas de agrupamento chegaram a 0,90, superando o GPT-4.",
+        en: "Built Crimes Monitor (Angular 20, Chart.js), which applies BERT models to YouTube comments; in the research, the models went above 87% accuracy and the clustering heuristics reached 0.90, outperforming GPT-4.",
+      },
+      {
+        pt: "Monitor de Banco de Dados II (2023): apoio aos alunos em PostgreSQL e otimização de consultas.",
+        en: "Database Systems II teaching assistant (2023): supported students with PostgreSQL and query optimization.",
+      },
+    ],
+  },
+  {
     id: "overzone",
     role: { pt: "Desenvolvedor Full-Stack · Freelancer", en: "Full-Stack Developer · Freelance" },
     company: "Overzone",
@@ -182,28 +204,6 @@ const experience: Bi<ExperienceItem>[] = [
       {
         pt: "O trabalho no Valida SST me levou à ISESMT, onde sigo com o produto.",
         en: "The work on Valida SST brought me to ISESMT, where I keep building the product.",
-      },
-    ],
-  },
-  {
-    id: "ufpi",
-    role: { pt: "Desenvolvedor e Pesquisador", en: "Developer and Researcher" },
-    company: "UFPI",
-    period: { pt: "set/2022 – atual", en: "Sep 2022 – present" },
-    current: true,
-    projectIds: ["paad", "crimes-monitor"],
-    bullets: [
-      {
-        pt: "Desenvolvi o portal do Laboratório PAAD, do product discovery e protótipo no Figma ao full-stack com Next.js, Express, Prisma, PostgreSQL e autenticação com JWT e MFA, em Docker.",
-        en: "Built the PAAD Lab portal, from product discovery and a Figma prototype to the full-stack build with Next.js, Express, Prisma, PostgreSQL and JWT and MFA authentication, in Docker.",
-      },
-      {
-        pt: "Construí o Crimes Monitor (Angular 20, Chart.js), que aplica modelos BERT a comentários do YouTube; na pesquisa, os modelos passaram de 87% de acurácia e as heurísticas de agrupamento chegaram a 0,90, superando o GPT-4.",
-        en: "Built Crimes Monitor (Angular 20, Chart.js), which applies BERT models to YouTube comments; in the research, the models went above 87% accuracy and the clustering heuristics reached 0.90, outperforming GPT-4.",
-      },
-      {
-        pt: "Monitor de Banco de Dados II (2023): apoio aos alunos em PostgreSQL e otimização de consultas.",
-        en: "Database Systems II teaching assistant (2023): supported students with PostgreSQL and query optimization.",
       },
     ],
   },
