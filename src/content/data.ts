@@ -189,20 +189,20 @@ const experience: Bi<ExperienceItem>[] = [
     projectIds: ["valida-sst"],
     bullets: [
       {
-        pt: "Fiz parte do time que construiu o Valida SST para a ISESMT: plataforma que recebe laudos de SST, distribui para médicos e engenheiros e coleta a assinatura digital.",
-        en: "I was part of the team that built Valida SST for ISESMT: a platform that takes in health and safety reports, assigns them to doctors and engineers and collects their digital signature.",
+        pt: "Fiz parte do time que construiu o Valida SST para a ISESMT, plataforma que recebe laudos de SST, distribui para médicos e engenheiros e coleta a assinatura digital, e desenvolvi boa parte do núcleo.",
+        en: "I was part of the team that built Valida SST for ISESMT, a platform that takes in health and safety reports, assigns them to doctors and engineers and collects their digital signature, and I built much of its core.",
       },
       {
-        pt: "Assinatura digital com certificado A1, armazenamento de arquivos na AWS S3 e cache com Upstash Redis.",
-        en: "Digital signatures with A1 certificates, file storage on AWS S3 and caching with Upstash Redis.",
+        pt: "Cadastro de empresas com validação e consulta do CNPJ na Receita, envio e atribuição automática ou manual dos documentos, com versões e histórico.",
+        en: "Company records with CNPJ validation and lookup at the Federal Revenue Service, plus document upload and automatic or manual assignment, with versions and history.",
       },
       {
-        pt: "Autenticação com Clerk e dados em PostgreSQL com Drizzle ORM.",
-        en: "Authentication with Clerk and data in PostgreSQL with Drizzle ORM.",
+        pt: "Gestão dos certificados digitais A1 e assinatura PAdES com selo e validações, além de auditoria com prazo de retenção e notificações.",
+        en: "A1 digital certificate management and PAdES signing with a seal and validations, plus auditing with retention periods and notifications.",
       },
       {
-        pt: "O trabalho no Valida SST me levou à ISESMT, onde sigo com o produto.",
-        en: "The work on Valida SST brought me to ISESMT, where I keep building the product.",
+        pt: "Next.js, PostgreSQL com Drizzle, Clerk, AWS S3 e Redis. O trabalho me levou à ISESMT, onde sigo com o produto.",
+        en: "Next.js, PostgreSQL with Drizzle, Clerk, AWS S3 and Redis. The work brought me to ISESMT, where I keep building the product.",
       },
     ],
   },
