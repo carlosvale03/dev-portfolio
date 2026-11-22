@@ -56,8 +56,8 @@ const profile: Bi<Content["profile"]> = {
       en: "At ISESMT, I build Gerencia SST and Valida SST, rebuilt the company's payment system, ISESMT Checkout, and lead the technical side of the other systems: I agree on priorities with the owners, review the team's code and make sure what ships is secure.",
     },
     {
-      pt: "A pesquisa corre em paralelo: foram três anos de iniciação científica na UFPI treinando modelos BERT sobre comentários de redes sociais, que viraram três artigos, o mais recente na ACM Web Science, na Alemanha. Hoje sigo no mestrado em Ciência da Computação, extraindo conhecimento de dados ruidosos.",
-      en: "Research runs in parallel: three years of undergraduate research at UFPI training BERT models on social media comments, which became three papers, the latest at ACM Web Science, in Germany. Today I'm doing a master's in Computer Science, extracting knowledge from noisy data.",
+      pt: "A pesquisa corre em paralelo: foram três anos de iniciação científica na UFPI treinando modelos BERT sobre comentários de redes sociais, que viraram três artigos, o mais recente na ACM Web Science, na Alemanha. Hoje sigo no mestrado em Ciência da Computação e, como bolsista de PD&I da RNP, construo uma ferramenta de coleta e curadoria de dados científicos.",
+      en: "Research runs in parallel: three years of undergraduate research at UFPI training BERT models on social media comments, which became three papers, the latest at ACM Web Science, in Germany. Today I'm doing a master's in Computer Science and, as an RNP R&D fellow, I build a tool to collect and curate scientific data.",
     },
     {
       pt: "Meu jeito de trabalhar: especificação antes do código, testes automatizados, revisão em todo PR e IA como ferramenta do dia a dia. Fora do trabalho, construo produtos próprios, como o Azimute e o Carrinho Inteligente.",
@@ -66,25 +66,31 @@ const profile: Bi<Content["profile"]> = {
   ],
   timeline: [
     {
-      when: { pt: "mar/2026 – atual", en: "Mar 2026 – present" },
-      title: { pt: "Mestrado em Ciência da Computação", en: "MSc in Computer Science" },
-      place: "UFPI",
-      kind: "study",
-    },
-    {
       when: { pt: "ago/2026 – atual", en: "Aug 2026 – present" },
       title: { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
       place: "ISESMT",
       kind: "work",
     },
     {
-      when: { pt: "2022 – atual", en: "2022 – present" },
+      when: { pt: "ago/2026 – atual", en: "Aug 2026 – present" },
+      title: { pt: "Bolsista de PD&I", en: "R&D fellow" },
+      place: { pt: "RNP · Panorama de Comunidades Acadêmicas em Cibersegurança", en: "RNP · Panorama of Academic Communities in Cybersecurity" },
+      kind: "research",
+    },
+    {
+      when: { pt: "mar/2026 – atual", en: "Mar 2026 – present" },
+      title: { pt: "Mestrado em Ciência da Computação", en: "MSc in Computer Science" },
+      place: "UFPI",
+      kind: "study",
+    },
+    {
+      when: { pt: "2022 – jul/2026", en: "2022 – Jul 2026" },
       title: { pt: "Desenvolvedor e pesquisador em PLN", en: "NLP developer and researcher" },
       place: "UFPI (PAAD · BraSNAM · WebMedia · ACM WebSci)",
       kind: "research",
     },
     {
-      when: { pt: "dez/2025", en: "Dec 2025" },
+      when: { pt: "ago/2021 – dez/2025", en: "Aug 2021 – Dec 2025" },
       title: { pt: "Bacharel em Sistemas de Informação", en: "BSc in Information Systems" },
       place: "UFPI",
       kind: "study",
@@ -141,6 +147,46 @@ const experience: Bi<ExperienceItem>[] = [
     ],
   },
   {
+    id: "rnp",
+    role: { pt: "Bolsista de Pesquisa, Desenvolvimento e Inovação", en: "Research, Development and Innovation Fellow" },
+    company: "RNP",
+    period: { pt: "ago/2026 – atual", en: "Aug 2026 – present" },
+    current: true,
+    product: { pt: "Panorama de Comunidades Acadêmicas em Cibersegurança", en: "Panorama of Academic Communities in Cybersecurity" },
+    projectIds: ["coleta-studio"],
+    bullets: [
+      {
+        pt: "Desenvolvo, em Python e Django, a ferramenta que coleta registros de quatro bases (CAPES, OpenAlex, SBC OpenLib e INPI), padroniza tudo em CSV e faz a curadoria com um LLM local (Ollama), registrando o motivo de cada decisão.",
+        en: "I build, in Python and Django, the tool that collects records from four sources (CAPES, OpenAlex, SBC OpenLib and INPI), standardizes them as CSV and curates them with a local LLM (Ollama), recording the reason for each decision.",
+      },
+      {
+        pt: "Coletas em segundo plano com fila de tarefas, progresso em tempo real e retomada a partir de checkpoints; tratei falhas reais de dados, como CSV lido com o separador errado e o limite de paginação da API do OpenAlex.",
+        en: "Background collections with a task queue, live progress and checkpoint-based resume; I handled real data issues, such as CSV files read with the wrong separator and the OpenAlex API pagination limit.",
+      },
+    ],
+  },
+  {
+    id: "ufpi",
+    role: { pt: "Desenvolvedor e Pesquisador", en: "Developer and Researcher" },
+    company: "UFPI",
+    period: { pt: "set/2022 – jul/2026", en: "Sep 2022 – Jul 2026" },
+    projectIds: ["paad", "crimes-monitor"],
+    bullets: [
+      {
+        pt: "Desenvolvi o portal do Laboratório PAAD, do product discovery e protótipo no Figma ao full-stack com Next.js, Express, Prisma, PostgreSQL e autenticação com JWT e MFA, em Docker.",
+        en: "Built the PAAD Lab portal, from product discovery and a Figma prototype to the full-stack build with Next.js, Express, Prisma, PostgreSQL and JWT and MFA authentication, in Docker.",
+      },
+      {
+        pt: "Construí o Crimes Monitor (Angular 20, Chart.js), que aplica modelos BERT a comentários do YouTube e já analisou mais de 1 milhão de opiniões (2019–2024); na pesquisa, os modelos passaram de 87% de acurácia e as heurísticas de agrupamento chegaram a 0,90, superando o GPT-4.",
+        en: "Built Crimes Monitor (Angular 20, Chart.js), which applies BERT models to YouTube comments and has analyzed more than 1 million opinions (2019–2024); in the research, the models went above 87% accuracy and the clustering heuristics reached 0.90, outperforming GPT-4.",
+      },
+      {
+        pt: "Monitor de Banco de Dados II (2023, 4 meses): apoio aos alunos nas dúvidas e atividades práticas da disciplina, com SQL, PostgreSQL e otimização de consultas.",
+        en: "Database Systems II teaching assistant (2023, 4 months): helped students with questions and hands-on work in the course, covering SQL, PostgreSQL and query optimization.",
+      },
+    ],
+  },
+  {
     id: "overzone",
     role: { pt: "Desenvolvedor Full-Stack · Freelancer", en: "Full-Stack Developer · Freelance" },
     company: "Overzone",
@@ -149,42 +195,20 @@ const experience: Bi<ExperienceItem>[] = [
     projectIds: ["valida-sst"],
     bullets: [
       {
-        pt: "Fiz parte do time que construiu o Valida SST para a ISESMT: plataforma que recebe laudos de SST, distribui para médicos e engenheiros e coleta a assinatura digital.",
-        en: "I was part of the team that built Valida SST for ISESMT: a platform that takes in health and safety reports, assigns them to doctors and engineers and collects their digital signature.",
+        pt: "Fiz parte do time que construiu o Valida SST para a ISESMT, plataforma que recebe laudos de SST, distribui para médicos e engenheiros e coleta a assinatura digital, e desenvolvi boa parte do núcleo.",
+        en: "I was part of the team that built Valida SST for ISESMT, a platform that takes in health and safety reports, assigns them to doctors and engineers and collects their digital signature, and I built much of its core.",
       },
       {
-        pt: "Assinatura digital com certificado A1, armazenamento de arquivos na AWS S3 e cache com Upstash Redis.",
-        en: "Digital signatures with A1 certificates, file storage on AWS S3 and caching with Upstash Redis.",
+        pt: "Cadastro de empresas com validação e consulta do CNPJ na Receita, envio e atribuição automática ou manual dos documentos, com versões e histórico.",
+        en: "Company records with CNPJ validation and lookup at the Federal Revenue Service, plus document upload and automatic or manual assignment, with versions and history.",
       },
       {
-        pt: "Autenticação com Clerk e dados em PostgreSQL com Drizzle ORM.",
-        en: "Authentication with Clerk and data in PostgreSQL with Drizzle ORM.",
+        pt: "Gestão dos certificados digitais A1 e assinatura PAdES com selo e validações, além de auditoria com prazo de retenção e notificações.",
+        en: "A1 digital certificate management and PAdES signing with a seal and validations, plus auditing with retention periods and notifications.",
       },
       {
-        pt: "O trabalho no Valida SST me levou à ISESMT, onde sigo com o produto.",
-        en: "The work on Valida SST brought me to ISESMT, where I keep building the product.",
-      },
-    ],
-  },
-  {
-    id: "ufpi",
-    role: { pt: "Desenvolvedor e Pesquisador", en: "Developer and Researcher" },
-    company: "UFPI",
-    period: { pt: "set/2022 – atual", en: "Sep 2022 – present" },
-    current: true,
-    projectIds: ["paad", "crimes-monitor"],
-    bullets: [
-      {
-        pt: "Desenvolvi o portal do Laboratório PAAD, do product discovery e protótipo no Figma ao full-stack com Next.js, Express, Prisma, PostgreSQL e autenticação com JWT e MFA, em Docker.",
-        en: "Built the PAAD Lab portal, from product discovery and a Figma prototype to the full-stack build with Next.js, Express, Prisma, PostgreSQL and JWT and MFA authentication, in Docker.",
-      },
-      {
-        pt: "Construí o Crimes Monitor (Angular 20, Chart.js), que aplica modelos BERT a comentários do YouTube; na pesquisa, os modelos passaram de 87% de acurácia e as heurísticas de agrupamento chegaram a 0,90, superando o GPT-4.",
-        en: "Built Crimes Monitor (Angular 20, Chart.js), which applies BERT models to YouTube comments; in the research, the models went above 87% accuracy and the clustering heuristics reached 0.90, outperforming GPT-4.",
-      },
-      {
-        pt: "Monitor de Banco de Dados II (2023): apoio aos alunos em PostgreSQL e otimização de consultas.",
-        en: "Database Systems II teaching assistant (2023): supported students with PostgreSQL and query optimization.",
+        pt: "Next.js, PostgreSQL com Drizzle, Clerk, AWS S3 e Redis. O trabalho me levou à ISESMT, onde sigo com o produto.",
+        en: "Next.js, PostgreSQL with Drizzle, Clerk, AWS S3 and Redis. The work brought me to ISESMT, where I keep building the product.",
       },
     ],
   },
@@ -246,7 +270,7 @@ const projects: Bi<Project>[] = [
         },
       },
       { label: { pt: "Credenciadas", en: "Network" }, text: { pt: "Rede credenciada com portal da credenciada.", en: "Accredited network with a portal for partners." } },
-      { label: { pt: "Financeiro", en: "Finance" }, text: { pt: "Financeiro e faturamento.", en: "Finance and billing." } },
+      { label: { pt: "Financeiro", en: "Finance" }, text: { pt: "Contas a pagar e a receber, faturamento e relatórios em PDF e Excel, integrado ao Conta Azul.", en: "Payables and receivables, billing and PDF and Excel reports, integrated with Conta Azul." } },
       { label: { pt: "Conformidade", en: "Compliance" }, text: { pt: "eSocial, PGR e LTCAT.", en: "eSocial, PGR and LTCAT." } },
       {
         label: { pt: "Documentos", en: "Documents" },
@@ -338,6 +362,55 @@ const projects: Bi<Project>[] = [
     codeNote: { pt: "Código proprietário da ISESMT.", en: "Proprietary ISESMT code." },
   },
   {
+    id: "coleta-studio",
+    title: "Coleta Studio",
+    kicker: {
+      pt: "Coleta e curadoria de produção científica e patentes, na RNP",
+      en: "Collecting and curating scientific output and patents, at RNP",
+    },
+    year: "2026",
+    status: "building",
+    featured: false,
+    image: {
+      src: "/img/projetos/coleta-studio-rnp.webp",
+      alt: {
+        pt: "Detalhe de uma execução de exemplo no Coleta Studio: coleta, homogeneização e curadoria semântica, com os arquivos gerados",
+        en: "A sample run in Coleta Studio: collection, standardization and semantic curation, with the generated files",
+      },
+      width: 1600,
+      height: 1654,
+    },
+    summary: {
+      pt: "Ferramenta do projeto Panorama de Comunidades Acadêmicas em Cibersegurança, da RNP: coleta registros de quatro bases, padroniza tudo e faz a curadoria com um LLM local.",
+      en: "The tool behind RNP's Panorama of Academic Communities in Cybersecurity: it collects records from four sources, standardizes them and curates them with a local LLM.",
+    },
+    overview: {
+      pt: "Desenvolvo, como bolsista de PD&I da RNP, a aplicação web que monta e executa coletas de produções científicas e patentes na CAPES, no OpenAlex, na SBC OpenLib e no INPI. Os registros saem padronizados em CSV, separados entre produção científica e patentes, e passam por uma curadoria semântica com um LLM local (Ollama), que decide incluir, excluir ou revisar e guarda a evidência de cada decisão. As coletas rodam em segundo plano, com progresso em tempo real e retomada de onde pararam.",
+      en: "As an RNP research and development fellow, I build the web app that sets up and runs collections of scientific output and patents from CAPES, OpenAlex, SBC OpenLib and INPI. Records come out standardized as CSV, split between scientific output and patents, and go through semantic curation with a local LLM (Ollama), which decides to include, exclude or review and keeps the evidence for each decision. Collections run in the background, with live progress and resuming where they stopped.",
+    },
+    highlights: [
+      {
+        label: { pt: "Coleta", en: "Collection" },
+        text: { pt: "Recorte por tema, período e termos em quatro bases, com limite de registros por fonte.", en: "Slices by topic, period and terms across four sources, with a per-source record limit." },
+      },
+      {
+        label: { pt: "Curadoria", en: "Curation" },
+        text: { pt: "LLM local classifica cada documento e registra o motivo da decisão.", en: "A local LLM classifies each document and records the reason for the decision." },
+      },
+      {
+        label: { pt: "Resiliência", en: "Resilience" },
+        text: { pt: "Fila em segundo plano, progresso em tempo real e retomada por checkpoints.", en: "Background queue, live progress and checkpoint-based resume." },
+      },
+      {
+        label: { pt: "Qualidade", en: "Quality" },
+        text: { pt: "Testes automatizados e decisões técnicas registradas em ADRs.", en: "Automated tests and technical decisions recorded as ADRs." },
+      },
+    ],
+    stack: ["Python", "Django", "HTMX", "Alpine.js", "Ollama", "pandas", "Docker", "pytest"],
+    links: [],
+    codeNote: { pt: "Código em repositório interno da RNP.", en: "Code in an internal RNP repository." },
+  },
+  {
     id: "azimute",
     title: "Azimute",
     kicker: { pt: "Finanças pessoais, antigo Fluxar", en: "Personal finance, formerly Fluxar" },
@@ -412,6 +485,11 @@ const projects: Bi<Project>[] = [
       { label: { pt: "Sentimento", en: "Sentiment" }, text: { pt: "Modelos BERT ajustados para o português classificam a aprovação social.", en: "BERT models fine-tuned for Portuguese classify public approval." } },
       { label: { pt: "Tempo", en: "Timeline" }, text: { pt: "Dashboards mostram picos e tendências ao longo das semanas.", en: "Dashboards show spikes and trends over the weeks." } },
       { label: { pt: "Front-end", en: "Front-end" }, text: { pt: "Angular 20 com design system em PrimeNG e Tailwind.", en: "Angular 20 with a PrimeNG and Tailwind design system." } },
+    ],
+    metrics: [
+      { value: { pt: "1 mi+", en: "1M+" }, label: { pt: "opiniões analisadas", en: "opinions analyzed" } },
+      { value: "87%+", label: { pt: "acurácia dos modelos", en: "model accuracy" } },
+      { value: { pt: "0,90", en: "0.90" }, label: { pt: "acurácia no agrupamento", en: "clustering accuracy" } },
     ],
     stack: ["Angular 20", "BERT", "NLP", "Chart.js", "PrimeNG", "Tailwind", "GitHub Actions"],
     links: [
@@ -816,7 +894,7 @@ const stack: Bi<StackGroup>[] = [
   {
     id: "ai",
     label: { pt: "IA e pesquisa", en: "AI and research" },
-    items: ["NLP", "BERT", "BERTimbau", "Transformers", "LLMs", "scikit-learn", "pandas", "Chart.js"],
+    items: ["NLP", "BERT", "BERTimbau", "Transformers", "LLMs", "Ollama (LLM local)", "scikit-learn", "pandas", "Chart.js"],
   },
   {
     id: "product",
