@@ -56,8 +56,8 @@ const profile: Bi<Content["profile"]> = {
       en: "At ISESMT, I build Gerencia SST and Valida SST, rebuilt the company's payment system, ISESMT Checkout, and lead the technical side of the other systems: I agree on priorities with the owners, review the team's code and make sure what ships is secure.",
     },
     {
-      pt: "A pesquisa corre em paralelo: foram três anos de iniciação científica na UFPI treinando modelos BERT sobre comentários de redes sociais, que viraram três artigos, o mais recente na ACM Web Science, na Alemanha. Hoje sigo no mestrado em Ciência da Computação, extraindo conhecimento de dados ruidosos.",
-      en: "Research runs in parallel: three years of undergraduate research at UFPI training BERT models on social media comments, which became three papers, the latest at ACM Web Science, in Germany. Today I'm doing a master's in Computer Science, extracting knowledge from noisy data.",
+      pt: "A pesquisa corre em paralelo: foram três anos de iniciação científica na UFPI treinando modelos BERT sobre comentários de redes sociais, que viraram três artigos, o mais recente na ACM Web Science, na Alemanha. Hoje sigo no mestrado em Ciência da Computação e, como bolsista de PD&I da RNP, construo uma ferramenta de coleta e curadoria de dados científicos.",
+      en: "Research runs in parallel: three years of undergraduate research at UFPI training BERT models on social media comments, which became three papers, the latest at ACM Web Science, in Germany. Today I'm doing a master's in Computer Science and, as an RNP R&D fellow, I build a tool to collect and curate scientific data.",
     },
     {
       pt: "Meu jeito de trabalhar: especificação antes do código, testes automatizados, revisão em todo PR e IA como ferramenta do dia a dia. Fora do trabalho, construo produtos próprios, como o Azimute e o Carrinho Inteligente.",
