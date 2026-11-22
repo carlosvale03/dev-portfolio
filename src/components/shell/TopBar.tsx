@@ -32,7 +32,7 @@ export function TopBar() {
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-5 md:px-8">
         <a href="#inicio" className="flex items-center gap-3 font-extrabold tracking-tight" aria-label="Carlos Vale">
           <span aria-hidden="true" className="grid size-9 place-items-center bg-fg text-[13px] leading-none text-bg">
-            <span>CH</span>
+            <span>CH<span className="text-accent">.</span></span>
           </span>
           <span className="hidden whitespace-nowrap text-lg sm:inline">
             Carlos Vale<span className="text-accent">.</span>
