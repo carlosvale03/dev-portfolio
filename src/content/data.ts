@@ -171,8 +171,8 @@ const experience: Bi<ExperienceItem>[] = [
         en: "Built the PAAD Lab portal, from product discovery and a Figma prototype to the full-stack build with Next.js, Express, Prisma, PostgreSQL and JWT and MFA authentication, in Docker.",
       },
       {
-        pt: "Construí o Crimes Monitor (Angular 20, Chart.js), que aplica modelos BERT a comentários do YouTube; na pesquisa, os modelos passaram de 87% de acurácia e as heurísticas de agrupamento chegaram a 0,90, superando o GPT-4.",
-        en: "Built Crimes Monitor (Angular 20, Chart.js), which applies BERT models to YouTube comments; in the research, the models went above 87% accuracy and the clustering heuristics reached 0.90, outperforming GPT-4.",
+        pt: "Construí o Crimes Monitor (Angular 20, Chart.js), que aplica modelos BERT a comentários do YouTube e já analisou mais de 1 milhão de opiniões (2019–2024); na pesquisa, os modelos passaram de 87% de acurácia e as heurísticas de agrupamento chegaram a 0,90, superando o GPT-4.",
+        en: "Built Crimes Monitor (Angular 20, Chart.js), which applies BERT models to YouTube comments and has analyzed more than 1 million opinions (2019–2024); in the research, the models went above 87% accuracy and the clustering heuristics reached 0.90, outperforming GPT-4.",
       },
       {
         pt: "Monitor de Banco de Dados II (2023, 4 meses): apoio aos alunos nas dúvidas e atividades práticas da disciplina, com SQL, PostgreSQL e otimização de consultas.",
@@ -479,6 +479,11 @@ const projects: Bi<Project>[] = [
       { label: { pt: "Sentimento", en: "Sentiment" }, text: { pt: "Modelos BERT ajustados para o português classificam a aprovação social.", en: "BERT models fine-tuned for Portuguese classify public approval." } },
       { label: { pt: "Tempo", en: "Timeline" }, text: { pt: "Dashboards mostram picos e tendências ao longo das semanas.", en: "Dashboards show spikes and trends over the weeks." } },
       { label: { pt: "Front-end", en: "Front-end" }, text: { pt: "Angular 20 com design system em PrimeNG e Tailwind.", en: "Angular 20 with a PrimeNG and Tailwind design system." } },
+    ],
+    metrics: [
+      { value: { pt: "1 mi+", en: "1M+" }, label: { pt: "opiniões analisadas", en: "opinions analyzed" } },
+      { value: "87%+", label: { pt: "acurácia dos modelos", en: "model accuracy" } },
+      { value: "0,90", label: { pt: "acurácia no agrupamento", en: "clustering accuracy" } },
     ],
     stack: ["Angular 20", "BERT", "NLP", "Chart.js", "PrimeNG", "Tailwind", "GitHub Actions"],
     links: [
