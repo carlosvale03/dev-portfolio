@@ -270,7 +270,7 @@ const projects: Bi<Project>[] = [
         },
       },
       { label: { pt: "Credenciadas", en: "Network" }, text: { pt: "Rede credenciada com portal da credenciada.", en: "Accredited network with a portal for partners." } },
-      { label: { pt: "Financeiro", en: "Finance" }, text: { pt: "Financeiro e faturamento.", en: "Finance and billing." } },
+      { label: { pt: "Financeiro", en: "Finance" }, text: { pt: "Contas a pagar e a receber, faturamento e relatórios em PDF e Excel, integrado ao Conta Azul.", en: "Payables and receivables, billing and PDF and Excel reports, integrated with Conta Azul." } },
       { label: { pt: "Conformidade", en: "Compliance" }, text: { pt: "eSocial, PGR e LTCAT.", en: "eSocial, PGR and LTCAT." } },
       {
         label: { pt: "Documentos", en: "Documents" },
